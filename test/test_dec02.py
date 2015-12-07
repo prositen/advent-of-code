@@ -20,3 +20,7 @@ class Dec02Tests(unittest.TestCase):
 
     def testRibbonExample2(self):
         self.assertEquals(14, dec02.ribbon(1, 1, 10))
+
+
+if __name__ == '__main__':
+    unittest.main()

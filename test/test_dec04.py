@@ -14,3 +14,6 @@ class Dec04Tests(unittest.TestCase):
 
     def testMiningHashesExample2(self):
         self.assertEqual(1048970, dec04.mining_hashes('pqrstuv'))
+
+if __name__ == '__main__':
+    unittest.main()
