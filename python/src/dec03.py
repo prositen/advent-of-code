@@ -29,10 +29,8 @@ def houses(puzzle_input, santas=1):
     return len(visited)
 
 
-def main(argv):
-    for no, line in enumerate(fileinput.input(argv[0])):
+if __name__ == '__main__':
+    for no, line in enumerate(fileinput.input('../../data/input.3.txt')):
         print("Instruction {line}: {houses} houses got gifts with 1 santa.".format(line=no, houses=houses(line, 1)))
         print("Instruction {line}: {houses} houses got gifts with 2 santas.".format(line=no, houses=houses(line, 2)))
 
-if __name__ == '__main__':
-    main(['../data/input.3.txt'])

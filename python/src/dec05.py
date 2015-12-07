@@ -47,7 +47,7 @@ def naughty_or_nice_2(word):
 if __name__ == '__main__':
     nice_1 = 0
     nice_2 = 0
-    for line in fileinput.input('../data/input.5.txt'):
+    for line in fileinput.input('../../data/input.5.txt'):
         if naughty_or_nice_1(line):
             nice_1 += 1
         if naughty_or_nice_2(line):

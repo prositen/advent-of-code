@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import unittest
-from src import dec04
+
+from python.src import dec04
 
 __author__ = 'anna'
 

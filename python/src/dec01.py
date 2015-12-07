@@ -23,10 +23,7 @@ def when_on_floor(start=0, instructions="", wanted_floor=0):
     return -1
 
 
-def main(argv):
-    for no, line in enumerate(fileinput.input(argv[0])):
+if __name__ == '__main__':
+    for no, line in enumerate(fileinput.input('../../data/input.1.txt')):
         print("Instruction {line}: Floor {floor}".format(line=no, floor=floor(0, line)))
         print("On floor -1: ", when_on_floor(0, line, -1))
-
-if __name__ == '__main__':
-    main(sys.argv[1:])
