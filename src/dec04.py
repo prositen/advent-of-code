@@ -1,6 +1,8 @@
 __author__ = 'Anna'
 from hashlib import md5
 
+SECRET = 'ckczppom'
+
 
 def mining_hashes(secret, zeroes=5):
     """
@@ -20,5 +22,5 @@ def mining_hashes(secret, zeroes=5):
     return number
 
 if __name__ == '__main__':
-    print("Number:", mining_hashes('ckczppom'))
-    print("Number:", mining_hashes('ckczppom', 6))
+    print("Number:", mining_hashes(SECRET))
+    print("Number:", mining_hashes(SECRET, 6))
