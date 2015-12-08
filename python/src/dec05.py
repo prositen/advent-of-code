@@ -1,4 +1,3 @@
-import fileinput
 import re
 
 __author__ = 'Anna'
@@ -47,10 +46,10 @@ def naughty_or_nice_2(word):
 if __name__ == '__main__':
     nice_1 = 0
     nice_2 = 0
-    for line in fileinput.input('../../data/input.5.txt'):
-        if naughty_or_nice_1(line):
-            nice_1 += 1
-        if naughty_or_nice_2(line):
-            nice_2 += 1
-
+    with open('../../data/input.5.txt', 'r') as fh:
+        for line in fh.readlines():
+            if naughty_or_nice_1(line):
+                nice_1 += 1
+            if naughty_or_nice_2(line):
+                nice_2 += 1
     print('Nice words: 1: {nice}, 2: {nice2}'.format(nice=nice_1, nice2=nice_2))

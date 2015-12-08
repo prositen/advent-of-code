@@ -1,5 +1,3 @@
-import fileinput
-
 __author__ = 'Anna'
 
 
@@ -30,7 +28,8 @@ def houses(puzzle_input, santas=1):
 
 
 if __name__ == '__main__':
-    for no, line in enumerate(fileinput.input('../../data/input.3.txt')):
-        print("Instruction {line}: {houses} houses got gifts with 1 santa.".format(line=no, houses=houses(line, 1)))
-        print("Instruction {line}: {houses} houses got gifts with 2 santas.".format(line=no, houses=houses(line, 2)))
+    with open('../../data/input.3.txt','r') as fh:
+        for no, line in enumerate(fh.readlines()):
+            print("Instruction {line}: {houses} houses got gifts with 1 santa.".format(line=no, houses=houses(line, 1)))
+            print("Instruction {line}: {houses} houses got gifts with 2 santas.".format(line=no, houses=houses(line, 2)))
 

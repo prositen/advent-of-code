@@ -22,5 +22,5 @@ def mining_hashes(secret, zeroes=5):
     return number
 
 if __name__ == '__main__':
-    print("Number:", mining_hashes(SECRET))
-    print("Number:", mining_hashes(SECRET, 6))
+    print("Number with five leading zeroes:", mining_hashes(SECRET))
+    print("Number with six leading zeroes:", mining_hashes(SECRET, 6))

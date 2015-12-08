@@ -1,5 +1,4 @@
 from collections import defaultdict
-import fileinput
 import re
 
 __author__ = 'anna'
@@ -123,7 +122,9 @@ def brightness(instructions):
 
 
 if __name__ == '__main__':
-    count = lightning(fileinput.input('../../data/input.6.txt'))
-    total_brightness = brightness(fileinput.input('../../data/input.6.txt'))
+    with open('../../data/input.6.txt', 'r') as fh:
+        count = lightning(fh.readlines())
+        fh.seek(0)
+        total_brightness = brightness(fh.readlines())
 
-    print("Lamps lit: {count}. Brightness {brightness}".format(count=count, brightness=total_brightness))
+        print("Lamps lit: {count}. Brightness {brightness}".format(count=count, brightness=total_brightness))

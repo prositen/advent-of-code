@@ -1,6 +1,3 @@
-import fileinput
-import sys
-
 __author__ = 'anna'
 
 
@@ -23,10 +20,11 @@ def ribbon(l, w, h):
 if __name__ == '__main__':
     paper = 0
     ribbon_length = 0
-    for no, line in enumerate(fileinput.input('../../data/input.2.txt')):
-        l, w, h = map(int, line.split('x'))
-        paper += wrap(l, w, h)
-        ribbon_length += ribbon(l, w, h)
+    with open('../../data/input.2.txt','r') as fh:
+        for line in fh.readlines():
+            l, w, h = map(int, line.split('x'))
+            paper += wrap(l, w, h)
+            ribbon_length += ribbon(l, w, h)
 
     print("Total amount of paper to order:", paper)
     print("Total length of ribbon to order: ", ribbon_length)
