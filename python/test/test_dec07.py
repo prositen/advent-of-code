@@ -1,4 +1,5 @@
 from collections import defaultdict
+import random
 
 __author__ = 'anna'
 
@@ -16,10 +17,11 @@ class Dec07Tests(unittest.TestCase):
                         "y RSHIFT 2 -> g",
                         "NOT x -> h",
                         "NOT y -> i"]
+        random.shuffle(instructions)
         result = dec07.run(instructions)
         self.assertEquals(72, result['d'])
         self.assertEquals(507, result['e'])
-        self.assertEquals(495, result['f'])
+        self.assertEquals(492, result['f'])
         self.assertEquals(114, result['g'])
         self.assertEquals(65412, result['h'])
         self.assertEquals(65079, result['i'])
@@ -27,26 +29,51 @@ class Dec07Tests(unittest.TestCase):
         self.assertEquals(456, result['y'])
 
     def test_Store(self):
-        cmd = dec07.StoreCommand(1, 'a')
+        cmd = dec07.StoreCommand('12', 'a')
         g = defaultdict(int)
         cmd.run(g)
-        self.assertEquals(1, g['a'])
+        self.assertEquals(12, g['a'])
 
     def test_And(self):
-        cmd = dec07.AndCommand(1, 2, 'b')
+        cmd = dec07.AndCommand('a', 'b', 'c')
         g = defaultdict(int)
-        g[1] = 1
-        g[2] = 2
+        g['a'] = 1
+        g['b'] = 2
         cmd.run(g)
-        self.assertEquals(0, g['b'])
+        self.assertEquals(0, g['c'])
 
     def test_And2(self):
-        cmd = dec07.AndCommand(1, 2, 'b')
+        cmd = dec07.AndCommand('a', 'b', 'c')
         g = defaultdict(int)
-        g[1] = 1
-        g[2] = 3
+        g['a'] = 1
+        g['b'] = 3
         cmd.run(g)
-        self.assertEquals(1, g['b'])
+        self.assertEquals(1, g['c'])
+
+    def test_not(self):
+        cmd = dec07.NotCommand('a', 'b')
+        g = defaultdict(int)
+        g['a'] = 123
+        cmd.run(g)
+        self.assertEquals(65412, g['b'])
+
+    def test_parseStore(self):
+        line = "123 -> a"
+        cmd = dec07.parse(line)
+        self.assertIsInstance(cmd, dec07.StoreCommand)
+        g = defaultdict(int)
+        cmd.run(g)
+        self.assertEquals(123, g['a'])
+
+    def test_parseOr(self):
+        line = 'a OR b -> c'
+        cmd = dec07.parse(line)
+        self.assertIsInstance(cmd, dec07.OrCommand)
+        g = defaultdict(int)
+        g['a'] = 1
+        g['b'] = 2
+        cmd.run(g)
+        self.assertEquals(3, g['c'])
 
 
 if __name__ == '__main__':

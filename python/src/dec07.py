@@ -1,26 +1,40 @@
-from collections import defaultdict
-from enum import Enum
+import fileinput
 import re
 
 __author__ = 'anna'
 
-RE_STORE = re.compile("(\\d+) -> (\\w+)")
-RE_AND = re.compile("(\\w+) AND (\\w+) -> (\\w+)")
-RE_LSHIFT = re.compile("(\\w+) LSHIFT (\\d+) -> (\\w+)")
-RE_NOT = re.compile("NOT (\\w+) -> (\\w+)")
-RE_OR = re.compile("(\\w+) OR (\\w+) -> (\\w+)")
-RE_RSHIFT = re.compile("(\\w+) RSHIFT (\\d+) -> (\\w+)")
+
+class Param(object):
+    value = None
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return self.value
+
+    def val(self, context):
+        pass
+
+    @classmethod
+    def parse(cls, param):
+        if re.match(r'\d+', param):
+            return ValParam(param)
+        elif re.match(r'\w+', param):
+            return VarParam(param)
 
 
-class Tokens(Enum):
-    T_REGISTER = 0,
-    T_DECIMAL = 1,
-    T_STORE = 1,
-    T_AND = 2,
-    T_LSHIFT = 3,
-    T_NOT = 4,
-    T_OR = 5,
-    T_RSHIFT = 6
+class ValParam(Param):
+    def val(self, context):
+        return int(self.value)
+
+
+class VarParam(Param):
+    def val(self, context):
+        if self.value in context:
+            return int(context[self.value])
+        else:
+            return None
 
 
 class Command(object):
@@ -33,8 +47,11 @@ class OneParamCommand(Command):
     out = None
 
     def __init__(self, in1, out):
-        self.in1 = in1
+        self.in1 = Param.parse(in1)
         self.out = out
+
+    def can_run(self, context):
+        return self.in1.val(context) is not None
 
 
 class TwoParamCommand(Command):
@@ -43,50 +60,127 @@ class TwoParamCommand(Command):
     out = None
 
     def __init__(self, in1, in2, out):
-        self.in1 = in1
-        self.in2 = in2
+        self.in1 = Param.parse(in1)
+        self.in2 = Param.parse(in2)
         self.out = out
+
+    def can_run(self, context):
+        return self.in1.val(context) is not None and self.in2.val(context) is not None
 
 
 class StoreCommand(OneParamCommand):
-
     def run(self, context):
-        context[self.out] = self.in1
+        context[self.out] = int(self.in1.val(context))
+
+    def __str__(self):
+        return "{0} -> {1}".format(self.in1, self.out)
 
 
 class AndCommand(TwoParamCommand):
     def run(self, context):
-        context[self.out] = context[self.in1] & context[self.in2]
-        print(context[self.out])
+        context[self.out] = self.in1.val(context) & self.in2.val(context)
+
+    def __str__(self):
+        return "{0} AND {1} -> {2}".format(self.in1, self.in2, self.out)
 
 
 class OrCommand(TwoParamCommand):
     def run(self, context):
-        context[self.out] = context[self.in1] | context[self.in2]
+        context[self.out] = self.in1.val(context) | self.in2.val(context)
+
+    def __str__(self):
+        return "{0} OR {1} -> {2}".format(self.in1, self.in2, self.out)
 
 
 class NotCommand(OneParamCommand):
+    """ Home-brewed two's complement. The built-in one works on infinite number of bytes,
+    which doesn't help me.
+    """
     def run(self, context):
-        bin_num = format(self.out, '#018b')
-        bin_num.replace('1', '2').replace('0','1').replace('2','1')
+        bin_num = format(self.in1.val(context), '016b')
+        bin_num = bin_num.replace('1', '2').replace('0','1').replace('2','0')
         int_num = int(bin_num, 2)
         context[self.out] = int_num
+
+    def __str__(self):
+        return "NOT {0} -> {1}".format(self.in1, self.out)
 
 
 class LShiftCommand(TwoParamCommand):
     def run(self, context):
-        context[self.out] = context[self.in1] << self.out
+        context[self.out] = self.in1.val(context) << self.in2.val(context)
+
+    def input(self):
+        return [self.in1]
+
+    def __str__(self):
+        return "{0} LSHIFT {1} -> {2}".format(self.in1, self.in2, self.out)
 
 
 class RShiftCommand(TwoParamCommand):
     def run(self, context):
-        context[self.out] = context[self.in1] >> self.out
+        context[self.out] = self.in1.val(context) >> self.in2.val(context)
+
+    def input(self):
+        return [self.in1]
+
+    def __str__(self):
+        return "{0} RSHIFT {1} -> {2}".format(self.in1, self.in2, self.out)
+
+
+RE_STORE = re.compile(r'(\w+) -> (\w+)')
+RE_AND = re.compile(r'(\w+) AND (\w+) -> (\w+)')
+RE_LSHIFT = re.compile(r'(\w+) LSHIFT (\w+) -> (\w+)')
+RE_NOT = re.compile(r'NOT (\w+) -> (\w+)')
+RE_OR = re.compile(r'(\w+) OR (\w+) -> (\w+)')
+RE_RSHIFT = re.compile(r'(\w+) RSHIFT (\w+) -> (\w+)')
+
+Commands = {
+    RE_STORE: StoreCommand,
+    RE_AND: AndCommand,
+    RE_LSHIFT: LShiftCommand,
+    RE_NOT: NotCommand,
+    RE_OR: OrCommand,
+    RE_RSHIFT: RShiftCommand
+}
 
 
 def parse(line):
-    pass
+    for cmdRe, cmdClass in Commands.items():
+        result = re.match(cmdRe, line)
+        if result:
+            return cmdClass(*result.groups())
 
 
-def run(instructions):
-    registers = defaultdict(int)
+def run(instructions, preset=dict()):
+    registers = dict()
+    registers.update(preset)
+    if len(preset):
+        print("preset: ", preset, "registers:", registers)
+    circuits = list()
+    for no, line in enumerate(instructions):
+        command = parse(line)
+        if str(command.out) in preset.keys():
+            print("Skipping instruction {line}".format(line=line))
+        else:
+            circuits.append((no, command))
+
+    while circuits:
+        (line, command) = circuits.pop(0)
+        if command.can_run(registers):
+            command.run(registers)
+        else:
+            circuits.append((line, command))
+
     return registers
+
+if __name__ == '__main__':
+    with open('../../data/input.7.txt','r') as fh:
+
+        regs = run(fh.readlines())
+        print("Register A contains:", regs['a'])
+
+        fh.seek(0)
+        task_2 = {'b': regs['a']}
+        regs_2 = run(fh.readlines(), task_2)
+        print("Register A contains:", regs_2['a'])
