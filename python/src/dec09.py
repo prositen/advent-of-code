@@ -1,4 +1,6 @@
 import re
+import itertools
+import sys
 
 __author__ = 'anna'
 
@@ -21,12 +23,35 @@ def parse_distance(location_graph, d):
         location_graph[city_2][city_1] = distance
 
 
+def longest_path(distances):
+    return path(distances, max, 0)
+
+
 def shortest_path(distances):
-    location_graph = dict()
+    return path(distances, min, sys.maxsize)
+
+
+def path(distances, method, start_value):
+    distance_graph = dict()
     for distance in distances:
-        parse_distance(location_graph, distance)
+        parse_distance(distance_graph, distance)
 
-    shortest_found = None
+    locations = distance_graph.keys()
+    shortest_distance = start_value
+    for order in itertools.permutations(locations):
+        distance = 0
+        current = order[0]
+        for city in order[1:]:
+            distance += distance_graph[current][city]
+            current = city
+        shortest_distance = method(shortest_distance, distance)
 
-    print(location_graph)
-    return 0
+    return shortest_distance
+
+
+if __name__ == '__main__':
+    with open('../../data/input.9.txt', 'r') as fh:
+        print("Shortest path: {distance}".format(distance=shortest_path(fh.readlines())))
+        fh.seek(0)
+        print("Longest path: {distance}".format(distance=longest_path(fh.readlines())))
+
