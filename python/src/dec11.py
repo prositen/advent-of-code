@@ -45,10 +45,16 @@ def filter_bad(password):
 
 def next_password(password):
     next_pwd = filter_bad(password)
+    if next_pwd == password:
+        next_pwd = increase(next_pwd)
     while not password_valid(next_pwd):
         next_pwd = increase(next_pwd)
     return next_pwd
 
 
 if __name__ == '__main__':
-    print("Next password after {0} is {1}".format('hxbxwxba', next_password('hxbxwxba')))
+    pw0 = 'hxbxwxba'
+    pw1 = next_password(pw0)
+    print("Next password after {0} is {1}".format(pw0, pw1))
+    pw2 = next_password(pw1)
+    print("After that, the next is {0}".format(pw2))
