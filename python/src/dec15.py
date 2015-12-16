@@ -66,7 +66,7 @@ def next_measure(ingredients, teaspoons, tail=None):
                 yield x
 
 
-def best_recipe(ingredient_lines, teaspoons):
+def best_recipe(ingredient_lines, teaspoons, calories=None):
     ingredients = dict()
     for i in ingredient_lines:
         ingredient = Ingredient(i)
@@ -77,6 +77,8 @@ def best_recipe(ingredient_lines, teaspoons):
         r = Recipe(ingredients)
         r.measure(x)
         all_recipes.append(r)
+    if calories:
+        all_recipes = filter(lambda k: k.calories <= 500, all_recipes)
     best = max(all_recipes, key=lambda k: k.score)
     return best
 
@@ -85,9 +87,13 @@ def main():
     with open('../../data/input.15.txt', 'r') as fh:
         result = best_recipe(fh.readlines(), 100)
         print("The best score possible is {score} "
-             "using measurements {measurements}".format(score=result.score,
-                                                        measurements=result.measurements))
-
+              "using measurements {measurements}".format(score=result.score,
+                                                         measurements=result.measurements))
+        fh.seek(0)
+        result = best_recipe(fh.readlines(), 100, calories=500)
+        print("With a calorie limit of 500, the best score is {score} "
+              "using measurements {measurements}".format(score=result.score,
+                                                         measurements=result.measurements))
 
 if __name__ == '__main__':
     main()
