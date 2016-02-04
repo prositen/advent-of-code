@@ -152,15 +152,15 @@ def parse(line):
             return cmdClass(*result.groups())
 
 
-def run(instructions, preset=dict()):
+def run(instructions, preset=None):
     registers = dict()
-    registers.update(preset)
-    if len(preset):
+    if preset is not None:
+        registers.update(preset)
         print("preset: ", preset, "registers:", registers)
     circuits = list()
     for no, line in enumerate(instructions):
         command = parse(line)
-        if str(command.out) in preset.keys():
+        if preset and str(command.out) in preset.keys():
             print("Skipping instruction {line}".format(line=line))
         else:
             circuits.append((no, command))
