@@ -30,7 +30,7 @@ class Dec16Tests(unittest.TestCase):
         akita_filter = dec16.filter_factory('akitas', 9, False)
         aunts = [dec16.Aunt(line) for line in self.aunt_lines]
         filtered_aunts = list(filter(akita_filter, aunts))
-        self.assertEquals(3, len(filtered_aunts))
+        self.assertEquals(2, len(filtered_aunts))
 
     def test_filter_retroencabulator_trees(self):
         tree_filter = dec16.filter_factory('trees', 2, True)
