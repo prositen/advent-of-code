@@ -58,7 +58,7 @@ class FusionFission(object):
 
 
 def main():
-    with open('../../data/input.19.txt') as fh:
+    with open('../../../data/2015/input.19.txt') as fh:
         lines = fh.readlines()
         rules = lines[:-2]
         text = lines[-1].strip()

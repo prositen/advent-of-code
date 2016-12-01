@@ -78,7 +78,7 @@ def winner_ticks(reindeer_rules, seconds):
 
 
 def main():
-    with open('../../data/input.14.txt', 'r') as fh:
+    with open('../../../data/2015/input.14.txt', 'r') as fh:
         r = winner(fh.readlines(), 2503)
         print("The winning reindeer is {name} with {location} km traveled.".format(name=r.name, location=r.location))
         fh.seek(0)

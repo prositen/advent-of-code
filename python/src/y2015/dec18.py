@@ -103,7 +103,7 @@ def step(grid, steps):
 
 
 def main():
-    with open('../../data/input.18.txt', 'r') as fh:
+    with open('../../../data/2015/input.18.txt', 'r') as fh:
         from_chars = fh.readlines()
         grid = Grid(from_char=from_chars)
         grid_100 = step(grid, 100)

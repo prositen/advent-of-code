@@ -14,7 +14,7 @@ def char_encode_diff(text):
     return added
 
 if __name__ == '__main__':
-    with open('../../data/input.8.txt', 'r') as fh:
+    with open('../../../data/2015/input.8.txt', 'r') as fh:
         total_decode_diff = 0
         total_encode_diff = 0
         for line in fh.readlines():

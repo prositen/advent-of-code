@@ -49,7 +49,7 @@ def maximum_happiness(potential_happiness, include_me=False):
 
 
 def main():
-    with open('../../data/input.13.txt', 'r') as fh:
+    with open('../../../data/2015/input.13.txt', 'r') as fh:
         max_happiness = maximum_happiness(fh.readlines())
         print("Maximum happiness is {max}".format(max=max_happiness))
         fh.seek(0)

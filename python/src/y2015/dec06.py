@@ -122,7 +122,7 @@ def brightness(instructions):
 
 
 if __name__ == '__main__':
-    with open('../../data/input.6.txt', 'r') as fh:
+    with open('../../../data/2015/input.6.txt', 'r') as fh:
         count = lightning(fh.readlines())
         fh.seek(0)
         total_brightness = brightness(fh.readlines())

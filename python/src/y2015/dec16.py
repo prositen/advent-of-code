@@ -48,7 +48,7 @@ def find_aunt(aunt_lines, ticker, retroencabulator):
 
 
 def main():
-    with open('../../data/input.16.txt', 'r') as fh:
+    with open('../../../data/2015/input.16.txt', 'r') as fh:
         aunts = fh.readlines()
         ticker = {'children': 3,
                   'cats': 7,

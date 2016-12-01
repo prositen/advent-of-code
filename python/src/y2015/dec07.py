@@ -175,7 +175,7 @@ def run(instructions, preset=None):
     return registers
 
 if __name__ == '__main__':
-    with open('../../data/input.7.txt','r') as fh:
+    with open('../../../data/2015/input.7.txt','r') as fh:
 
         regs = run(fh.readlines())
         print("Register A contains:", regs['a'])

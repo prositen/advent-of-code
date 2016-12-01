@@ -50,7 +50,7 @@ def path(distances, method, start_value):
 
 
 if __name__ == '__main__':
-    with open('../../data/input.9.txt', 'r') as fh:
+    with open('../../../data/2015/input.9.txt', 'r') as fh:
         print("Shortest path: {distance}".format(distance=shortest_path(fh.readlines())))
         fh.seek(0)
         print("Longest path: {distance}".format(distance=longest_path(fh.readlines())))

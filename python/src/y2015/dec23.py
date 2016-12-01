@@ -152,7 +152,7 @@ class Program(object):
 
 
 def main():
-    with open('../../data/input.23.txt', 'r') as fh:
+    with open('../../,,/data/2015/input.23.txt', 'r') as fh:
         program = Program(fh.readlines())
 
     print(program.run({'a': 0, 'b': 0}))

@@ -20,7 +20,7 @@ def ribbon(l, w, h):
 if __name__ == '__main__':
     paper = 0
     ribbon_length = 0
-    with open('../../data/input.2.txt','r') as fh:
+    with open('../../../data/2015/input.2.txt','r') as fh:
         for line in fh.readlines():
             l, w, h = map(int, line.split('x'))
             paper += wrap(l, w, h)

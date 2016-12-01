@@ -42,7 +42,7 @@ def fewest_containers(combinations):
 
 
 def main():
-    with open('../../data/input.17.txt', 'r') as fh:
+    with open('../../../data/2015/input.17.txt', 'r') as fh:
         bins = [int(line) for line in fh.readlines()]
         combinations = fit_eggnog(bins, 150)
         print("There are {no} combinations of bins to store 150 liters of eggnog".format(no=len(combinations)))

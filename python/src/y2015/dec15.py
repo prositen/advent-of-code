@@ -84,7 +84,7 @@ def best_recipe(ingredient_lines, teaspoons, calories=None):
 
 
 def main():
-    with open('../../data/input.15.txt', 'r') as fh:
+    with open('../../../data/2015/input.15.txt', 'r') as fh:
         result = best_recipe(fh.readlines(), 100)
         print("The best score possible is {score} "
               "using measurements {measurements}".format(score=result.score,

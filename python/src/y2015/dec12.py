@@ -27,7 +27,7 @@ def sum_subtree(json_data, skip_red):
 
 
 if __name__ == '__main__':
-    with open('../../data/input.12.txt', 'r') as fh:
+    with open('../../../data/2015/input.12.txt', 'r') as fh:
         print("The sum is {sum}".format(sum=sum_numbers(fh.readline())))
         fh.seek(0)
         print("Not counting red objects, the sum is {sum}".format(sum=sum_numbers(fh.readline(), skip_red=True)))

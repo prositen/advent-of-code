@@ -46,7 +46,7 @@ def naughty_or_nice_2(word):
 if __name__ == '__main__':
     nice_1 = 0
     nice_2 = 0
-    with open('../../data/input.5.txt', 'r') as fh:
+    with open('../../../data/2015/input.5.txt', 'r') as fh:
         for line in fh.readlines():
             if naughty_or_nice_1(line):
                 nice_1 += 1
