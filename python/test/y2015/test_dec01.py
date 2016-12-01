@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import unittest
 
-import dec01
+from python.src.y2015 import dec01
 
 
 class Dec01Tests(unittest.TestCase):

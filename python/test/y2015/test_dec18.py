@@ -1,7 +1,8 @@
 __author__ = 'Anna'
 
 import unittest
-from python.src import dec18
+
+from python.src.y2015 import dec18
 
 
 class Dec18Tests(unittest.TestCase):

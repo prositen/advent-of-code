@@ -1,10 +1,10 @@
-from collections import defaultdict
 import random
+from collections import defaultdict
 
 __author__ = 'anna'
 
 import unittest
-from python.src import dec07
+from python.src.y2015 import dec07
 
 
 class Dec07Tests(unittest.TestCase):

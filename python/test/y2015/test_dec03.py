@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import unittest
 
-import dec03
+from python.src.y2015 import dec03
 
 __author__ = 'anna'
 
