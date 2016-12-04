@@ -70,7 +70,6 @@ class Designed(Keypad):
             self.num += 1
 
     def select(self):
-        print(self.num)
         self.code += self.CODE[self.num]
         return self.num
 

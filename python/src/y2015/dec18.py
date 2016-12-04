@@ -96,7 +96,7 @@ class CornerLitGrid(Grid):
 
 def step(grid, steps):
     for step in range(steps):
-        print("Running step", step)
+        # print("Running step", step)
         grid = grid.next()
     #print(grid)
     return(grid)

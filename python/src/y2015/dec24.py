@@ -26,11 +26,8 @@ def smallest_group(packages, number_of_groups):
             max_items_needed = index
             break
 
-    print("Smallest amount of items needed", min_items_needed)
-    print("Largest amount of items needed", max_items_needed)
     perms = set()
     for n in range(min_items_needed, max_items_needed):
-        print("Attempting with", n, "items")
         perms = set(filter(lambda x: sum(x) == weight, permutations(packages, n)))
         if len(perms):
             break
