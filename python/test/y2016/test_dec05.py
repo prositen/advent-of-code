@@ -6,7 +6,7 @@ from python.src.y2016 import dec05
 __author__ = 'anna'
 
 
-class Dec04Tests(unittest.TestCase):
+class Dec05Tests(unittest.TestCase):
     def setUp(self):
         pass
 
