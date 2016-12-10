@@ -34,5 +34,5 @@ class Dec07Tests(unittest.TestCase):
     def test_supports_ssl_4(self):
         self.assertTrue(dec07.ipv7_supports_ssl('zazbz[bzb]cdb'))
 
-    if __name__ == '__main__':
-        unittest.main()
+if __name__ == '__main__':
+    unittest.main()
