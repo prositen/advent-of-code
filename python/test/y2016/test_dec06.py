@@ -48,5 +48,5 @@ class Dec06Tests(unittest.TestCase):
                                                          'dvrsen',
                                                          'enarar']))
 
-    if __name__ == '__main__':
-        unittest.main()
+if __name__ == '__main__':
+    unittest.main()
