@@ -1,7 +1,6 @@
 from collections import deque
 from copy import deepcopy
-from enum import IntEnum
-from itertools import combinations, product
+from itertools import combinations
 
 
 class Item:
@@ -25,6 +24,10 @@ def filter_microchips(items):
 
 
 def pair(items):
+    """
+    :param items: Items on floor
+    :return (set of microchip/generator pairs, set of lone microchips, set of lone generators)
+    """
     generator_names = {x.name for x in filter_generators(items)}
     microchip_names = {x.name for x in filter_microchips(items)}
     paired = generator_names.intersection(microchip_names)
@@ -32,37 +35,37 @@ def pair(items):
     unpaired_generators = generator_names - paired
     return paired, unpaired_microchips, unpaired_generators
 
+
 def safe(items):
+    """"
+    Paired microchips are safe.
+    Unpaired microchips are killed if on the same floor / elevator
+    as a generator, whether or not the generator is paired
+    :param items: Items on floor
+    """
     paired, unpaired_microchips, unpaired_generators = pair(items)
     if len(paired) + len(unpaired_generators) == 0 or len(unpaired_microchips) == 0:
         return True
-
-class Floor(IntEnum):
-    ELEVATOR = 0
-    FLOOR_1 = 1
-    FLOOR_2 = 2
-    FLOOR_3 = 3
-    FLOOR_4 = 4
 
 
 class Configuration:
     def __init__(self, items=None, elevator_floor=None, previous_step=None):
         if previous_step:
             self.items = deepcopy(previous_step.items)
-            self.elevator_floor = previous_step.elevator
+            self.elevator_floor = previous_step.elevator_floor
         else:
             if items:
                 self.items = deepcopy(items)
             else:
                 self.items = [None] * 5
-        if elevator_floor:
+        if elevator_floor is not None:
             self.elevator_floor = elevator_floor
 
     def floor(self, num):
         return self.items[num]
 
     def elevator(self):
-        return self.items[Floor.ELEVATOR]
+        return self.items[0]
 
     def configuration_key(self):
         """ Two configurations are congruent if they have the same
@@ -75,13 +78,15 @@ class Configuration:
         """
         no_floors = len(self.items)
         paired = self.__pair()
-        return self.elevator_floor, frozenset([(floor, len(paired[floor][0]), len(paired[floor][1]), len(paired[floor][2]))
-                                     for floor in range(no_floors)])
+        return "{0}:{1}".format(self.elevator_floor, ",".join("{0}.{1}.{2}.{3}.".format(floor,
+                                                                                        len(paired[floor][0]),
+                                                                                        len(paired[floor][1]),
+                                                                                        len(paired[floor][2]))
+                                                              for floor in range(no_floors)))
 
     def is_safe(self):
         """" Paired microchips are safe. Unpaired microchips are killed if on the same floor / elevator
         as a generator, whether or not the generator is paired """
-
         return all(safe(x) for x in self.items)
 
     def is_done(self):
@@ -100,75 +105,119 @@ class Configuration:
 
     def get_moves(self):
         moves = list()
-        items = self.floor(self.elevator_floor)
-        to_elevator = [x for x in items] + list(combinations(items, 2))
-        next_floor = list()
-        if self.elevator_floor > Floor.FLOOR_1:
-            next_floor.append(self.elevator_floor - 1)
-        if self.elevator_floor < Floor.FLOOR_4:
-            next_floor.append(self.elevator_floor + 1)
+        items = self.items[self.elevator_floor]
+        possible_moves = list()
+        if self.elevator_floor < 3:
+            # Prioritize moving 2 items up, then moving 1 item up
+            floor = self.elevator_floor + 1
+            possible_moves.extend((floor, item_pair) for item_pair in combinations(items, 2))
+            possible_moves.extend((floor, [item]) for item in items)
 
-        # print([x for x in product(next_floor, to_elevator)])
-        for floor, items in product(next_floor, to_elevator):
+        if self.elevator_floor > 0:
+            # Don't move items back down if all lower floors are empty
+            items_on_lower_floor = sum(len(x) for x in self.items[:self.elevator_floor])
+            if items_on_lower_floor > 0:
+                # Prioritize moving one item down, then moving 2 items down
+                floor = self.elevator_floor - 1
+                possible_moves.extend((floor, [item]) for item in items)
+                possible_moves.extend((floor, item_pair) for item_pair in combinations(items, 2))
+
+        for floor, items in possible_moves:
             next_config = Configuration(previous_step=self, elevator_floor=floor)
-            print("Move ", items, "from floor", self.elevator_floor, "to floor", floor)
+            # print("Move ", items, "from floor", self.elevator_floor, "to floor", floor)
             next_config.move(items, from_floor=self.elevator_floor, to_floor=floor)
             if next_config.is_safe():
                 moves.append(next_config)
-                print("safe")
-            else:
-                print(next_config.items)
-                print("unsafe")
 
         return moves
 
+    def __repr__(self):
+        r = []
+        for floor, items in enumerate(self.items[::-1]):
+            floor = 4 - floor
+            r.append("F{0} {1} {2}".format(floor, 'E' if self.elevator_floor == floor else ' ',
+                                           ', '.join(str(item) for item in items)))
+        return "\n".join(r)
+
 
 class Factory:
-    def __init__(self, instructions):
-        self.visited = dict()
+    def __init__(self, instructions, extra_items=None):
         self.steps = list()
-        self.configurations = dict()
+        self.configurations = set()
         self.start_configuration = None
-        self.parse(instructions)
+        self.parse(instructions, extra_items)
 
-    def parse(self, instructions):
-        """ A really ugly parser """
-        floor_list = [None] * 5
-        floor_list[0] = list()
+    def parse(self, instructions, extra_items):
+        """ This ugly parser caused me hours of extra work. Time well spent.
+        :param instructions:
+        :param extra_items: Extra items not included in the directions
+        """
+        if not extra_items:
+            extra_items = dict()
+        floor_list = [None] * 4
         for floor, i in enumerate(instructions):
-            floor += 1
             items = i.split(' a ')
             floor_list[floor] = list()
             for item in items[1:]:
                 space_split = item.split(' ')
                 item_name = space_split[0].split('-')[0]
-                item_type = space_split[1]
-                if item_type[-1] == '.':
-                    item_type = item_type[:-1]
+                item_type = space_split[1].rstrip().rstrip('.,')
                 floor_list[floor].append(Item(item_name, item_type))
-                # print(floor, floor_list[floor])
-        self.start_configuration = Configuration(items=floor_list, elevator_floor=1)
+            if floor in extra_items:
+                floor_list[floor].extend(extra_items[floor])
+
+        self.start_configuration = Configuration(items=floor_list, elevator_floor=0)
+        self.configurations.add(self.start_configuration.configuration_key())
 
     def run(self):
+        """
+        A lovely BFS of the configuration space.
+        Don't revisit nodes, or nodes congruent to the ones already visited.
+        """
         visit = deque()
         paths = list()
-        visit.extend([(self.start_configuration, next_move, []) for next_move in self.start_configuration.get_moves()])
+        root = (self.start_configuration, [])
+        visit.append(root)
         while visit:
-            prev_state, move, moves = visit.popleft()
-            key = move.configuration_key()
-            if key in self.configurations:
-                print("skipped", move)
-                continue
-            print("run", prev_state, move, moves)
-            current_state = move
+            current_state, moves = visit.popleft()
             if current_state.is_done():
-                paths.append(moves)
+                paths.append(moves + [current_state])
             else:
-                visit.extend((current_state, next_move, moves + [prev_state]) for next_move in current_state.get_moves())
-        print(paths)
+                not_seen_children = list()
+                for state in current_state.get_moves():
+                    if state.configuration_key() not in self.configurations:
+                        not_seen_children.append((state, moves + [current_state]))
+                        self.configurations.add(state.configuration_key())
+                visit.extend(not_seen_children)
+
+        self.steps = min(paths, key=len) if paths else []
+
+    @staticmethod
+    def dump_path(path):
+        print('-' * 50)
+        for step, config in enumerate(path):
+            print("Step ", step + 1)
+            print(config)
 
     def minimum_steps(self):
-        pass
+        return len(self.steps[1:])
 
-    def steps(self):
-        pass
+    def get_steps(self):
+        return self.steps
+
+
+if __name__ == '__main__':
+    with open('../../../data/2016/input.11.txt', 'r') as fh:
+        start_setup = fh.readlines()
+
+    factory = Factory(start_setup)
+    factory.run()
+    print("Part 1: Minimum number of steps", factory.minimum_steps())
+
+    factory_b = Factory(start_setup, extra_items={0: [Item('elerium', 'generator'),
+                                                      Item('elerium', 'microchip'),
+                                                      Item('dilithium', 'generator'),
+                                                      Item('dilithium', 'microchip')]})
+    factory_b.run()
+    print("Part 2: Minimum number of steps", factory_b.minimum_steps())
+
