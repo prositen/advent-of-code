@@ -175,13 +175,14 @@ class Factory:
         Don't revisit nodes, or nodes congruent to the ones already visited.
         """
         visit = deque()
-        paths = list()
         root = (self.start_configuration, [])
         visit.append(root)
         while visit:
             current_state, moves = visit.popleft()
             if current_state.is_done():
-                paths.append(moves + [current_state])
+                # Break at the first match; since we're using DFS we don't need to continue further.
+                self.steps = moves + [current_state]
+                return
             else:
                 not_seen_children = list()
                 for state in current_state.get_moves():
@@ -189,8 +190,6 @@ class Factory:
                         not_seen_children.append((state, moves + [current_state]))
                         self.configurations.add(state.configuration_key())
                 visit.extend(not_seen_children)
-
-        self.steps = min(paths, key=len) if paths else []
 
     @staticmethod
     def dump_path(path):
