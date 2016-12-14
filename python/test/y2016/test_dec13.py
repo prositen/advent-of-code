@@ -5,7 +5,6 @@ from python.src.y2016 import dec13
 
 
 class Dec13Tests(unittest.TestCase):
-    @unittest.skip
     def test_shortest_path_len(self):
         self.assertEquals(11, len(dec13.shortest_path(start=(1, 1), end=(7, 4), favorite_number=10)))
 
