@@ -7,9 +7,9 @@ def dragon_curve(code):
 
 def checksum(code):
     pairs = zip(code[::2], code[1::2])
-    _checksum = "".join("1" if a == b else "0" for a, b in pairs)
+    _checksum = [1 if a == b else 0 for a, b in pairs]
     if len(_checksum) % 2:
-        return _checksum
+        return ''.join(str(x) for x in _checksum)
     else:
         return checksum(_checksum)
 
