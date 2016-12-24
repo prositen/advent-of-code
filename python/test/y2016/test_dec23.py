@@ -16,9 +16,6 @@ class Dec23Tests(unittest.TestCase):
         self.computer = dec23.Computer(self.instructions)
 
     def test_assembunny(self):
-        with open('dump.txt', 'w') as fh:
-            print("Running", file=fh)
-
         self.computer.run()
         self.assertEquals(3,
                           self.computer.register('a'))

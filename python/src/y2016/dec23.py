@@ -76,6 +76,10 @@ class Assembunny2(dec12.Assembunny):
             p1 = context.registers[self.p1] if self.p1.isalpha else int(self.p1)
             p2 = context.registers[self.p2] if self.p2.isalpha else int(self.p2)
             context.registers[self.target] += p1 * p2
+            if self.p1.isalpha:
+                context.registers[self.p1] = 0
+            if self.p2.isalpha:
+                context.registers[self.p2] = 0
             context.pointer += 5
 
         def __repr__(self):
