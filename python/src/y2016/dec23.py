@@ -96,7 +96,7 @@ class Computer(dec12.Computer):
     def optimize(self):
         p = self.context.pointer
         # Check for multiplication
-        if p < len(self.context.instructions) + 5:
+        if p + 5 < len(self.context.instructions):
             mul = self.context.instructions[p:p + 5]
             if all([isinstance(mul[0], Assembunny2.Inc),
                     isinstance(mul[1], Assembunny2.Dec),
