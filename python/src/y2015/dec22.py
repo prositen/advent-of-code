@@ -40,7 +40,8 @@ class Spell(object):
         return "Player casts {0}.".format(self.name)
 
     def expire(self, player):
-        return "{0} wears off".format(self.name)
+        if self.turns is not None:
+            return "{0} wears off.".format(self.name)
 
     def __eq__(self, other):
         return self.name == other.name
@@ -76,15 +77,17 @@ class Shield(Spell):
     turns = 6
 
     def run(self, player, boss):
-        player.armor = 7
         self.turns -= 1
+        if self.turns == 0:
+            player.armor = 0
         return "Shield's timer is now {0}".format(self.turns)
 
     def expire(self, player):
-        player.armor = 0
+
         return super(Shield, self).expire(player)[:-1] + ", decreasing armor by 7."
 
     def cast(self, player, boss):
+        player.armor = 7
         return super(Shield, self).cast(player, boss)[:-1] + ", increasing armor by 7."
 
 
@@ -110,165 +113,155 @@ class Recharge(Spell):
         return "Recharge provides 101 mana; its timer is now {0}.".format(self.turns)
 
 
-SPELLS = [MagicMissile, Drain, Shield, Poison, Recharge]
+class Hardmode(Spell):
+    name = "Hard"
+
+    def run(self, player, boss):
+        player.hp -= 1
+        return "Player takes 1 in damage due to hard mode"
+
+
+SPELLS = [Shield, Recharge, Poison, Drain, MagicMissile]
 
 
 class Turn(object):
-    def __init__(self, player, boss):
+    def __init__(self, player, boss, hard):
         self.player = player
         self.boss = boss
-        self.effects = []
-        self.player_messages = []
-        self.boss_messages = []
-        self.player_status = []
-        self.boss_status = []
+        self.effects = None
+        self.game_id = 0
+        self.hard = hard
+
+    nid = 0
 
     @staticmethod
-    def from_turn(turn):
-        new_turn = deepcopy(turn)
-        new_turn.player_messages = []
-        new_turn.boss_messages = []
-        new_turn.player.armor = 0
-        return new_turn
+    def next_id():
+        Turn.nid += 1
+        return Turn.nid
+
+    gid = 0
+
+    @staticmethod
+    def next_game_id():
+        Turn.gid += 1
+        return Turn.gid
 
     def next_moves(self):
         moves = []
+        if self.effects is None:
+            self.effects = []
         for spell in SPELLS:
-            if spell not in self.effects and self.player.mana > spell.mana:
-                move = Turn.from_turn(self)
+            can_afford = self.player.mana >= spell.mana
+
+            if spell in self.effects:
+                not_running = self.effects[self.effects.index(spell)].turns == 1
+            else:
+                not_running = True
+
+            if not_running and can_afford:
+                move = deepcopy(self)
                 move.effects.append(spell())
                 moves.append(move)
         return moves
 
-    def run_player(self):
-        to_cast = self.effects[-1]
+    def debug_print(self, message):
+        if fh:
+            print(message, file=fh)
 
-        for spell in self.effects[:-1]:
-            self.player_messages.append(spell.run(self.player, self.boss))
-            if self.boss.dead():
-                self.player_messages.append("This kills the boss, and the player wins")
+    def run(self):
+        self.status("Player")
+
+        if self.hard:
+            hurt = Hardmode()
+            self.debug_print(hurt.run(self.player, self.boss))
+            if self.player.dead():
+                self.debug_print("This kills the player, and the boss wins")
                 return
 
-        self.player_status = self.status("Player")
-        self.player_messages.append(self.player.cast(to_cast, self.boss))
+        to_cast = self.effects[-1]
+        for spell in self.effects[:-1]:
+            self.debug_print(spell.run(self.player, self.boss))
+            if self.boss.dead():
+                self.debug_print("This kills the boss, and the player wins")
+                return
+
+        self.debug_print(self.player.cast(to_cast, self.boss))
         if self.boss.dead():
-            self.player_messages.append("This kills the boss, and the player wins")
-        else:
-            self.update_spells(True)
+            self.debug_print("This kills the boss, and the player wins")
+            return
 
-    def update_spells(self, player):
-        new_effects = []
+        self.update_spells()
+
+        self.status("Boss")
+
         for spell in self.effects:
-            if spell.turns is not None:
-                if spell.turns > 0:
-                    new_effects.append(spell)
-                else:
-                    message = spell.expire(self.player)
-                    if player:
-                        self.player_messages.append(message)
-                    else:
-                        self.boss_messages.append(message)
-        self.effects = new_effects
+            self.debug_print(spell.run(self.player, self.boss))
 
-    def status(self, header):
-        return ["-- {0} turn --".format(header),
-                "- Player has {0} hit points, {1} armor, {2} mana".format(self.player.hp,
-                                                                          self.player.armor,
-                                                                          self.player.mana),
-                "- Boss has {0} hit points".format(self.boss.hp)]
-
-    def run_boss(self):
-        self.boss_status = self.status("Boss")
-        for spell in self.effects:
-            self.boss_messages.append(spell.run(self.player, self.boss))
-        self.update_spells(False)
+        self.update_spells()
         if self.boss.dead():
-            self.boss_messages.append("This kills the boss, and the player wins")
+            self.debug_print("This kills the boss, and the player wins")
         else:
             damage = max(1, self.boss.damage - self.player.armor)
             self.player.hp -= damage
             if damage < self.boss.damage:
-                self.boss_messages.append("Boss attacks for {0} - {1} = {2} damage.".format(self.boss.damage,
-                                                                                            self.player.armor,
-                                                                                            damage))
+                self.debug_print("Boss attacks for {0} - {1} = {2} damage.".format(self.boss.damage,
+                                                                                   self.player.armor,
+                                                                                   damage))
             else:
-                self.boss_messages.append("Boss attacks for {0} damage.".format(self.boss.damage))
+                self.debug_print("Boss attacks for {0} damage.".format(self.boss.damage))
             if self.player.dead():
-                self.boss_messages.append("This kills the player, and the boss wins.")
+                self.debug_print("This kills the player, and the boss wins.")
 
-    def message(self, player):
-        if player:
-            return self.player_messages
-        else:
-            return self.boss_messages
+    def update_spells(self):
+        new_effects = []
+        for spell in self.effects:
+            if spell.turns:
+                new_effects.append(spell)
+            else:
+                self.debug_print(spell.expire(self.player))
+        self.debug_print("Effects: {}".format(", ".join(spell.name for spell in self.effects)))
+        self.effects = new_effects
 
-    def replay(self):
-        r = self.player_status
-        r.extend(self.message(True))
-        r.extend(self.boss_status)
-        r.extend(self.message(False))
-        return r
-
-
-class Game(object):
-    def __init__(self, path):
-        self.path = path
-        self.last_move = path[-1]
-
-    def __len__(self):
-        return len(self.path)
-
-    def round(self, no):
-        return self.path[no - 1]
-
-    def winner(self):
-        return self.last_move.player if self.last_move.boss.dead() else self.last_move.boss
-
-    def cost(self):
-        return self.last_move.player.spent
-
-    def replay(self):
-        r = ["Total spend: {}".format(self.cost()),
-             '-' * 50]
-        for x in self.path:
-            r.extend(x.replay())
-        r.append('-' * 50)
-        return r
+    def status(self, header):
+        if fh:
+            print("-- {0} turn {1}--".format(header, self.game_id), file=fh)
+            print("- Player has {0} hit points, {1} armor, {2} mana".format(self.player.hp,
+                                                                            self.player.armor,
+                                                                            self.player.mana), file=fh)
+            print("- Boss has {0} hit points".format(self.boss.hp), file=fh)
 
 
-def play(player, boss):
+def play(player, boss, hard_mode=False):
     moves = deque()
-    moves.extend((next_move, []) for next_move in Turn(player, boss).next_moves())
+    moves.extend((next_move, 0) for next_move in Turn(player, boss, hard_mode).next_moves())
     games = []
+    cheapest_found = 999999
+
     while moves:
         move, path = moves.popleft()
-        next_path = path + [move]
-        move.run_player()
+        next_path = path + 1
+        move.run()
+        # print(len(moves), next_path, move.player.spent)
         if move.boss.dead() or move.player.dead():
-            games.append(Game(next_path))
+            if move.boss.dead():
+                games.append(move)
+                cheapest_found = min(cheapest_found, move.player.spent)
         else:
-            move.run_boss()
-            if move.boss.dead() or move.player.dead():
-                games.append(Game(next_path))
-            else:
-                next_moves = [(next_move, next_path) for next_move in move.next_moves()]
-                moves.extendleft(next_moves)
+            # DFS instead of BFS to decrease memory requirements. At least I'm pruning the search space
+            # a bit by only considering paths cheaper than the ones I've already found.
+            if move.player.spent < cheapest_found:
+                moves.extendleft([(next_move, next_path) for next_move in move.next_moves()][::-1])
 
-    winning_games = [game for game in games if game.winner().name == "Player"]
-    winning_games.sort(key=lambda x: x.cost())
+    return min(games, key=lambda x: x.player.spent)
 
-
-    with open('derp.txt', 'w') as fh:
-        for i, game in enumerate(games):
-            print("Game ", i, file=fh)
-            # print('\n'.join(game.replay()), file=fh)
-            print("Moves", len(game), file=fh)
-            print("Winner", game.winner().name, file=fh)
-
-    return winning_games[0]
-
+fh = None
 if __name__ == '__main__':
+
     winning_game = play(Character('Player', hp=50, mana=500),
                         Character('Boss', hp=71, damage=10))
-    print("Smallest mana cost is", winning_game.cost())
+    print("Part 1: Smallest mana cost is", winning_game.player.spent)
 
+    hard_winning_game = play(Character('Player', hp=50, mana=500),
+                             Character('Boss', hp=71, damage=10),
+                             hard_mode=True)
+    print("Part 2: Smallest mana cost is", hard_winning_game.player.spent)
