@@ -1,5 +1,8 @@
 import os
-from common import DATA_DIR
+
+from python.src.y2017.common import DATA_DIR
+
+
 def captcha_sum(number, halfway_sum=False):
     number = str(number)
     sum_doubles = 0

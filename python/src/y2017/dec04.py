@@ -1,6 +1,6 @@
 import os
 
-from common import DATA_DIR
+from python.src.y2017.common import DATA_DIR
 
 
 def valid_passphrases(puzzle_input, anagram=False):

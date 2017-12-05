@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 
-from common import DATA_DIR
+from python.src.y2017.common import DATA_DIR
 
 
 def minmax_checksum(lines):

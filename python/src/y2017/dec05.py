@@ -1,5 +1,7 @@
 import os
-from common import DATA_DIR
+
+from python.src.y2017.common import DATA_DIR
+
 
 def jump_offsets(offsets_original, strange_jumps=False):
     offsets = [x for x in offsets_original]
