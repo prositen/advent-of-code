@@ -1,3 +1,8 @@
+import os
+
+from python.src.y2017 import DATA_DIR
+
+
 def valid_passphrases(puzzle_input, anagram=False):
     return len(list(filter(lambda x: is_valid(x, anagram), puzzle_input)))
 
@@ -10,7 +15,7 @@ def is_valid(passphrase, anagram=False):
 
 
 if __name__ == '__main__':
-    with open('../../../data/2017/input.4.txt', 'r') as fh:
+    with open(os.path.join(DATA_DIR, 'input.4.txt', 'r')) as fh:
         puzzle_input = fh.readlines()
         print(len(puzzle_input))
         print("# of valid passphrases: {}".format(valid_passphrases(puzzle_input, False)))
