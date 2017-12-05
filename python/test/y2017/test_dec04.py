@@ -17,6 +17,7 @@ class TestDec04(unittest.TestCase):
                         ("a ab abc abd abf abj", True),
                         ("iiii oiii ooii oooi oooo", True),
                         ("oiii ioii iioi iiio", False)]
-        self.assertEqual(3, dec04.valid_anagram_passphrases([p[0] for p in puzzle_input]))
         for passphrase, valid in puzzle_input:
-            self.assertEqual(valid, dec04.is_valid_anagram(passphrase))
+            self.assertEqual(valid, dec04.is_valid(passphrase, anagram=True))
+        self.assertEqual(3, dec04.valid_passphrases([p[0] for p in puzzle_input],
+                                                    anagram=True))
