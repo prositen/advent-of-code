@@ -1,6 +1,6 @@
 import os
 
-from python.src.y2017 import DATA_DIR
+from common import DATA_DIR
 
 
 def valid_passphrases(puzzle_input, anagram=False):
@@ -15,9 +15,8 @@ def is_valid(passphrase, anagram=False):
 
 
 if __name__ == '__main__':
-    with open(os.path.join(DATA_DIR, 'input.4.txt', 'r')) as fh:
+    with open(os.path.join(DATA_DIR, 'input.4.txt')) as fh:
         puzzle_input = fh.readlines()
-        print(len(puzzle_input))
         print("# of valid passphrases: {}".format(valid_passphrases(puzzle_input, False)))
         print("# of valid anagram passhprases: {}".format(valid_passphrases(puzzle_input, True)))
 

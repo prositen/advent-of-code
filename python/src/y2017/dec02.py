@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 
-from python.src.y2017 import DATA_DIR
+from common import DATA_DIR
 
 
 def minmax_checksum(lines):
@@ -23,7 +23,7 @@ def evenly_divisible_checksum(lines):
 
 
 def main():
-    with open(os.path.join(DATA_DIR, 'input.2.txt', 'r')) as fh:
+    with open(os.path.join(DATA_DIR, 'input.2.txt')) as fh:
         lines = [list(map(int, line.split())) for line in fh.readlines()]
         print("Part 1:", minmax_checksum(lines))
         print("Part 2:", evenly_divisible_checksum(lines))

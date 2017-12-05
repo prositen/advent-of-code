@@ -1,8 +1,5 @@
 import os
-
-from python.src.y2017 import DATA_DIR
-
-
+from common import DATA_DIR
 def captcha_sum(number, halfway_sum=False):
     number = str(number)
     sum_doubles = 0
@@ -16,7 +13,7 @@ def captcha_sum(number, halfway_sum=False):
 
 
 if __name__ == '__main__':
-    with open(os.path.join(DATA_DIR, 'input.1.txt','r')) as fh:
+    with open(os.path.join(DATA_DIR, 'input.1.txt')) as fh:
         number = fh.read()
         print("Captcha sum: ", captcha_sum(number))
         print("Halfway sum: ", captcha_sum(number, halfway_sum=True))
