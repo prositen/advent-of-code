@@ -19,20 +19,18 @@ class Memory(object):
         self.banks[p] = 0
         for pos in range(p + 1, m + p + 1):
             self.banks[pos % len(self)] += 1
-        return str(self)
+        return tuple(self.banks)
 
     def steps_until_loop(self):
         seen_before = set()
-        steps = 0
-        state = str(self)
+        state = tuple(self.banks)
         while state not in seen_before:
-            steps += 1
             seen_before.add(state)
             state = self.redistribute()
-        return steps
+        return len(seen_before)
 
     def loop_size(self):
-        state = str(self)
+        state = tuple(self.banks)
         steps = 0
         while state != self.redistribute():
             steps += 1
