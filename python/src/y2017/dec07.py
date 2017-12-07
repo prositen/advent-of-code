@@ -4,13 +4,9 @@ from collections import deque
 from python.src.y2017.common import DATA_DIR
 
 """ 
-RecursiveCircus contains my first solution which builds up the entire tree and does unspeakable things with it
+RecursiveCircus builds up the entire tree and does unspeakable things with it. 
 
-My second attempt is SmallerCircus which only looks at the individual nodes (ok ok and their children, but nothing
-deeper than that)
-
-I should also try looking at some existing graph libraries to get a feeling of what they can do. Later, perhaps.
-
+I should really look at a graph library to do the actual tree building instead of hacking like this...
 """
 
 
@@ -21,9 +17,6 @@ class Node(object):
         self.children = children
         self.children_weights = dict()
         self.total_weight = weight
-
-    def set_children(self, children):
-        self.children = children
 
     def __repr__(self):
         return "{0} ({1}) -> {2}".format(self.name, self.weight, self.children)
@@ -40,9 +33,9 @@ class Node(object):
 
 
 class RecursiveCircus(object):
-
     def __init__(self, puzzle_input):
         self.towers = list()
+        self.root = None
         for line in puzzle_input:
             name, weight, parents = self.parse_line(line)
             self.towers.append(Node(name, weight, parents))
@@ -59,18 +52,20 @@ class RecursiveCircus(object):
         return name, weight, parents
 
     def find_bottom_program(self):
-        towers = dict()
-        root = dict()
-        for tower in self.towers:
-            towers[tower.name] = tower
-            root[tower.name] = tower
+        if not self.root:
 
-        for node in towers.values():
-            node.children = [towers[c] for c in node.children]
-            for x in node.children:
-                root.pop(x.name, None)
+            towers = dict()
+            root = dict()
+            for tower in self.towers:
+                towers[tower.name] = tower
+                root[tower.name] = tower
 
-        return list(root.values())[0]
+            for node in towers.values():
+                node.children = [towers[c] for c in node.children]
+                for x in node.children:
+                    root.pop(x.name, None)
+            self.root = list(root.values())[0]
+        return self.root
 
     def get_weights(self, node, weight_above):
         for x in node.children:
@@ -97,24 +92,11 @@ class RecursiveCircus(object):
         return self.get_rebalanced_weight(node, node.total_weight)
 
 
-class SmallerCircus(RecursiveCircus):
-
-    def find_bottom_program(self):
-        """
-        Start with the name of all programs, and subtract the names appearing as "children"
-        (or "parents" depending on which way you look at it)
-        """
-        return list(set(t.name for t in self.towers) - set(t for c in self.towers for t in c.children))[0]
-
-    def _balance_weights(self):
-        programs = {p.name: p for p in self.towers}
-        for x,v in programs.items():
-            print(x, v)
-
 def main():
     with open(os.path.join(DATA_DIR, 'input.7.txt')) as fh:
         puzzle_input = fh.readlines()
-    rc = SmallerCircus(puzzle_input)
+
+    rc = RecursiveCircus(puzzle_input)
     root = rc.find_bottom_program()
     print("Root is", root.name)
     print("Changed weight is", rc.balance_weights())

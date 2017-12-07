@@ -23,17 +23,9 @@ class TestDec07(unittest.TestCase):
     def test_find_bottom_program(self):
         rc = dec07.RecursiveCircus(self.puzzle_input)
         root = rc.find_bottom_program()
+        dec07.Node.print_tree(root)
         self.assertEqual('tknk', root.name)
 
     def test_get_rebalanced_weight(self):
         rc = dec07.RecursiveCircus(self.puzzle_input)
         self.assertEqual(60, rc.balance_weights()[0])
-
-    def test_smaller_circus_bottom_program(self):
-        sc = dec07.SmallerCircus(self.puzzle_input)
-        root = sc.find_bottom_program()
-        self.assertEqual('tknk', root)
-
-    def test_et_smaller_circus_rebalanced_weight(self):
-        sc = dec07.SmallerCircus(self.puzzle_input)
-        self.assertEqual(60, sc.balance_weights()[0])
