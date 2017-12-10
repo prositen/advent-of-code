@@ -83,7 +83,6 @@ def main():
 
     context = Context(puzzle_input)
     context.run()
-    context.pp()
     print("Max value after program run:", context.max())
     print("All time max:", context.all_time_max)
 
