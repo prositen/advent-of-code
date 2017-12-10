@@ -9,15 +9,20 @@ skip_size = 0
 
 
 class KnotHash(object):
-    def __init__(self, lengths, list_length=256, input_is_bytes=True):
+    def __init__(self, lengths, list_length):
         self.values = list(range(list_length))
-        if input_is_bytes:
-            self.lengths = [ord(x) for x in lengths] + [17, 31, 73, 47, 23]
-        else:
-            self.lengths = map(int, lengths.split(','))
+        self.lengths = lengths
         self.pos = 0
         self.skip_size = 0
         self.list_length = list_length
+
+    @staticmethod
+    def from_string_input(puzzle_input, list_length):
+        return KnotHash(lengths=map(int, puzzle_input.split(',')), list_length=list_length)
+
+    @staticmethod
+    def from_bytes_input(puzzle_input):
+        return KnotHash(lengths=[ord(x) for x in puzzle_input] + [17, 31, 73, 47, 23], list_length=256)
 
     def round(self):
         for l in self.lengths:
@@ -50,13 +55,13 @@ def main():
     with open(os.path.join(DATA_DIR, 'input.10.txt')) as fh:
         puzzle_input = fh.read()
 
-    part_1 = KnotHash(puzzle_input, input_is_bytes=False)
+    part_1 = KnotHash.from_string_input(puzzle_input, 256)
     part_1.round()
-    print(part_1.check_first_two())
+    print("Part 1:", part_1.check_first_two())
 
-    part_2 = KnotHash(puzzle_input)
+    part_2 = KnotHash.from_bytes_input(puzzle_input)
     part_2.run()
-    print(part_2.checksum())
+    print("Part 2:", part_2.checksum())
 
 
 if __name__ == '__main__':
