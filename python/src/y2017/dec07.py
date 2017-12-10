@@ -67,9 +67,9 @@ class RecursiveCircus(object):
             self.root = list(root.values())[0]
         return self.root
 
-    def get_weights(self, node, weight_above):
+    def get_weights(self, node):
         for x in node.children:
-            w = self.get_weights(x, weight_above + node.weight)
+            w = self.get_weights(x)
             if w not in node.children_weights:
                 node.children_weights[w] = []
             node.children_weights[w].append(x)
@@ -88,7 +88,7 @@ class RecursiveCircus(object):
 
     def balance_weights(self):
         node = self.find_bottom_program()
-        self.get_weights(node, 0)
+        self.get_weights(node)
         return self.get_rebalanced_weight(node, node.total_weight)
 
 
