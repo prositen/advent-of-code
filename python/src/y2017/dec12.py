@@ -20,17 +20,22 @@ def find_groups(puzzle_input):
     return programs
 
 
+def count_groups(groups):
+    s = set()
+    for e in groups.values():
+        s.add(",".join(str(x) for x in sorted(e)))
+
+    return len(s)
+
+
 def main():
     with open(os.path.join(DATA_DIR, 'input.12.txt')) as fh:
         puzzle_input = fh.readlines()
 
     groups = find_groups(puzzle_input)
-    s = set()
-    for e in groups.values():
-        s.add(",".join(str(x) for x in sorted(e)))
 
     print("Part 1:", len(groups.get(0)))
-    print("Part 2:", len(s))
+    print("Part 2:", count_groups(groups))
 
 
 if __name__ == '__main__':
