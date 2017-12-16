@@ -25,36 +25,24 @@ class Judge(object):
         return self.count
 
 
-def part_1():
-    a_start = 289
-    b_start = 629
-    steps = 40000000
+def run(mul_a, mul_b, steps):
+    factor_a = 16807
+    factor_b = 48271
+    start_value_a = 289
+    start_value_b = 629
 
-    A = Generator(16807, a_start, 1)
-    B = Generator(48271, b_start, 1)
+    gen_a = Generator(factor_a, start_value_a, mul_a)
+    gen_b = Generator(factor_b, start_value_b, mul_b)
 
-    j = Judge(A, B)
+    j = Judge(gen_a, gen_b)
     j.run(steps)
 
-    return j.count
-
-
-def part_2():
-    a_start = 289
-    b_start = 629
-    steps = 5000000
-
-    A = Generator(16807, a_start, 4)
-    B = Generator(48271, b_start, 8)
-
-    j = Judge(A, B)
-    j.run(steps)
     return j.count
 
 
 def main():
-    print("Part 1:", part_1())
-    print("Part 2:", part_2())
+    for mul_a, mul_b, steps in (1, 1, 40000000), (4, 8, 5000000):
+        print("Part {}:".format(mul_b // mul_a), run(mul_a, mul_b, steps))
 
 
 if __name__ == '__main__':
