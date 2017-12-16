@@ -1,10 +1,8 @@
-from python.src.y2017.dec10 import KnotHash
-
 class Generator(object):
-    def __init__(self, factor, start_value, multiplier=1):
+    def __init__(self, factor, start, multiplier=1):
         self.factor = factor
         self.reminder = 2147483647
-        self.value = start_value
+        self.value = start
         self.multiplier = multiplier
 
     def next_value(self):
@@ -13,8 +11,8 @@ class Generator(object):
             if self.value % self.multiplier == 0:
                 yield self.value & 0xFFFF
 
-class Judge(object):
 
+class Judge(object):
     def __init__(self, gen_A, gen_B):
         self.gen_A = gen_A
         self.gen_B = gen_B
@@ -26,23 +24,38 @@ class Judge(object):
                 self.count += 1
         return self.count
 
-def main():
-    #a_start = 289
-    #b_start = 629
-    steps=40000000
-    a_start = 65
-    b_start = 8921
-    # steps = 5000000
 
+def part_1():
+    a_start = 289
+    b_start = 629
+    steps = 40000000
 
     A = Generator(16807, a_start, 1)
     B = Generator(48271, b_start, 1)
 
     j = Judge(A, B)
-    j.debug = True
     j.run(steps)
 
-    print(j.count)
+    return j.count
+
+
+def part_2():
+    a_start = 289
+    b_start = 629
+    steps = 5000000
+
+    A = Generator(16807, a_start, 4)
+    B = Generator(48271, b_start, 8)
+
+    j = Judge(A, B)
+    j.run(steps)
+    return j.count
+
+
+def main():
+    print("Part 1:", part_1())
+    print("Part 2:", part_2())
+
 
 if __name__ == '__main__':
     main()
