@@ -1,7 +1,6 @@
 import os
 
 from python.src.y2017.common import DATA_DIR
-import re
 
 
 class Instruction(object):
