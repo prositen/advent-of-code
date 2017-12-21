@@ -2,71 +2,41 @@ import os
 
 from python.src.y2017.common import DATA_DIR
 
+
 class Routing(object):
+    DIRS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 
     def __init__(self, puzzle_input):
         self.diagram = puzzle_input
         self.path = []
-        self.pos = (0,0)
-        self.d = (1,0)
+        self.pos = (0, 0)
+        self.d = (1, 0)
         self.steps = 0
         self.max_x = len(self.diagram[0])
         self.max_y = len(self.diagram)
 
-    def walk_left_right(self):
-        aa = self.diagram[self.pos[0]][self.pos[1]]
-        while aa in ('|', '-'):
-            self.pos = self.pos[0] + self.d[0], self.pos[1] + self.d[1]
-            self.steps += 1
-            aa = self.diagram[self.pos[0]][self.pos[1]]
-        if aa == '+':
-            if self.pos[0] > 0 and self.diagram[self.pos[0]-1][self.pos[1]] != ' ':
-                self.pos = self.pos[0] - 1, self.pos[1]
-                self.d = (-1, 0)
+    def walk(self):
+        while True:
+            aa = self.square()
+            while aa in ('|', '-'):
+                self.move()
+                aa = self.square()
+            if aa == '+':
+                for direction in self.DIRS:
+                    if direction != (-self.d[0], -self.d[1]) and self.square(dy=direction[0], dx=direction[1]) != ' ':
+                        self.d = direction
+                        self.move()
+                        break
+            elif aa.isalpha():
+                self.path.append(aa)
+                self.move()
+                self.walk()
             else:
-                self.pos = self.pos[0] + 1, self.pos[1]
-                self.d = (1, 0)
-            self.steps += 1
-            return self.walk_up_down()
-        elif aa.isalpha():
-            self.steps += 1
-            self.path.append(aa)
-            self.pos = self.pos[0] + self.d[0], self.pos[1] + self.d[1]
-            return self.walk_left_right()
-        else:
-            return "".join(self.path)
-
-    def walk_up_down(self):
-        aa = self.diagram[self.pos[0]][self.pos[1]]
-        while aa in ('|', '-'):
-            self.pos = self.pos[0] + self.d[0], self.pos[1] + self.d[1]
-            self.steps += 1
-            aa = self.diagram[self.pos[0]][self.pos[1]]
-        if aa == '+':
-            if self.pos[1] > 0 and self.diagram[self.pos[0]][self.pos[1]-1] != ' ':
-                self.pos = self.pos[0], self.pos[1] - 1
-                self.d = (0, -1)
-            else:
-                self.pos = self.pos[0], self.pos[1] + 1
-                self.d = (0, 1)
-            self.steps += 1
-            return self.walk_left_right()
-        elif aa.isalpha():
-            self.steps += 1
-            self.path.append(aa)
-            self.pos = self.pos[0] + self.d[0], self.pos[1] + self.d[1]
-            return self.walk_up_down()
-        else:
-            return "".join(self.path)
-    #def walk(self):
-    #    aa = self.square()
-    #    while aa in ('|', '-'):
-    #        self.move()
-    #        self.steps += 1
-    #    if aa == '+'
+                return
 
     def move(self):
         self.pos = self.pos[0] + self.d[0], self.pos[1] + self.d[1]
+        self.steps += 1
 
     def square(self, dy=0, dx=0):
         y = self.pos[0] + dy
@@ -76,29 +46,23 @@ class Routing(object):
         else:
             return ' '
 
-
     def part_1(self):
         self.pos = (0, self.diagram[0].index('|'))
-        self.d = (1,0)
-        return self.walk_up_down()
+        self.walk()
+        return "".join(self.path)
 
     def part_2(self):
         return self.steps
+
+
 def main():
     with open(os.path.join(DATA_DIR, 'input.19.txt')) as fh:
-        puzzle_input = ["{:205}".format(line) for line in fh.readlines()]
-    """
-    puzzle_input = [
-        "     |          ",
-        "     |  +--+    ",
-        "     A  |  C    ",
-        " F---|----E|--+ ",
-        "     |  |  |  D ",
-        "     +B-+  +--+ "]
-    """
+        puzzle_input = fh.readlines()
+
     r = Routing(puzzle_input)
     print("Part 1:", r.part_1())
     print("Part 2:", r.part_2())
+
 
 if __name__ == '__main__':
     main()
