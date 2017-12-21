@@ -25,6 +25,9 @@ class Vector(object):
     def __repr__(self):
         return "<{},{},{}>".format(self.x, self.y, self.z)
 
+    def hash(self):
+        return self.x, self.y, self.z
+
 
 class Particle(object):
     def __init__(self, p1, p2, p3, v1, v2, v3, a1, a2, a3):
@@ -51,8 +54,10 @@ class Swarm(object):
         self.particles = [self.parse_line(line) for line in puzzle_input]
         for i, p in enumerate(self.particles):
             p.number = i
+        self.tick_count = 0
 
-    def parse_line(self, line):
+    @staticmethod
+    def parse_line(line):
         r = re.match(re_VECTOR, line)
         if r:
             g = [int(x) for x in r.groups()]
@@ -65,12 +70,13 @@ class Swarm(object):
         to_remove = []
         for i, p in enumerate(self.particles):
             p.update()
-            if str(p.p) in positions:
-                to_remove.append(i)
-                to_remove.append(positions[str(p.p)])
-            positions[str(p.p)] = i
+            hp = str(p.p)
+            if hp in positions:
+                to_remove += [i, positions[hp]]
+            positions[hp] = i
         if collide:
             self.particles = [p for i, p in enumerate(self.particles) if i not in to_remove]
+        self.tick_count += 1
 
     def __len__(self):
         return len(self.particles)
@@ -78,41 +84,36 @@ class Swarm(object):
     def distances(self):
         return [x.number for x in sorted(self.particles, key=lambda x: x.distance())]
 
+    def get_closest(self):
+        closest = self.distances()
+        while self.tick_count < 2:
+            prev_closest = closest
+            self.tick()
+            closest = self.distances()
+            if prev_closest != closest:
+                self.tick_count = 0
+        return closest[0]
+
+    def get_particle_count(self):
+        particle_count = len(self)
+        while self.tick_count < 10:
+            self.tick(collide=True)
+            last_count = particle_count
+            particle_count = len(self)
+            if particle_count != last_count:
+                self.tick_count = 0
+        return particle_count
+
 
 def main():
     with open(os.path.join(DATA_DIR, 'input.20.txt')) as fh:
         puzzle_input = fh.readlines()
-    # puzzle_input = ["p=<3,0,0>, v=<2,0,0>, a=<-1,0,0>",
-    #                "p=<4,0,0>, v=<0,0,0>, a=<-2,0,0>"]
-    """
-    puzzle_input = ["p=<-6,0,0>, v=< 3,0,0>, a=< 0,0,0>",
-                    "p=<-4,0,0>, v=< 2,0,0>, a=< 0,0,0>",
-                    "p=<-2,0,0>, v=< 1,0,0>, a=< 0,0,0>",
-                    "p=< 3,0,0>, v=<-1,0,0>, a=< 0,0,0>"
-                    ]
-    """
-    s = Swarm(puzzle_input)
-
-    prev_closest, closest = -1, 0
-    while prev_closest != closest:
-        prev_closest = closest
-        s.tick()
-        closest = s.distances()
-    print("Part 1:", closest[0])
 
     s = Swarm(puzzle_input)
-    particle_count = len(s)
-    tick_count = 0
-    while True:
-        s.tick(collide=True)
-        last_count = particle_count
-        particle_count = len(s)
-        if particle_count != last_count:
-            tick_count = 0
-        tick_count += 1
-        if tick_count > 30:
-            break
-    print("Part 2:", len(s.particles))
+    print("Part 1:", s.get_closest())
+
+    s = Swarm(puzzle_input)
+    print("Part 2:", s.get_particle_count())
 
 
 if __name__ == '__main__':
