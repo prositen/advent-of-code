@@ -1,9 +1,5 @@
 import os
-from collections import defaultdict
-
 from python.src.y2017.common import DATA_DIR
-import re
-
 
 class Virus(object):
     DIRS = {
@@ -65,8 +61,10 @@ class Virus(object):
         for _ in range(count):
             self.work()
             self.walk()
+            if self.show:
+                self.pp()
 
-    def __init__(self, puzzle_input):
+    def __init__(self, puzzle_input, show=False):
         self.d = 'up'
         self.infect = 0
         self.grid = dict()
@@ -77,6 +75,7 @@ class Virus(object):
         self.ymax = len(puzzle_input)
         self.xmin = 0
         self.xmax = self.ymax
+        self.show = show
 
     def set_grid(self, puzzle_input):
         for ri, r in enumerate(puzzle_input):
@@ -155,7 +154,7 @@ def main():
 
     v = EvolvedVirus(puzzle_input)
     v.step(10000000)
-    print("Part 2", v.infect)
+    print("Part 2: ", v.infect)
 
 
 if __name__ == '__main__':
