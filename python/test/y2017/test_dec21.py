@@ -11,7 +11,7 @@ class TestFractalArt(unittest.TestCase):
             ".#./..#/### => #..#/..../..../#..#"
         ]
 
-        FA = dec21.FractalArt2(puzzle_input)
+        FA = dec21.FractalArt(puzzle_input)
         for _ in range(2):
             FA.step()
         self.assertEqual(12, FA.lit_pixels())
