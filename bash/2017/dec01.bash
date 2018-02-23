@@ -18,10 +18,10 @@ function captcha() {
 			(( sum += cur_value))
 		fi
 	done
-	echo "$sum"
+	echo "${sum}"
 }
 
 
 value=$(read_file_to_var 2017 1)
-echo "Part 1: $(captcha $value part1)"
-echo "Part 2: $(captcha $value part2)"
+echo "Part 1: $(captcha ${value} part1)"
+echo "Part 2: $(captcha ${value} part2)"
