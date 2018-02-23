@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 source ./common.bash
-declare -a dec02_input
-read_file_to_arr 2017 2 dec02_input
 
 
 function corruption_checksum() {
@@ -46,7 +44,26 @@ function even_divisble_checksum() {
 }
 
 
-echo "Part 1: $(corruption_checksum)"
-echo "Part 2: $(even_divisble_checksum)"
+function dec02_test() {
+    dec02_input=("5 1   9   5" "7   5   3"  "2  4   6   8")
+    (( $(corruption_checksum) == 18 )) || return 1
+
+    dec02_input=("5 9   2   8" "9   4   7   3" "3   8   6   5")
+    (( $(even_divisble_checksum) == 9)) || return 1
+
+}
+
+function dec02_main() {
+    declare -a dec02_input
+    read_file_to_arr 2017 2 dec02_input
+
+    echo "Part 1: $(corruption_checksum)"
+    echo "Part 2: $(even_divisble_checksum)"
+}
 
 
+if [ "x$1" == "xtest" ]; then
+    dec02_test
+else
+    dec02_main
+fi
