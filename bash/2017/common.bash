@@ -32,3 +32,11 @@ function sort_arr() {
     read -r -a "$output" <<< "${sort_arr_OUT[*]}"
 }
 
+function abs() {
+    local input=$1
+    if [ ${input} -lt 0 ]; then
+        ((input = -input))
+    fi
+    echo "${input}"
+
+}

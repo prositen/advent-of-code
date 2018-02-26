@@ -18,11 +18,10 @@ function captcha() {
 			(( sum += cur_value))
 		fi
 	done
-	echo "$sum"
+	echo "${sum}"
 }
 
 function dec01_test() {
-
     # Part 1
     (( $(captcha 1122 part1) == 3 )) \
     &&  (( $(captcha 1111 part1) == 4 )) \
