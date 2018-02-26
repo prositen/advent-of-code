@@ -32,6 +32,17 @@ function sort_arr() {
     read -r -a "$output" <<< "${sort_arr_OUT[*]}"
 }
 
+function uniq_arr() {
+    local output=$1
+    shift
+    local uniq_arr_IN
+    read -r -a uniq_arr_IN <<< "$@"
+    local uniq_arr_OUT
+    IFS=$'\n' uniq_arr_OUT=($(sort -n <<< "${uniq_arr_IN[*]}" | uniq))
+    unset IFS
+    read -r -a "$output" <<< "${uniq_arr_OUT[*]}"
+
+}
 function abs() {
     local input=$1
     if [ ${input} -lt 0 ]; then
