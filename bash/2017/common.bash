@@ -43,6 +43,11 @@ function uniq_arr() {
     read -r -a "$output" <<< "${uniq_arr_OUT[*]}"
 
 }
+
+function sort_letters() {
+    echo $1 | grep -o . | sort | tr -d "\n"
+}
+
 function abs() {
     local input=$1
     if [ ${input} -lt 0 ]; then
