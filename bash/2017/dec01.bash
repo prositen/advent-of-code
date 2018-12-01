@@ -1,5 +1,5 @@
 #!/bin/bash
-source ./common.bash
+source ../common.bash
 
 
 function captcha() {
