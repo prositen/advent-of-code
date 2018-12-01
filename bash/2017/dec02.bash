@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source ./common.bash
+source ../common.bash
 
 
 function corruption_checksum() {

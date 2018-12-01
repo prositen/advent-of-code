@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source ./common.bash
+source ../common.bash
 function high_entropy_passphrases() {
     local valid_passphrases=0
     local uniq
