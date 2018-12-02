@@ -12,7 +12,6 @@ def box_checksum(boxes):
 
 
 def common_letters(boxes):
-    boxes = sorted(boxes)
     for i, this_box in enumerate(boxes[:-1]):
         for other_box in boxes[i+1:]:
             w = [a for a, b in zip(this_box, other_box) if a == b]
