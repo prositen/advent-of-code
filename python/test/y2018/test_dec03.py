@@ -3,7 +3,7 @@ import unittest
 from python.src.y2018 import dec03
 
 
-class TestDec01(unittest.TestCase):
+class TestDec03(unittest.TestCase):
 
     def setUp(self):
         claims = [
@@ -18,3 +18,30 @@ class TestDec01(unittest.TestCase):
 
     def test_no_overlaps(self):
         self.assertEqual(3, self.fabric.no_overlaps())
+
+
+class PrintFabric(dec03.Fabric):
+    def print(self):
+        """ Visualize the fabric with all the claims.
+
+        Each square inch is marked with either:
+            - the claim ID, if only one claim,
+            - x if more than one claim
+            - *claim_id* if this is the one non-overlapping claim.
+        """
+        id_width = len(str(max([c.id for c in self.claims]))) + 3
+        n_o = self.no_overlaps()
+        for y in range(1000):
+            line = []
+            for x in range(1000):
+                claims = self.fabric.get((y, x))
+                if not claims:
+                    marker = '.'
+                elif len(claims) == 1:
+                    marker = next(iter(claims))
+                    if marker == n_o:
+                        marker = '*{}*'.format(marker)
+                else:
+                    marker = 'x'
+                line.append('{marker:>{width}}'.format(marker=marker, width=id_width))
+            print(''.join(line))
