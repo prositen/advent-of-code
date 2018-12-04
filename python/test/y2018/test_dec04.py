@@ -25,9 +25,10 @@ class TestDec04(unittest.TestCase):
             "[1518-11-05 00:45] falls asleep",
             "[1518-11-05 00:55] wakes up"
         ]
+        self.day04 = dec04.Dec04(self.watch_notes)
 
     def test_sleep_strategy_1(self):
-        self.assertEqual(240, dec04.sleep_strategy_1(self.watch_notes))
+        self.assertEqual(240, self.day04.part_1())
 
     def test_sleep_strategy_2(self):
-        self.assertEqual(4455, dec04.sleep_strategy_2(self.watch_notes))
+        self.assertEqual(4455, self.day04.part_2())

@@ -14,7 +14,8 @@ class TestDec02(unittest.TestCase):
             "abcdee",
             "ababab"
         ]
-        self.assertEqual(12, dec02.box_checksum(boxes))
+        day2 = dec02.Day02(instructions=boxes)
+        self.assertEqual(12, day2.part_1())
 
     def test_common_letters(self):
         boxes = [
@@ -26,4 +27,5 @@ class TestDec02(unittest.TestCase):
             "axcye",
             "wvxyz"
         ]
-        self.assertEqual('fgij', dec02.common_letters(boxes))
+        day2 = dec02.Day02(instructions=boxes)
+        self.assertEqual('fgij', day2.part_2())

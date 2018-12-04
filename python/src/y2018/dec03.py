@@ -1,7 +1,7 @@
-import os
 import re
 from collections import defaultdict
-from python.src.y2018.common import DATA_DIR
+
+from python.src.common import Day
 
 
 class Claim(object):
@@ -14,30 +14,33 @@ class Claim(object):
         self.id, self.x, self.y, self.width, self.height = map(int, m.groups())
 
 
-class Fabric(object):
-
-    def __init__(self, claims):
-        self.claims = [Claim(row) for row in claims]
+class Dec03(Day):
+    def __init__(self, instructions=None):
+        super().__init__(2018, 3, instructions)
         self.fabric = defaultdict(list)
         self.claim()
+
+    @staticmethod
+    def parse_instructions(instructions):
+        return [Claim(row) for row in instructions]
 
     def claim(self):
         """
         Claim square inches by tagging them with the claim ID
         """
-        for claim in self.claims:
+        for claim in self.instructions:
             for x in range(claim.x, claim.x + claim.width):
                 for y in range(claim.y, claim.y + claim.height):
                     self.fabric[(y, x)].append(claim.id)
 
-    def overlapping_squares(self):
+    def part_1(self):
         """ Find the number of square inches with overlapping claims """
         return len([x for x in self.fabric.values() if len(x) > 1])
 
-    def no_overlaps(self):
+    def part_2(self):
         """ Find the one claim that doesn't overlap with any other """
         ids = {
-            c.id: set() for c in self.claims
+            c.id: set() for c in self.instructions
         }
         for square_inch in self.fabric.values():
             for claim_id in square_inch:
@@ -49,8 +52,6 @@ class Fabric(object):
 
 
 if __name__ == '__main__':
-    with open(os.path.join(DATA_DIR, 'input.3.txt')) as fh:
-        instructions = fh.readlines()
-        fabric = Fabric(instructions)
-        print("Overlapping squares: ", fabric.overlapping_squares())
-        print("Non-overlapping claim:", fabric.no_overlaps())
+    d = Dec03()
+    print("Overlapping squares: ", d.part_1())
+    print("Non-overlapping claim:", d.part_2())
