@@ -13,7 +13,8 @@ class TestDec01(unittest.TestCase):
         ]
 
         for case in cases:
-            self.assertEqual(case[1], dec01.frequency_change(case[0]))
+
+            self.assertEqual(case[1], dec01.Dec01(case[0]).part_1())
 
     def test_first_repeating_frequency(self):
         cases = [
@@ -24,4 +25,4 @@ class TestDec01(unittest.TestCase):
         ]
 
         for case in cases:
-            self.assertEqual(case[1], dec01.first_repeating_frequency(case[0]))
+            self.assertEqual(case[1], dec01.Dec01(case[0]).part_2())

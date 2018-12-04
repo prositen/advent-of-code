@@ -11,16 +11,16 @@ class TestDec03(unittest.TestCase):
             "#2 @ 3,1: 4x4",
             "#3 @ 5,5: 2x2"
         ]
-        self.fabric = dec03.Fabric(claims)
+        self.dec03 = dec03.Dec03(claims)
 
     def test_overlapping_squares(self):
-        self.assertEqual(4, self.fabric.overlapping_squares())
+        self.assertEqual(4, self.dec03.part_1())
 
     def test_no_overlaps(self):
-        self.assertEqual(3, self.fabric.no_overlaps())
+        self.assertEqual(3, self.dec03.part_2())
 
 
-class PrintFabric(dec03.Fabric):
+class PrintFabric(dec03.Dec03):
     def print(self):
         """ Visualize the fabric with all the claims.
 
@@ -29,8 +29,8 @@ class PrintFabric(dec03.Fabric):
             - x if more than one claim
             - *claim_id* if this is the one non-overlapping claim.
         """
-        id_width = len(str(max([c.id for c in self.claims]))) + 3
-        n_o = self.no_overlaps()
+        id_width = len(str(max([c.id for c in self.instructions]))) + 3
+        n_o = self.part_2()
         for y in range(1000):
             line = []
             for x in range(1000):

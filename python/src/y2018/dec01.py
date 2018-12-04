@@ -1,27 +1,28 @@
-import os
 from itertools import cycle
+from python.src.common import Day
 
-from python.src.y2018.common import DATA_DIR
+class Dec01(Day):
+    def __init__(self, instructions=None):
+        super().__init__(2018, 1, instructions)
 
+    @staticmethod
+    def parse_instructions(instructions):
+        return list(map(int, instructions))
 
-def frequency_change(frequencies, start=0):
-    numbers = list(map(int, frequencies))
-    return sum([start] + numbers)
+    def part_1(self):
+        return sum(self.instructions)
 
-
-def first_repeating_frequency(frequencies):
-    numbers = list(map(int, frequencies))
-    found = {0}
-    current = 0
-    for n in cycle(numbers):
-        current += n
-        if current in found:
-            return current
-        found.add(current)
+    def part_2(self):
+        found = {0}
+        current = 0
+        for n in cycle(self.instructions):
+            current += n
+            if current in found:
+                return current
+            found.add(current)
 
 
 if __name__ == '__main__':
-    with open(os.path.join(DATA_DIR, 'input.1.txt')) as fh:
-        frequencies = fh.readlines()
-        print("Frequency sum", frequency_change(frequencies))
-        print("Captcha sum: ", first_repeating_frequency(frequencies))
+    d = Dec01()
+    print("Frequency sum", d.part_1())
+    print("Captcha sum: ", d.part_2())
