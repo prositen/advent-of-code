@@ -14,7 +14,7 @@ class TestDec02(unittest.TestCase):
             "abcdee",
             "ababab"
         ]
-        day2 = dec02.Day02(instructions=boxes)
+        day2 = dec02.Dec02(instructions=boxes)
         self.assertEqual(12, day2.part_1())
 
     def test_common_letters(self):
@@ -27,5 +27,5 @@ class TestDec02(unittest.TestCase):
             "axcye",
             "wvxyz"
         ]
-        day2 = dec02.Day02(instructions=boxes)
+        day2 = dec02.Dec02(instructions=boxes)
         self.assertEqual('fgij', day2.part_2())

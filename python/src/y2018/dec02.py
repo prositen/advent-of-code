@@ -3,7 +3,7 @@ from collections import Counter
 from python.src.common import Day
 
 
-class Day02(Day):
+class Dec02(Day):
 
     def __init__(self, instructions=None, filename=None):
         super().__init__(2018, 2, instructions, filename)
@@ -23,6 +23,6 @@ class Day02(Day):
 
 
 if __name__ == '__main__':
-    d = Day02()
+    d = Dec02()
     print("Box checksum:", d.part_1())
     print("Common letters:", d.part_2())
