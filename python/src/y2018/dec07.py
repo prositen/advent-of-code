@@ -68,10 +68,9 @@ class Dec07(Day):
 
     def part_2(self, elves, delay):
         self.build_graph()
-        next_node = self.graph.next_node()
-        working_elves = [self.make_job(next_node, delay)]
+        working_elves = []
         time = 0
-        while working_elves:
+        while time == 0 or working_elves:
             time += 1
             for (node, duration) in list(working_elves):
                 working_elves.remove((node, duration))
