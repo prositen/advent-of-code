@@ -5,7 +5,7 @@ from python.src.y2018.dec10 import Dec10
 
 class TestDec10(unittest.TestCase):
 
-    def test_part_2(self):
+    def setUp(self):
         instructions = [
             'position=< 9,  1> velocity=< 0,  2>',
             'position=< 7,  0> velocity=<-1,  0>',
@@ -39,6 +39,19 @@ class TestDec10(unittest.TestCase):
             'position=<14,  7> velocity=<-2,  0>',
             'position=<-3,  6> velocity=< 2, -1>'
         ]
-        d = Dec10(instructions)
-        self.assertEqual(3, d.part_2())
-        pass
+        self.d = Dec10(instructions)
+
+    def test_part_1(self):
+        expected = \
+            "#...#..###\n" \
+            "#...#...#.\n" \
+            "#...#...#.\n" \
+            "#####...#.\n" \
+            "#...#...#.\n" \
+            "#...#...#.\n" \
+            "#...#...#.\n" \
+            "#...#..###"
+        self.assertEqual(expected, str(self.d.part_1()))
+
+    def test_part_2(self):
+        self.assertEqual(3, self.d.part_2())
