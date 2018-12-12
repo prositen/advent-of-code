@@ -56,7 +56,7 @@ class Dec12(Day):
     def part_2(self):
         """ It's not feasible to run 50 billion generations of simulations.
 
-        The pattern becomes a glider (https://en.wikipedia.org/wiki/Glider_(Conway%27s_Life)) -
+        The pattern becomes a spaceship (https://en.wikipedia.org/wiki/Spaceship_(cellular_automaton)) -
         a series of repeating pattern which moves to the right.
 
         The score also converges into increasing according to a linear pattern. Find the slope
