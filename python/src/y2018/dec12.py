@@ -64,4 +64,4 @@ class Dec12(Day):
 if __name__ == '__main__':
     d = Dec12()
     print("Sum of pot# after 20 generations:", d.part_1())
-    print("Sum of pot# after 50 000 000 generations:", d.part_2())
+    print("Sum of pot# after 50 000 000 000 generations:", d.part_2())
