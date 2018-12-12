@@ -17,7 +17,21 @@ class Dec12(Day):
             rules.append((w[0], w[2]))
         return initial_state, rules
 
-    def run2(self, state, generations, zero_pos=0):
+    def run(self, state, generations, zero_pos=0):
+        """
+        The current state of pots is stored in a string. All non-living pots at either end are stripped off,
+        to keep the representation as small as possible.
+
+        The variable zero_pos keeps track of where the 0-pot is in relation to the first item of the string,
+        since this is needed for scoring
+
+        Each generation:
+            - add padding pots to either side and update zero_pos
+            - create a new state by iterating through the current one.
+            - strip off surrounding dead pots and update zero_pos
+
+
+        """
         for _ in range(generations):
             state = '....' + state.strip('.') + '....'
             zero_pos += 4
@@ -33,12 +47,21 @@ class Dec12(Day):
         for i, p in enumerate(state):
             if p == '#':
                 score += i - zero_pos
+
         return score, zero_pos, state
 
     def part_1(self):
-        return self.run2(state=self.initial_state, generations=20)[0]
+        return self.run(state=self.initial_state, generations=20)[0]
 
     def part_2(self):
+        """ It's not feasible to run 50 billion generations of simulations.
+
+        The pattern becomes a glider (https://en.wikipedia.org/wiki/Glider_(Conway%27s_Life)) -
+        a series of repeating pattern which moves to the right.
+
+        The score also converges into increasing according to a linear pattern. Find the slope
+        and intercept and calculate the final 50 billion score using this.
+        """
         state = self.initial_state
         prev_score = 0
         gens = 100
@@ -46,7 +69,7 @@ class Dec12(Day):
         last_diff = 0
         scores = list()
         for i in range(100):
-            score, zero_pos, state = self.run2(state=state, generations=gens, zero_pos=zero_pos)
+            score, zero_pos, state = self.run(state=state, generations=gens, zero_pos=zero_pos)
             scores.append((i * gens + gens, score))
             diff = score - prev_score
             prev_score = score
