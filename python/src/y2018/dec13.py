@@ -93,9 +93,11 @@ class Dec13(Day):
 
     def run(self, break_at_crash):
         carts = [copy.deepcopy(cart) for cart in self.carts]
+        i = 0
         while True:
             if len(carts) == 1:
                 return carts[0].x, carts[0].y
+            i += 1
             carts.sort(key=lambda c: (c.y, c.x))
             for c in list(carts):
                 if c not in carts:
@@ -110,21 +112,23 @@ class Dec13(Day):
                             carts.remove(c)
                             carts.remove(cr)
                             break
-            # self.print(carts)
+
+                # self.print(carts)
 
     def print(self, carts):
         c = [
             [ch for ch in y] for y in self.grid
         ]
 
-        for cart in self.carts:
+        for cart in carts:
             if c[cart.y][cart.x] in ('^', 'v', '<', '>'):
                 c[cart.y][cart.x] = 'X'
             else:
                 c[cart.y][cart.x] = str(cart)
 
         width = max(len(r) for r in c)
-        print('     ' + ''.join(str(i // 10) if i % 10 == 0 else ' ' for i in range(width)))
+        print('     ' + ''.join(str((i // 100)) if i > 100 else ' ' for i in range(width)))
+        print('     ' + ''.join(str((i // 10) % 10) if i > 10 else ' ' for i in range(width)))
         print('     ' + ''.join(str(i % 10) for i in range(width)))
         for i, y in enumerate(c):
             print('{:>3}: {}'.format(i, ''.join(y)))
