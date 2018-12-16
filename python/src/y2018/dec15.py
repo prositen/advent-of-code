@@ -8,7 +8,7 @@ class Fighter(object):
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.attack = 3
+        self.attack_strength = 3
         self.range = 1
         self.hp = 200
         self.enemies = None
@@ -18,28 +18,42 @@ class Fighter(object):
         return abs(self.x - other.x) + abs(self.y - other.y)
 
     def attacked(self, fighter):
-        self.hp -= fighter.attack
+        self.hp -= fighter.attack_strength
+        return self.hp > 0
 
-    def adjacent_enemies(self):
+    def attack(self):
+        if self.target and self.distance(self.target) <= self.range:
+            if not self.target.attacked(self):
+                self.enemies.remove(self.target)
+
+    def calculate_target(self):
         adjacent = [e for e in self.enemies if e.hp > 0 and self.distance(e) <= self.range]
         if adjacent:
-            return sorted(adjacent, key=lambda e: (e.hp, e.y, e.x))
+            self.target = sorted(adjacent, key=lambda e: (e.hp, e.y, e.x))[0]
+            return True
+        self.target = None
+        return False
 
     def move(self, cave):
-        adjacent = self.adjacent_enemies()
-        if adjacent:
-            self.target = adjacent[0]
+        if self.calculate_target():
             return
+
         squares = []
         for e in self.enemies:
             if e.hp > 0:
                 squares += cave.open_square(e)
         if squares:
             squares = sorted(cave.distances(self.x, self.y, set(squares)),
-                             key=lambda c: len(c[2]))
+                             key=lambda c: (len(c[2]), c[1], c[0]))
             if squares:
-                self.x, self.y = squares[0][1]
-                print(self)
+                closest = squares[0]
+                path = closest[2]
+                if len(path) > 1:
+                    self.x, self.y = path[1]
+                else:
+                    self.x, self.y = closest[0], closest[1]
+                    self.calculate_target()
+
 
 
 class Gobbo(Fighter):
@@ -79,13 +93,17 @@ class Cave(object):
         to_visit = deque()
         to_visit.append((start_x, start_y, []))
         while to_visit:
-            (x, y, path) = to_visit.pop()
-            if (x, y) not in visited or len(paths.get((x, y), path + 1)) > len(path):
+            (x, y, path) = to_visit.popleft()
+            if (x, y) not in visited or len(paths.get((x, y))) > len(path):
                 paths[(x, y)] = path
             visited.add((x, y))
-            for dx, dy in [(0, -1), (-1, 0), (0, 1), (0, 1)]:
+            for dx, dy in [(0, -1), (-1, 0), (0, 1), (1, 0)]:
                 xx, yy = x + dx, y + dy
-                if self.grid[yy][xx] == '.':
+                if 0 < yy < len(self.grid) \
+                        and 0 < xx < len(self.grid[0]) \
+                        and (xx,yy) not in path \
+                        and (xx,yy) not in visited \
+                        and self.grid[yy][xx] == '.':
                     to_visit.append((xx, yy, path + [(x, y)]))
         return [(x, y, dist) for x, y, dist in
                 [(b[0], b[1], paths.get(b, None)) for b in blocks] if dist is not None]
@@ -110,14 +128,11 @@ class Game(object):
             if fighter.hp <= 0:
                 continue
             if not self.any_alive(fighter.enemies):
-                return False
+                return False, False
             cave = self.cave_map.current_state(gobbos=self.gobbos, elves=self.elves)
             fighter.move(cave)
-            self.attack(fighter)
-        return self.any_alive(self.gobbos) and self.any_alive(self.elves)
-
-    def attack(self, fighter):
-        pass
+            fighter.attack()
+        return True, self.any_alive(self.gobbos) and self.any_alive(self.elves)
 
     def score(self, turn):
         return turn * sum(f.hp for f in self.gobbos + self.elves if f.hp > 0)
@@ -146,9 +161,12 @@ class Dec15(Day):
     def part_1(self):
         turn = 0
         while True:
+            full_turn, both_teams_alive = self.game.play_turn()
+            if not both_teams_alive:
+                return self.game.score(turn + int(full_turn))
+            x = self.game.cave_map.current_state(self.game.gobbos, self.game.elves)
             turn += 1
-            if not self.game.play_turn():
-                return self.game.score(turn)
+
 
     def part_2(self):
         pass

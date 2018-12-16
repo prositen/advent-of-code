@@ -4,6 +4,18 @@ from python.src.y2018.dec15 import Dec15
 
 
 class TestDec15(unittest.TestCase):
+    def test_part_1_0(self):
+        map_start = [
+            "#######",
+            "#.G...#",
+            "#...EG#",
+            "#.#.#G#",
+            "#..G#E#",
+            "#.....#",
+            "#######"
+        ]
+        self.assertEqual(27730, Dec15(instructions=map_start).part_1())
+
     def test_part_1_a(self):
         map_start = [
             "#######",
