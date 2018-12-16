@@ -35,9 +35,11 @@ class Fighter(object):
             if e.hp > 0:
                 squares += cave.open_square(e)
         if squares:
-            a = sorted(cave.distances(self.x, self.y, set(squares)),
-                       key=lambda c: len(c[2]))
-            print(a)
+            squares = sorted(cave.distances(self.x, self.y, set(squares)),
+                             key=lambda c: len(c[2]))
+            if squares:
+                self.x, self.y = squares[0][1]
+                print(self)
 
 
 class Gobbo(Fighter):
@@ -72,7 +74,7 @@ class Cave(object):
 
     def distances(self, start_x, start_y, blocks):
         """ Calculate the distance from the start position to all other non-wall positions """
-        paths = {(start_x, start_y): 0}
+        paths = {(start_x, start_y): []}
         visited = set()
         to_visit = deque()
         to_visit.append((start_x, start_y, []))
@@ -86,7 +88,7 @@ class Cave(object):
                 if self.grid[yy][xx] == '.':
                     to_visit.append((xx, yy, path + [(x, y)]))
         return [(x, y, dist) for x, y, dist in
-                [(b[0], b[1], paths.get(b, None)) for b in blocks] if d is not None]
+                [(b[0], b[1], paths.get(b, None)) for b in blocks] if dist is not None]
 
 
 class Game(object):
