@@ -1,14 +1,16 @@
+import copy
 import re
-from collections import deque
 
 from python.src.common import Day
 
+READING_ORDER = [(-1, 0), (0, -1), (0, 1), (1, 0)]
+
 
 class Fighter(object):
-    def __init__(self, x, y):
+    def __init__(self, x, y, attack_strength=3):
         self.x = x
         self.y = y
-        self.attack_strength = 3
+        self.attack_strength = attack_strength
         self.range = 1
         self.hp = 200
         self.enemies = None
@@ -22,52 +24,50 @@ class Fighter(object):
         return self.hp > 0
 
     def attack(self):
-        if self.target and self.distance(self.target) <= self.range:
+        if self.target:
             if not self.target.attacked(self):
                 self.enemies.remove(self.target)
+
+    def open_squares(self, cave):
+        return [(self.y+dy, self.x+dx)
+                for dy, dx in READING_ORDER
+                if cave.grid[self.y+dy][self.x+dx] == '.']
 
     def calculate_target(self):
         adjacent = [e for e in self.enemies if e.hp > 0 and self.distance(e) <= self.range]
         if adjacent:
             self.target = sorted(adjacent, key=lambda e: (e.hp, e.y, e.x))[0]
-            return True
-        self.target = None
-        return False
+        else:
+            self.target = None
 
     def move(self, cave):
-        if self.calculate_target():
+        self.calculate_target()
+        if self.target:
             return
-
-        squares = []
+        open_squares = []
         for e in self.enemies:
-            if e.hp > 0:
-                squares += cave.open_square(e)
-        if squares:
-            squares = sorted(cave.distances(self.x, self.y, set(squares)),
-                             key=lambda c: (len(c[2]), c[1], c[0]))
-            if squares:
-                closest = squares[0]
-                path = closest[2]
-                if len(path) > 1:
-                    self.x, self.y = path[1]
-                else:
-                    self.x, self.y = closest[0], closest[1]
-                    self.calculate_target()
+            open_squares.extend(e.open_squares(cave))
 
+        if open_squares:
+            closest_path = cave.distances(self.y, self.x, set(open_squares))
+            if closest_path:
+                self.y, self.x = closest_path[1]
+                self.calculate_target()
+
+    def __repr__(self):
+        return '<{} pos={} hp={}>'.format(self.__class__.__name__,
+                                          (self.y, self.x), self.hp)
 
 
 class Gobbo(Fighter):
-    def __repr__(self):
-        return '<Gobbo pos={} hp={}>'.format((self.x, self.y), self.hp)
+    pass
 
 
 class Elf(Fighter):
-    def __repr__(self):
-        return '<Elf pos={} hp={}>'.format((self.x, self.y), self.hp)
+    pass
 
 
 class Cave(object):
-
     def __init__(self, grid):
         self.grid = grid
 
@@ -79,60 +79,49 @@ class Cave(object):
             current[elf.y][elf.x] = 'E'
         return Cave(current)
 
-    def open_square(self, fighter):
-        squares = [(fighter.x, fighter.y - 1),
-                   (fighter.x + 1, fighter.y),
-                   (fighter.x, fighter.y + 1),
-                   (fighter.x - 1, fighter.y)]
-        return [(x, y) for (x, y) in squares if self.grid[y][x] == '.']
-
-    def distances(self, start_x, start_y, blocks):
-        """ Calculate the distance from the start position to all other non-wall positions """
-        paths = {(start_x, start_y): []}
-        visited = set()
-        to_visit = deque()
-        to_visit.append((start_x, start_y, []))
+    def distances(self, y_pos, x_pos, blocks):
+        """ Calculate the nearest of the goal blocks from the start position"""
+        visited = {(y_pos, x_pos)}
+        to_visit = list()
+        to_visit.append([(y_pos, x_pos)])
         while to_visit:
-            (x, y, path) = to_visit.popleft()
-            if (x, y) not in visited or len(paths.get((x, y))) > len(path):
-                paths[(x, y)] = path
-            visited.add((x, y))
-            for dx, dy in [(0, -1), (-1, 0), (0, 1), (1, 0)]:
+            path = to_visit.pop(-1)
+            y, x = path[-1]
+            if (y, x) in blocks:
+                return path
+            for dy, dx in READING_ORDER:
                 xx, yy = x + dx, y + dy
-                if 0 < yy < len(self.grid) \
-                        and 0 < xx < len(self.grid[0]) \
-                        and (xx,yy) not in path \
-                        and (xx,yy) not in visited \
-                        and self.grid[yy][xx] == '.':
-                    to_visit.append((xx, yy, path + [(x, y)]))
-        return [(x, y, dist) for x, y, dist in
-                [(b[0], b[1], paths.get(b, None)) for b in blocks] if dist is not None]
+                if self.grid[yy][xx] == '.' \
+                        and (yy, xx) not in visited:
+                    to_visit.append(path + [(yy, xx)])
+                    visited.add((yy, xx))
+            to_visit = sorted(to_visit, key=lambda path: (len(path), path[-1]), reverse=True)
+        return []
 
 
 class Game(object):
-    def __init__(self, cave_map, gobbos, elves):
+    def __init__(self, cave_map, gobbos, elves, elf_power=3):
         self.cave_map = Cave(cave_map)
-        self.gobbos, self.elves = gobbos, elves
+        self.gobbos, self.elves = copy.deepcopy(gobbos), copy.deepcopy(elves)
+        for e in self.elves:
+            e.attack_strength = elf_power
+
         for g in self.gobbos:
             g.enemies = self.elves
         for e in self.elves:
             e.enemies = self.gobbos
-
-    @staticmethod
-    def any_alive(fighters):
-        return any(fighter for fighter in fighters if fighter.hp > 0)
 
     def play_turn(self):
         fighters = sorted(self.gobbos + self.elves, key=lambda f: (f.y, f.x))
         for fighter in fighters:
             if fighter.hp <= 0:
                 continue
-            if not self.any_alive(fighter.enemies):
-                return False, False
+            if not fighter.enemies:
+                return fighters.index(fighter) == 0, False
             cave = self.cave_map.current_state(gobbos=self.gobbos, elves=self.elves)
             fighter.move(cave)
             fighter.attack()
-        return True, self.any_alive(self.gobbos) and self.any_alive(self.elves)
+        return True, self.gobbos and self.elves
 
     def score(self, turn):
         return turn * sum(f.hp for f in self.gobbos + self.elves if f.hp > 0)
@@ -141,8 +130,7 @@ class Game(object):
 class Dec15(Day):
     def __init__(self, instructions=None, filename=None):
         super().__init__(2018, 15, instructions, filename)
-        cavemap, gobbos, elves = self.instructions
-        self.game = Game(cavemap, gobbos, elves)
+        self.cavemap, self.gobbos, self.elves = self.instructions
 
     @staticmethod
     def parse_instructions(instructions):
@@ -150,6 +138,7 @@ class Dec15(Day):
         elves = list()
         cave_map = list()
         for y, line in enumerate(instructions):
+            line = line.strip()
             for m in re.finditer('[GE]', line):
                 if m.group(0) == 'G':
                     gobbos.append(Gobbo(x=m.start(), y=y))
@@ -158,20 +147,29 @@ class Dec15(Day):
             cave_map.append(line.replace('G', '.').replace('E', '.'))
         return cave_map, gobbos, elves
 
-    def part_1(self):
+    def run(self, power=3):
         turn = 0
+        game = Game(self.cavemap, self.gobbos, self.elves, elf_power=power)
         while True:
-            full_turn, both_teams_alive = self.game.play_turn()
+            full_turn, both_teams_alive = game.play_turn()
             if not both_teams_alive:
-                return self.game.score(turn + int(full_turn))
-            x = self.game.cave_map.current_state(self.game.gobbos, self.game.elves)
+                return game.score(turn + int(full_turn)), len(game.elves) == len(self.elves), turn
             turn += 1
 
+    def part_1(self):
+        return self.run()[0]
 
     def part_2(self):
-        pass
+        elf_strength = 4
+        while True:
+            score, elves_won, turns = self.run(elf_strength)
+            if elves_won:
+                return score
+            else:
+                elf_strength += 1
 
 
 if __name__ == '__main__':
     d = Dec15()
     print("Outcome:", d.part_1())
+    print("Outcome for stronger elves", d.part_2())
