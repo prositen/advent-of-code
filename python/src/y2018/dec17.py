@@ -48,7 +48,55 @@ class Dec17(Day):
         for y in range(len(self.grid)):
             print('{:>4}: {}'.format(y, ''.join(self.grid[y])))
 
+    def probe_down(self, x, y):
+        if y >= len(self.grid):
+            return False
+        if self.grid[y][x] in ('~', '#'):
+            return True
+        self.grid[y][x] = '|'
+        down = self.probe_down(x, y+1)
+        if down:
+            (left, fill_left) = self.probe_left(x-1, y)
+            (right, fill_right) = self.probe_right(x+1, y)
+            if fill_left and fill_right:
+                self.grid[y][left + 1:right] = '~' * (right - left - 1)
+                return True
+        return False
+
+    def probe_left(self, x, y):
+        if x < 0:
+            return 0, False
+        if self.grid[y][x] in ('~', '#'):
+            return x, True
+        self.grid[y][x] = '|'
+        down = self.probe_down(x, y+1)
+        if down:
+            return self.probe_left(x-1, y)
+        else:
+            return x, False
+
+    def probe_right(self, x, y):
+        if x >= len(self.grid[y]):
+            return len(self.grid[y]) -1, False
+        if self.grid[y][x] in ('~', '#'):
+            return x, True
+        self.grid[y][x] = '|'
+        down = self.probe_down(x, y+1)
+        if down:
+            return self.probe_right(x+1, y)
+        else:
+            return x, False
+
+
+
+
+
     def fill_water(self):
+        x, y = tuple(self.spring)
+        self.probe_down(x-self.min_x, y+1)
+
+
+    def a_fill_water(self):
         to_visit = deque()
         start_x = self.spring[0] - self.min_x
         to_visit.append((0, start_x, start_x, start_x))
@@ -120,6 +168,7 @@ class Dec17(Day):
 
     def part_2(self):
         pass
+
 
 
 if __name__ == '__main__':
