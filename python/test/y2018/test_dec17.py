@@ -18,5 +18,5 @@ class TestDec17(unittest.TestCase):
         ]
 
         d = Dec17(instructions=scan)
-        d.render_veins()
         self.assertEqual(57, d.part_1())
+        self.assertEqual(29, d.part_2())
