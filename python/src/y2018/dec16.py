@@ -4,8 +4,8 @@ from python.src.common import Day
 
 
 class Device(object):
-    def __init__(self):
-        self.reg = [0, 0, 0, 0]
+    def __init__(self, registers=4):
+        self.reg = [0 for _ in range(registers)]
         self.instructions = {
             'addr': lambda a, b: self.reg[a] + self.reg[b],
             'addi': lambda a, b: self.reg[a] + b,
@@ -36,7 +36,7 @@ class Device(object):
         return matches
 
     def run(self, program, opcode_translation):
-        self.reg = [0, 0, 0, 0]
+        self.reg = [0 for _ in range(len(self.reg))]
         for opcode, a, b, c in program:
             instruction = opcode_translation.get(opcode)
             if instruction:
