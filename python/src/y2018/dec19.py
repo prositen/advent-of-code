@@ -11,14 +11,13 @@ class DeviceIp(Device):
     def reset(self):
         self.reg = [0 for _ in range(len(self.reg))]
 
-    def run(self, program, opcode_translation=None, run_until_ip=None):
+    def run(self, program, run_until_ip=None):
         ip = self.reg[self.ip]
         while 0 <= ip < len(program):
             self.reg[self.ip] = ip
             instruction, a, b, c = program[ip]
             self.reg[c] = self.instructions[instruction](a, b)
-            ip = self.reg[self.ip]
-            ip += 1
+            ip = self.reg[self.ip] = self.reg[self.ip] + 1
             if run_until_ip and ip == run_until_ip:
                 return
 

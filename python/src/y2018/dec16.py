@@ -35,8 +35,9 @@ class Device(object):
                 matches.append(k)
         return matches
 
-    def run(self, program, opcode_translation):
+    def run(self, program, **kwargs):
         self.reg = [0 for _ in range(len(self.reg))]
+        opcode_translation = kwargs.get('opcode')
         for opcode, a, b, c in program:
             instruction = opcode_translation.get(opcode)
             if instruction:
@@ -96,7 +97,7 @@ class Dec16(Day):
                 lookup[code] = name
                 for k in samples_per_opcode:
                     samples_per_opcode[k].discard(name)
-        self.device.run(program=self.program, opcode_translation=lookup)
+        self.device.run(program=self.program, opcode=lookup)
         return self.device.reg[0]
 
 

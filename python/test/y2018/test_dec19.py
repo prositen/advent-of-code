@@ -19,5 +19,5 @@ class TestDec19(unittest.TestCase):
 
         d = Dec19(instructions=program)
         d.device.run(d.program)
-        self.assertListEqual([6, 5, 6, 0, 0, 9],
+        self.assertListEqual([7, 5, 6, 0, 0, 9],
                              d.device.reg)
