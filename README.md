@@ -15,4 +15,8 @@
 
 ## 2018
 
+- Python (complete)
+
+## 2019
+
 - Python (in progress)
