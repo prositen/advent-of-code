@@ -33,40 +33,46 @@ class Scrambler(object):
         means that the letters at indexes X and Y (counting from 0) should be swapped. """
         pos_x = min(int(params[0]), int(params[1]))
         pos_y = max(int(params[0]), int(params[1]))
-        return password[:pos_x] + password[pos_y] + password[pos_x + 1:pos_y] + password[pos_x] + password[pos_y + 1:]
+        return (password[:pos_x] + password[pos_y] +
+                password[pos_x + 1:pos_y] + password[pos_x] + password[pos_y + 1:])
 
     @staticmethod
     def swap_letter(password, params):
         """ swap letter X with letter Y
-        means that the letters X and Y should be swapped (regardless of where they appear in the string)."""
+        means that the letters X and Y should be swapped
+        (regardless of where they appear in the string)."""
         letter_x = params[0]
         letter_y = params[1]
-        tr_table = str.maketrans("{}{}".format(letter_x, letter_y), "{}{}".format(letter_y, letter_x))
+        tr_table = str.maketrans("{}{}".format(letter_x, letter_y),
+                                 "{}{}".format(letter_y, letter_x))
         return password.translate(tr_table)
 
     @staticmethod
     def rotate_left(password, params):
         """ rotate left X steps
-        means that the whole string should be rotated; for example, one left rotation would turn dabc into abcd. """
-        l = len(password)
-        steps = int(params[0]) % l
+        means that the whole string should be rotated; for example,
+        one left rotation would turn dabc into abcd. """
+        pwlen = len(password)
+        steps = int(params[0]) % pwlen
         return password[steps:] + password[:steps]
 
     @staticmethod
     def rotate_right(password, params):
         """ rotate right X steps
-        means that the whole string should be rotated; for example, one right rotation would turn abcd into dabc. """
-        l = len(password)
-        steps = int(params[0]) % l
+        means that the whole string should be rotated; for example,
+        one right rotation would turn abcd into dabc. """
+        pwlen = len(password)
+        steps = int(params[0]) % pwlen
 
-        return password[l - steps:] + password[:l - steps]
+        return password[pwlen - steps:] + password[:pwlen - steps]
 
     @staticmethod
     def rotate_position(password, params):
         """ rotate based on position of letter X
-        means that the whole string should be rotated to the right based on the index of letter X (counting from 0)
-        as determined before this instruction does any rotations. Once the index is determined, rotate the string
-        to the right one time, plus a number of times equal to that index, plus one additional time if the index
+        means that the whole string should be rotated to the right based on the index
+        of letter X (counting from 0) as determined before this instruction does any rotations.
+        Once the index is determined, rotate the string  to the right one time, plus a number
+        of times equal to that index, plus one additional time if the index
         was at least 4. """
         letter_X = params[0]
         pos_X = password.find(letter_X) + 1
@@ -90,8 +96,8 @@ class Scrambler(object):
     @staticmethod
     def move(password, params):
         """ move position X to position Y
-        means that the letter which is at index X should be removed from the string, then inserted such
-        that it ends up at index Y. """
+        means that the letter which is at index X should be removed from the string,
+        then inserted such that it ends up at index Y. """
         pos_x = int(params[0])
         pos_y = int(params[1])
         letter_x = password[pos_x]
@@ -121,10 +127,10 @@ class Unscrambler(Scrambler):
 
     @staticmethod
     def rotate_position(password, params):
-        """ This only works if there's only one way of reverting the password. Luckily this is the case
-        for my input. """
+        """ This only works if there's only one way of reverting the password. Luckily
+        this is the case for my input. """
         for i in range(len(password)):
-            try_password = Scrambler.rotate_right(password, (i, ))
+            try_password = Scrambler.rotate_right(password, (i,))
             rotated_password = Scrambler.rotate_position(try_password, params)
             if password == rotated_password:
                 return try_password

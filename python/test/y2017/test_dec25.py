@@ -30,4 +30,4 @@ class TestTuring(unittest.TestCase):
         puzzle_input = [line[:-1] for line in puzzle_input]
         s_m = dec25.StateMachine(puzzle_input)
         s_m.run()
-        self.assertEquals(3, s_m.part1())
+        self.assertEqual(3, s_m.part1())

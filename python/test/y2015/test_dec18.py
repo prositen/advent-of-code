@@ -67,8 +67,9 @@ class Dec18Tests(unittest.TestCase):
                                         '#.#...',
                                         '##...#'])
 
-
         self.assertEqual(str(expected), str(step))
         self.assertEqual(17, step.count())
+
+
 if __name__ == '__main__':
     unittest.main()

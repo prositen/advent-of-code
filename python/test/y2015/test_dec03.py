@@ -28,5 +28,6 @@ class Dec03Tests(unittest.TestCase):
     def testRoboSantaExample3(self):
         self.assertEqual(11, dec03.houses('^v^v^v^v^v', 2))
 
+
 if __name__ == '__main__':
     unittest.main()

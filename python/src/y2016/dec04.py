@@ -2,7 +2,6 @@ import re
 import string
 from collections import Counter
 
-
 re_ROOM = re.compile(r"((?:\w+\-)+)(\d+)\[(\w+)\]")
 
 
@@ -15,7 +14,8 @@ def valid_room(name, checksum):
 
 def valid_rooms(rooms):
     split_room_info = [x.groups(1) for x in map(re_ROOM.match, rooms)]
-    return list((x[0][:-1], int(x[1]), x[2]) for x in filter(lambda x: valid_room(x[0], x[2]), split_room_info))
+    return list((x[0][:-1], int(x[1]), x[2])
+                for x in filter(lambda x: valid_room(x[0], x[2]), split_room_info))
 
 
 def sum_valid_sector_ids(rooms):
@@ -25,7 +25,8 @@ def sum_valid_sector_ids(rooms):
 def decrypt_name(name, sector_id):
     rotate = sector_id % 26
     translate_table = str.maketrans(string.ascii_lowercase + '-',
-                                    string.ascii_lowercase[rotate:] + string.ascii_lowercase[:rotate] + ' ')
+                                    string.ascii_lowercase[rotate:]
+                                    + string.ascii_lowercase[:rotate] + ' ')
     return name.translate(translate_table)
 
 
@@ -35,8 +36,9 @@ def find_northpole(rooms):
             print(decrypt_name(name, sector))
             return sector
 
+
 if __name__ == '__main__':
-    with open('../../../data/2016/input.4.txt','r') as fh:
+    with open('../../../data/2016/input.4.txt', 'r') as fh:
         rooms = fh.readlines()
         print("Sum of valid sector IDS: ", sum_valid_sector_ids(rooms))
         print("North Pole objects are in sector", find_northpole(rooms))

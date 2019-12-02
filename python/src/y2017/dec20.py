@@ -1,10 +1,11 @@
 import os
 import re
+from python.src.y2017.common import DATA_DIR
 
 re_VECTOR = re.compile(
-    r'p=<( ?-?\d+),( ?-?\d+),(-?\d+)>, v=<( ?-?\d+),( ?-?\d+),( ?-?\d+)>, a=<( ?-?\d+),( ?-?\d+),( ?-?\d+)>')
-
-from python.src.y2017.common import DATA_DIR
+    r'p=<( ?-?\d+),( ?-?\d+),(-?\d+)>, '
+    r'v=<( ?-?\d+),( ?-?\d+),( ?-?\d+)>, '
+    r'a=<( ?-?\d+),( ?-?\d+),( ?-?\d+)>')
 
 
 class Vector(object):

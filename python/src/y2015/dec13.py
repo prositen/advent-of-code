@@ -1,10 +1,10 @@
-from collections import defaultdict
 import itertools
 import re
 
 __author__ = 'anna'
 
-RE_POTENTIAL = re.compile(r'(\w+) would (gain|lose) (\d+) happiness units by sitting next to (\w+).')
+RE_POTENTIAL = re.compile(
+    r'(\w+) would (gain|lose) (\d+) happiness units by sitting next to (\w+).')
 
 
 def parse_potential(line, potential):
@@ -55,6 +55,7 @@ def main():
         fh.seek(0)
         max_happiness = maximum_happiness(fh.readlines(), include_me=True)
         print("Maximum happiness with me in place is {max}".format(max=max_happiness))
+
 
 if __name__ == '__main__':
     main()

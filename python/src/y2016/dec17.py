@@ -42,6 +42,7 @@ def shortest_path(passcode):
         else:
             nodes.extend(node.children())
 
+
 def longest_path(passcode):
     nodes = deque()
     nodes.append(Node(passcode, 0, 0, []))
@@ -54,8 +55,7 @@ def longest_path(passcode):
             nodes.extend(node.children())
     return max_length
 
+
 if __name__ == '__main__':
     print("Shortest path is", shortest_path('lpvhkcbi'))
     print("Longest path is", longest_path('lpvhkcbi'))
-
-

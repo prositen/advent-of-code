@@ -1,6 +1,5 @@
 from collections import deque
 
-from copy import copy
 from itertools import permutations
 
 
@@ -18,10 +17,12 @@ class Grid(object):
     def cell(self, pos):
         return self.grid[pos[0]][pos[1]]
 
-    def to_key(self, numbers):
+    @staticmethod
+    def to_key(numbers):
         return ",".join(str(x) for x in numbers)
 
-    def from_key(self, numbers):
+    @staticmethod
+    def from_key(numbers):
         if len(numbers):
             return list(numbers.split(','))
         else:
@@ -62,7 +63,8 @@ class Grid(object):
 
     def find_next_move(self, pos):
         return [new_pos for new_pos in
-                [(pos[0] - 1, pos[1]), (pos[0], pos[1] - 1), (pos[0] + 1, pos[1]), (pos[0], pos[1] + 1)] if
+                [(pos[0] - 1, pos[1]), (pos[0], pos[1] - 1),
+                 (pos[0] + 1, pos[1]), (pos[0], pos[1] + 1)] if
                 self.cell(new_pos) != '#']
 
     def shortest_path(self, return_to_start=False):

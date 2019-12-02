@@ -1,4 +1,4 @@
-from collections import deque, defaultdict
+from collections import defaultdict
 
 from python.src.common import Day
 

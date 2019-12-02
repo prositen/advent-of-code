@@ -1,6 +1,7 @@
 import os
 from python.src.y2017.common import DATA_DIR
 
+
 class Virus(object):
     DIRS = {
         'up': (-1, 0),
@@ -141,7 +142,10 @@ class EvolvedVirus(Virus):
 
     def set_grid(self, puzzle_input):
         for ri, r in enumerate(puzzle_input):
-            self.grid[ri] = {ci: self.state_INFECTED if c == '#' else self.state_CLEAN for ci, c in enumerate(r)}
+            self.grid[ri] = {
+                ci: self.state_INFECTED if c == '#' else self.state_CLEAN
+                for ci, c in enumerate(r)
+            }
 
 
 def main():

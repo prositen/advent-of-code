@@ -17,7 +17,7 @@ def fit_recursive(bins, eggnog, current_trail=None, collection=None, indent=0):
         trail = list(current_trail)
         trail.append(next_bin)
         current_eggnog = eggnog - next_bin
-        if fit_recursive(remaining_bins[pos+1:], current_eggnog, trail, collection, indent+1):
+        if fit_recursive(remaining_bins[pos + 1:], current_eggnog, trail, collection, indent + 1):
             collection.append(trail)
 
 
@@ -45,10 +45,14 @@ def main():
     with open('../../../data/2015/input.17.txt', 'r') as fh:
         bins = [int(line) for line in fh.readlines()]
         combinations = fit_eggnog(bins, 150)
-        print("There are {no} combinations of bins to store 150 liters of eggnog".format(no=len(combinations)))
+        print("There are {no} combinations of bins to store 150 liters of eggnog".format(
+            no=len(combinations)))
         size, number = fewest_containers(combinations)
-        print("There are {number} ways of storing 150 liters of eggnog in {size} containers".format(number=number,
-                                                                                                    size=size))
+        print(
+            "There are {number} ways of storing 150 liters of eggnog in {size} containers".format(
+                number=number,
+                size=size))
+
 
 if __name__ == '__main__':
     main()

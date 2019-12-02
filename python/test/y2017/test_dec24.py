@@ -15,4 +15,4 @@ class TestBridge(unittest.TestCase):
                         "9/10"]
         b = dec24.Bridges(puzzle_input)
         b.build()
-        self.assertEquals(31, b.part1())
+        self.assertEqual(31, b.part1())

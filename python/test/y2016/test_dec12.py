@@ -17,5 +17,7 @@ class Dec12Tests(unittest.TestCase):
     def test_part_1(self):
         self.computer.run()
         self.assertEqual(42, self.computer.register('a'))
+
+
 if __name__ == '__main__':
     unittest.main()

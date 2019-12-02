@@ -23,7 +23,8 @@ class Routing(object):
                 aa = self.square()
             if aa == '+':
                 for direction in self.DIRS:
-                    if direction != (-self.d[0], -self.d[1]) and self.square(dy=direction[0], dx=direction[1]) != ' ':
+                    if (direction != (-self.d[0], -self.d[1])
+                            and self.square(dy=direction[0], dx=direction[1]) != ' '):
                         self.d = direction
                         self.move()
                         break

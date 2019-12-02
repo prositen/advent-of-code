@@ -17,7 +17,8 @@ class Dec05Tests(unittest.TestCase):
         self.assertEqual('18', dec05.hash_password('abc', 2))
 
     def testMoviePassword(self):
-        self.assertEquals('05ace8e3', dec05.movie_password('abc'))
+        self.assertEqual('05ace8e3', dec05.movie_password('abc'))
+
 
 if __name__ == '__main__':
     unittest.main()

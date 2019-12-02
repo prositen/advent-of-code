@@ -1,1 +1,1 @@
-DATA_DIR='../../../data/2017'
+DATA_DIR = '../../../data/2017'

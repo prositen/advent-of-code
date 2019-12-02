@@ -26,7 +26,9 @@ class Dec04(Day):
 
     def part_1(self):
         most_sleep_guard = Counter(x[0] for x in self.instructions).most_common(1)[0][0]
-        minute = Counter(x[1] for x in self.instructions if x[0] == most_sleep_guard).most_common(1)[0][0]
+        minute = Counter(x[1]
+                         for x in self.instructions
+                         if x[0] == most_sleep_guard).most_common(1)[0][0]
 
         return most_sleep_guard * minute
 

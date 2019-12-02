@@ -22,5 +22,6 @@ class Dec10Tests(unittest.TestCase):
     def test_look_and_say_example5(self):
         self.assertEqual('312211', dec10.look_and_say('111221'))
 
+
 if __name__ == '__main__':
     unittest.main()

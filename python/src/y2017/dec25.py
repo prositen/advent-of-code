@@ -1,5 +1,4 @@
 import os
-from collections import deque
 
 from python.src.y2017.common import DATA_DIR
 

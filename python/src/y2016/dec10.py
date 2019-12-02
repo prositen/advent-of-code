@@ -93,13 +93,16 @@ class Give(Instruction):
         return bot.give(to_low, to_high)
 
     def __repr__(self):
-        return "<Give low to {0} {1}, high to {2} {3} from bot {4}>".format(self.low_type, self.low_id, self.high_type,
+        return "<Give low to {0} {1}, high to {2} {3} from bot {4}>".format(self.low_type,
+                                                                            self.low_id,
+                                                                            self.high_type,
                                                                             self.high_id, self.bot)
 
 
 class Factory:
     re_VALUE_TO_BOT = re.compile(r"value (\d+) goes to bot (\d+)")
-    re_BOT_GIVES = re.compile(r"bot (\d+) gives low to (bot|output) (\d+) and high to (bot|output) (\d+)")
+    re_BOT_GIVES = re.compile(
+        r"bot (\d+) gives low to (bot|output) (\d+) and high to (bot|output) (\d+)")
 
     def __init__(self, instructions):
         self.output = dict()
@@ -152,7 +155,7 @@ class Factory:
         print("---")
         print("Bots:", ", ".join(repr(x) for x in self.bots.values()))
         print("Bins:", ", ".join(repr(x) for x in self.output.values()))
-        print("Instructions:", "," .join(repr(x) for x in self.instructions))
+        print("Instructions:", ",".join(repr(x) for x in self.instructions))
         print("---")
 
 
@@ -163,6 +166,7 @@ if __name__ == '__main__':
     factory.run()
 
     f = filter(lambda x: x.value == [17, 61], factory.bots.values())
-    print("The bot responsible for comparing value-17 chips with value-61 chips is", "".join(repr(x) for x in f))
+    print("The bot responsible for comparing value-17 chips with value-61 chips is",
+          "".join(repr(x) for x in f))
     bin_values = factory.get_output(0) * factory.get_output(1) * factory.get_output(2)
     print("The values in outputs 0, 1, 2 multiplied is", bin_values)

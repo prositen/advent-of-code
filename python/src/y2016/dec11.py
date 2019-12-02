@@ -78,15 +78,16 @@ class Configuration:
         """
         no_floors = len(self.items)
         paired = self.__pair()
-        return "{0}:{1}".format(self.elevator_floor, ",".join("{0}.{1}.{2}.{3}.".format(floor,
-                                                                                        len(paired[floor][0]),
-                                                                                        len(paired[floor][1]),
-                                                                                        len(paired[floor][2]))
-                                                              for floor in range(no_floors)))
+        return "{0}:{1}".format(self.elevator_floor,
+                                ",".join("{0}.{1}.{2}.{3}.".format(floor,
+                                                                   len(paired[floor][0]),
+                                                                   len(paired[floor][1]),
+                                                                   len(paired[floor][2]))
+                                         for floor in range(no_floors)))
 
     def is_safe(self):
-        """" Paired microchips are safe. Unpaired microchips are killed if on the same floor / elevator
-        as a generator, whether or not the generator is paired """
+        """" Paired microchips are safe. Unpaired microchips are killed if on the
+        same floor / elevator as a generator, whether or not the generator is paired """
         return all(safe(x) for x in self.items)
 
     def is_done(self):
@@ -180,7 +181,8 @@ class Factory:
         while visit:
             current_state, moves = visit.popleft()
             if current_state.is_done():
-                # Break at the first match; since we're using DFS we don't need to continue further.
+                # Break at the first match; since we're using DFS we don't
+                # need to continue further.
                 self.steps = moves + [current_state]
                 return
             else:
@@ -219,4 +221,3 @@ if __name__ == '__main__':
                                                       Item('dilithium', 'microchip')]})
     factory_b.run()
     print("Part 2: Minimum number of steps", factory_b.minimum_steps())
-

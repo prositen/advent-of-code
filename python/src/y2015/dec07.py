@@ -1,4 +1,3 @@
-import fileinput
 import re
 
 __author__ = 'anna'
@@ -96,9 +95,10 @@ class NotCommand(OneParamCommand):
     """ Home-brewed two's complement. The built-in one works on infinite number of bytes,
     which doesn't help me.
     """
+
     def run(self, context):
         bin_num = format(self.in1.val(context), '016b')
-        bin_num = bin_num.replace('1', '2').replace('0','1').replace('2','0')
+        bin_num = bin_num.replace('1', '2').replace('0', '1').replace('2', '0')
         int_num = int(bin_num, 2)
         context[self.out] = int_num
 
@@ -174,9 +174,9 @@ def run(instructions, preset=None):
 
     return registers
 
-if __name__ == '__main__':
-    with open('../../../data/2015/input.7.txt','r') as fh:
 
+if __name__ == '__main__':
+    with open('../../../data/2015/input.7.txt', 'r') as fh:
         regs = run(fh.readlines())
         print("Register A contains:", regs['a'])
 

@@ -49,4 +49,5 @@ def shortest_path(start, end, favorite_number, max_steps=None):
 if __name__ == '__main__':
     path = shortest_path((1, 1), (31, 39), 1362)
     print("The fewest number of steps needed to get to (31, 39) is", len(path))
-    print("The number of locations you can read in 50 steps is", shortest_path((1, 1), None, 1362, 50))
+    print("The number of locations you can read in 50 steps is",
+          shortest_path((1, 1), None, 1362, 50))

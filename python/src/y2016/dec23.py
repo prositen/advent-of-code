@@ -115,7 +115,8 @@ class Computer(dec12.Computer):
                 m4 = mul[4].params[0]
                 m4_steps = int(mul[4].params[1])
 
-                if target != m1 and target != m3 and m1 == m2 and m3 == m4 and m2_steps == -2 and m4_steps == -5:
+                if (target != m1 and target != m3 and m1 == m2
+                        and m3 == m4 and m2_steps == -2 and m4_steps == -5):
                     return Assembunny2.Multiply((target, m1, m3))
         return self.context.instructions[self.context.pointer]
 

@@ -6,7 +6,8 @@ class Dec14(Day):
     def __init__(self, instructions=None):
         super().__init__(2018, 14, instructions)
 
-    def cook(self, elf_1_pos, elf_2_pos, recipe_scores):
+    @staticmethod
+    def cook(elf_1_pos, elf_2_pos, recipe_scores):
         s1 = recipe_scores[elf_1_pos]
         s2 = recipe_scores[elf_2_pos]
         new_recipe = s1 + s2
@@ -35,7 +36,8 @@ class Dec14(Day):
         while s not in str(recipe_scores[-sl - 2:]):
             elf_1_pos, elf_2_pos = self.cook(elf_1_pos, elf_2_pos, recipe_scores)
 
-        return (str(recipe_scores).find(s) - 1) // 3  # skip leading [. Each digit needs 3 chars (, and blank)
+        # skip leading [. Each digit needs 3 chars (, and blank)
+        return (str(recipe_scores).find(s) - 1) // 3
 
 
 if __name__ == '__main__':

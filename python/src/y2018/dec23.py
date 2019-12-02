@@ -53,7 +53,8 @@ class Dec23(Day):
             if skip == 1:
                 return distance
             else:
-                x_range, y_range, z_range = ((position[i] - skip, position[i] + skip) for i in (0, 1, 2))
+                x_range, y_range, z_range = ((position[i] - skip, position[i] + skip)
+                                             for i in (0, 1, 2))
                 skip //= 2
 
 

@@ -22,10 +22,10 @@ class Dec06(Day):
                       key=lambda x: x[0])
 
     def generate_distances(self):
-        self.min_x = min(self.instructions, key=lambda x: x[0])[0]
-        self.max_x = max(self.instructions, key=lambda x: x[0])[0]
-        self.min_y = min(self.instructions, key=lambda x: x[1])[1]
-        self.max_y = max(self.instructions, key=lambda x: x[1])[1]
+        self.min_x = min(self.instructions, key=lambda i: i[0])[0]
+        self.max_x = max(self.instructions, key=lambda i: i[0])[0]
+        self.min_y = min(self.instructions, key=lambda i: i[1])[1]
+        self.max_y = max(self.instructions, key=lambda i: i[1])[1]
 
         self.all_distances = list()
         self.closest_area = list()

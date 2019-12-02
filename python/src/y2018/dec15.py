@@ -29,9 +29,9 @@ class Fighter(object):
                 self.enemies.remove(self.target)
 
     def open_squares(self, cave):
-        return [(self.y+dy, self.x+dx)
+        return [(self.y + dy, self.x + dx)
                 for dy, dx in READING_ORDER
-                if cave.grid[self.y+dy][self.x+dx] == '.']
+                if cave.grid[self.y + dy][self.x + dx] == '.']
 
     def calculate_target(self):
         adjacent = [e for e in self.enemies if e.hp > 0 and self.distance(e) <= self.range]
@@ -95,7 +95,7 @@ class Cave(object):
                         and (yy, xx) not in visited:
                     to_visit.append(path + [(yy, xx)])
                     visited.add((yy, xx))
-            to_visit = sorted(to_visit, key=lambda path: (len(path), path[-1]), reverse=True)
+            to_visit = sorted(to_visit, key=lambda p: (len(p), p[-1]), reverse=True)
         return []
 
 

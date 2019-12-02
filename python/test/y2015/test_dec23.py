@@ -14,7 +14,7 @@ class Dec23Tests(unittest.TestCase):
         program = dec23.Program(lines)
         registers = program.run({'a': 0, 'b': 0})
 
-        self.assertEquals(2, registers['a'])
+        self.assertEqual(2, registers['a'])
 
 
 if __name__ == '__main__':

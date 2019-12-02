@@ -2,6 +2,7 @@ import unittest
 
 from python.src.y2017 import dec20
 
+
 class TestSwarm(unittest.TestCase):
 
     def test_closest_particle(self):

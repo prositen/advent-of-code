@@ -39,6 +39,6 @@ if __name__ == '__main__':
         discs = [Disc.from_string(line) for line in disc_lines]
         first_start = find_first_start(discs)
         print("First possible start", first_start)
-        discs.append(Disc(discs[-1].number+1, 11, 0))
+        discs.append(Disc(discs[-1].number + 1, 11, 0))
         first_start_part_2 = find_first_start(discs)
         print("First possible start", first_start_part_2)

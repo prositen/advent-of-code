@@ -4,7 +4,9 @@ __author__ = 'anna'
 
 
 class Reindeer(object):
-    RE_REINDEER = re.compile(r'(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.')
+    RE_REINDEER = re.compile(
+        r'(\w+) can fly (\d+) km/s for (\d+) seconds, but then must rest for (\d+) seconds.'
+    )
 
     def __init__(self, rule):
         result = re.match(self.RE_REINDEER, rule)
@@ -20,7 +22,10 @@ class Reindeer(object):
             raise ValueError("Rule on wrong format ({0})".format(rule))
 
     def __repr__(self):
-        return "{0} can fly {1} km/s for {2} seconds, but then must rest for {3} seconds.".format(self.name, self.speed, self.speed_duration, self.rest_duration)
+        return "{0} can fly {1} km/s for {2} seconds, " \
+               "but then must rest for {3} seconds.".format(self.name, self.speed,
+                                                            self.speed_duration,
+                                                            self.rest_duration)
 
     def reset(self):
         self.score = 0
@@ -31,7 +36,8 @@ class Reindeer(object):
 
         cycles_done = time // cycle
         seconds_in_cycle = time % cycle
-        self.location = self.speed * (cycles_done * self.speed_duration + min(seconds_in_cycle, self.speed_duration))
+        self.location = self.speed * (cycles_done * self.speed_duration +
+                                      min(seconds_in_cycle, self.speed_duration))
         self.time = time
 
     def increase_score(self):
@@ -69,9 +75,9 @@ def winner_ticks(reindeer_rules, seconds):
             r.tick()
         # Find the location of the leader, and give a point to every reindeer
         # with the same location
-        l = leader(reindeer, lambda k: k.location)
+        _leader = leader(reindeer, lambda k: k.location)
         for r in reindeer.values():
-            if r.location == l.location:
+            if r.location == _leader.location:
                 reindeer[r.name].increase_score()
 
     return leader(reindeer, key=lambda k: k.score)
@@ -80,10 +86,12 @@ def winner_ticks(reindeer_rules, seconds):
 def main():
     with open('../../../data/2015/input.14.txt', 'r') as fh:
         r = winner(fh.readlines(), 2503)
-        print("The winning reindeer is {name} with {location} km traveled.".format(name=r.name, location=r.location))
+        print("The winning reindeer is {name} "
+              "with {location} km traveled.".format(name=r.name, location=r.location))
         fh.seek(0)
         r = winner_ticks(fh.readlines(), 2503)
-        print("The winning reindeer with tick rules is {name} with a score of {score}.".format(name=r.name, score=r.score))
+        print("The winning reindeer with tick rules is {name} with "
+              "a score of {score}.".format(name=r.name, score=r.score))
 
 
 if __name__ == '__main__':

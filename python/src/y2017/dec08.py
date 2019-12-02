@@ -25,7 +25,8 @@ class Instruction(object):
     }
 
     def __str__(self):
-        return "{} {} {} if {} {} {}".format(self.reg, self.instruction, self.value, self.if_reg, self.if_instr,
+        return "{} {} {} if {} {} {}".format(self.reg, self.instruction,
+                                             self.value, self.if_reg, self.if_instr,
                                              self.if_value)
 
     def run(self, context):

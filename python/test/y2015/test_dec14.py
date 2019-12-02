@@ -11,13 +11,14 @@ class Dec14Tests(unittest.TestCase):
 
     def test_winner(self):
         winner = dec14.winner(self.reindeer_rules, 1000)
-        self.assertEquals('Comet', winner.name)
-        self.assertEquals(1120, winner.location)
+        self.assertEqual('Comet', winner.name)
+        self.assertEqual(1120, winner.location)
 
     def test_winning_ticks(self):
         winner = dec14.winner_ticks(self.reindeer_rules, 1000)
-        self.assertEquals('Dancer', winner.name)
-        self.assertEquals(689, winner.score)
+        self.assertEqual('Dancer', winner.name)
+        self.assertEqual(689, winner.score)
+
 
 if __name__ == '__main__':
     unittest.main()

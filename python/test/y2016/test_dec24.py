@@ -23,7 +23,7 @@ class Dec24Tests(unittest.TestCase):
                              self.grid.find_numbers())
 
     def test_visit_numbers(self):
-        self.assertEquals(14, self.grid.shortest_path())
+        self.assertEqual(14, self.grid.shortest_path())
 
 
 if __name__ == '__main__':

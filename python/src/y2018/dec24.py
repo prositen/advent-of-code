@@ -26,7 +26,8 @@ class Army(object):
 
 
 class Group(object):
-    def __init__(self, units, hp, weaknesses, immunities, attack_damage, attack_type, initiative, index):
+    def __init__(self, units, hp, weaknesses, immunities,
+                 attack_damage, attack_type, initiative, index):
         self.units = units
         self.original_units = units
         self.hp = hp
@@ -54,7 +55,8 @@ class Group(object):
             return 1
 
     def select_target(self):
-        enemies = [e for e in self.army.enemies if e.units > 0 and e.index not in self.army.selected]
+        enemies = [e for e in self.army.enemies
+                   if e.units > 0 and e.index not in self.army.selected]
         if not enemies:
             return None
 
@@ -92,12 +94,14 @@ class Battle(object):
         self.infection.reset_units()
 
     def groups(self):
-        return [group for group in self.immune_system.groups + self.infection.groups if group.units > 0]
+        return [group for group in self.immune_system.groups + self.infection.groups
+                if group.units > 0]
 
     def select_targets(self):
         for army in self.immune_system, self.infection:
             army.reset_targets()
-        for g in sorted(self.groups(), key=lambda x: (x.effective_power(), x.initiative), reverse=True):
+        for g in sorted(self.groups(), key=lambda x: (x.effective_power(), x.initiative),
+                        reverse=True):
             g.select_target()
 
     def attack(self):

@@ -103,4 +103,5 @@ if __name__ == '__main__':
     puzzle_input = 325489
     SM = SpiralMemory()
     print("{} steps needed for input {}".format(SM.spiral_steps(puzzle_input), puzzle_input))
-    print("First written larger value is {}".format(SM.stress_test(puzzle_input, break_at_larger=True)))
+    print("First written larger value is {}".format(
+        SM.stress_test(puzzle_input, break_at_larger=True)))

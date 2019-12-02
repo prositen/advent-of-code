@@ -19,4 +19,3 @@ if __name__ == '__main__':
         puzzle_input = fh.readlines()
         print("# of valid passphrases: {}".format(valid_passphrases(puzzle_input, False)))
         print("# of valid anagram passhprases: {}".format(valid_passphrases(puzzle_input, True)))
-

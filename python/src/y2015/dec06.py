@@ -3,7 +3,6 @@ import re
 
 __author__ = 'anna'
 
-
 COMMAND = re.compile('(turn on|turn off|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)')
 
 
@@ -127,4 +126,5 @@ if __name__ == '__main__':
         fh.seek(0)
         total_brightness = brightness(fh.readlines())
 
-        print("Lamps lit: {count}. Brightness {brightness}".format(count=count, brightness=total_brightness))
+        print("Lamps lit: {count}. Brightness {brightness}".format(count=count,
+                                                                   brightness=total_brightness))

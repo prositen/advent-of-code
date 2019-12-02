@@ -22,7 +22,8 @@ class KnotHash(object):
 
     @staticmethod
     def from_bytes_input(puzzle_input):
-        return KnotHash(lengths=[ord(x) for x in puzzle_input] + [17, 31, 73, 47, 23], list_length=256)
+        return KnotHash(lengths=[ord(x) for x in puzzle_input] + [17, 31, 73, 47, 23],
+                        list_length=256)
 
     def round(self):
         for l in self.lengths:

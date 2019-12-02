@@ -19,7 +19,10 @@ def checksum_of(code, length):
         code = dragon_curve(code)
     return checksum(code[:length])
 
+
 if __name__ == '__main__':
     puzzle_input = '11110010111001001'
-    print("Checksum of {0}, length 272 is {1}".format(puzzle_input, checksum_of(puzzle_input, 272)))
-    print("Checksum of {0}, length 35651584 is {1}".format(puzzle_input, checksum_of(puzzle_input, 35651584)))
+    print("Checksum of {0}, length 272 is {1}".format(puzzle_input,
+                                                      checksum_of(puzzle_input, 272)))
+    print("Checksum of {0}, length 35651584 is {1}".format(puzzle_input,
+                                                           checksum_of(puzzle_input, 35651584)))

@@ -44,5 +44,6 @@ class Dec19Tests(unittest.TestCase):
         expected = ["OO2H", "H2OO"]
         self.assertListEqual(sorted(expected), sorted(rule.transform_any(text)))
 
+
 if __name__ == '__main__':
     unittest.main()

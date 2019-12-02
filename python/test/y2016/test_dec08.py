@@ -33,7 +33,8 @@ class Dec08Tests(unittest.TestCase):
                               '.#.....'],
                              grid.get_rows())
 
-        self.assertEquals(6, grid.count_lit())
+        self.assertEqual(6, grid.count_lit())
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -31,7 +31,8 @@ class Defragger(object):
         return sum(s.count('1') for s in self.get_squares())
 
     def get_state(self):
-        return "\n".join(["".join(str(x) for x in self.regions[line]) for line in range(self.max_length)])
+        return "\n".join(["".join(str(x) for x in self.regions[line])
+                          for line in range(self.max_length)])
 
     def find_regions(self):
         self.get_squares()
@@ -70,7 +71,7 @@ class Defragger(object):
         for line in self.regions.values():
             m = m.union(line)
 
-        return len(m)-1   # Remove the 0
+        return len(m) - 1  # Remove the 0
 
     def fill(self, row, col, fill_region):
         self.regions[row][col] = fill_region

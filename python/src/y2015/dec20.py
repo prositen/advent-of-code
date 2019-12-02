@@ -1,8 +1,7 @@
 from collections import Counter
-from math import sqrt
 from functools import lru_cache, reduce
 from itertools import product
-from array import array
+from math import sqrt
 
 __author__ = 'Anna'
 
@@ -26,7 +25,7 @@ def proper_divs(n):
 
     factors, occurrences = pf.keys(), pf.values()
     multiplicities = product(*(range(oc + 1) for oc in occurrences))
-    divs = {reduce(MUL, (pf**m for pf, m in zip(factors, multis)), 1)
+    divs = {reduce(MUL, (pf ** m for pf, m in zip(factors, multis)), 1)
             for multis in multiplicities}
     return divs or ({1} if n != 1 else set())
 
@@ -59,6 +58,7 @@ def main():
     print("House {0} got {1} presents".format(house, presents))
     house, presents = problem_2(number)
     print("House {0} got {1} presents".format(house, presents))
+
 
 if __name__ == '__main__':
     main()

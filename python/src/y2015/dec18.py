@@ -1,7 +1,7 @@
-from collections import defaultdict
 import copy
 
 __author__ = 'Anna'
+
 
 class Cell(object):
 
@@ -21,7 +21,7 @@ class Cell(object):
         return self.value
 
     def update(self, neighbours):
-        if self.value and neighbours not in (2,3):
+        if self.value and neighbours not in (2, 3):
             self.off()
         elif not self.value and neighbours == 3:
             self.on()
@@ -32,7 +32,7 @@ class Grid(object):
     def __init__(self, from_char=None, from_cells=None):
         if from_char is not None:
             self.cells = dict()
-            for y,line in enumerate(from_char):
+            for y, line in enumerate(from_char):
                 self.cells[y] = dict()
                 for x, cell in enumerate(line):
                     self.cells[y][x] = Cell(cell)
@@ -98,8 +98,8 @@ def step(grid, steps):
     for step in range(steps):
         # print("Running step", step)
         grid = grid.next()
-    #print(grid)
-    return(grid)
+    # print(grid)
+    return (grid)
 
 
 def main():
@@ -111,5 +111,7 @@ def main():
         corner_grid = CornerLitGrid(from_char=from_chars)
         corner_grid_100 = step(corner_grid, 100)
         print("After 100 steps, the broken grid has", corner_grid_100.count(), "lit lamps")
+
+
 if __name__ == '__main__':
     main()

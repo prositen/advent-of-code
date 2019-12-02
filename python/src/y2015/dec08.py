@@ -13,6 +13,7 @@ def char_encode_diff(text):
     added = added_backslash + added_quote + 2
     return added
 
+
 if __name__ == '__main__':
     with open('../../../data/2015/input.8.txt', 'r') as fh:
         total_decode_diff = 0
@@ -23,4 +24,5 @@ if __name__ == '__main__':
             total_decode_diff += char_decode_diff(text)
             total_encode_diff += char_encode_diff(text)
 
-    print("Diff is {diff} (decode) & {diff2} (encode)".format(diff=total_decode_diff, diff2=total_encode_diff))
+    print("Diff is {diff} (decode) & {diff2} (encode)".format(diff=total_decode_diff,
+                                                              diff2=total_encode_diff))

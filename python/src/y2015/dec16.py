@@ -19,7 +19,6 @@ class Aunt(object):
 
 
 def filter_factory(item, count, retroencabulator):
-
     def filter_possession(aunt):
         if item not in aunt.possessions:
             return True
@@ -31,6 +30,7 @@ def filter_factory(item, count, retroencabulator):
         if aunt.possessions[item] == count:
             return True
         return False
+
     return filter_possession
 
 
@@ -62,9 +62,12 @@ def main():
                   'perfumes': 1}
         print("Ticker: ", ticker)
         aunt = find_aunt(aunts, ticker, False)
-        print("Aunt number {no}, possessions: {things}".format(no=aunt.number, things=aunt.possessions))
+        print("Aunt number {no}, possessions: {things}".format(no=aunt.number,
+                                                               things=aunt.possessions))
         aunt = find_aunt(aunts, ticker, True)
-        print("Aunt number {no}, possessions: {things}".format(no=aunt.number, things=aunt.possessions))
+        print("Aunt number {no}, possessions: {things}".format(no=aunt.number,
+                                                               things=aunt.possessions))
+
 
 if __name__ == '__main__':
     main()

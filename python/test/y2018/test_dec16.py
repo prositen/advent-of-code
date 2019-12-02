@@ -20,7 +20,6 @@ class TestDec16(unittest.TestCase):
             [3, 2, 2, 1]
         )], d.samples)
 
-
     def test_sample(self):
         sample = (
             [3, 2, 1, 1],

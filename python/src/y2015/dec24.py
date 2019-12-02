@@ -3,7 +3,7 @@ from itertools import permutations
 
 
 def quantum_entanglement(packages):
-    return reduce(lambda x, y: x*y, packages)
+    return reduce(lambda x, y: x * y, packages)
 
 
 def smallest_group(packages, number_of_groups):

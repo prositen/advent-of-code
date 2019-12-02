@@ -42,5 +42,6 @@ class Dec12Tests(unittest.TestCase):
     def test_skip_red_example4(self):
         self.assertEqual(6, dec12.sum_numbers('[1,"red",5]', skip_red=True))
 
+
 if __name__ == '__main__':
     unittest.main()

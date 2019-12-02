@@ -9,7 +9,7 @@ class Dec17(Day):
         super().__init__(2018, 17, instructions, filename)
         self.spring = (500, 0)
         self.veins = self.instructions
-        self.min_x = min(self.veins)[0][0]-1
+        self.min_x = min(self.veins)[0][0] - 1
         self.max_x = max(self.veins, key=lambda xy: xy[0][1])[0][1]
         self.min_y = min(self.veins, key=lambda xy: xy[1][0])[1][0] - 1
         self.max_y = max(self.veins, key=lambda xy: xy[1][1])[1][1] + 1
@@ -20,7 +20,6 @@ class Dec17(Day):
         for y in self.grid:
             self.running_water += y.count('|')
             self.still_water += y.count('~')
-
 
     @staticmethod
     def parse_instructions(instructions):
@@ -56,14 +55,14 @@ class Dec17(Day):
 
     def probe_down(self, x, y):
         while (y + 1) < len(self.grid) and \
-                self.grid[y+1][x] == self.SAND:
+                self.grid[y + 1][x] == self.SAND:
             self.grid[y][x] = '|'
             y += 1
-        if y+1 == len(self.grid):
+        if y + 1 == len(self.grid):
             self.grid[y][x] = '|'
             return False
         self.grid[y][x] = '|'
-        while self.grid[y+1][x] in self.STOPS_WATER:
+        while self.grid[y + 1][x] in self.STOPS_WATER:
             (left, fill_left) = self.probe_left(x - 1, y)
             (right, fill_right) = self.probe_right(x + 1, y)
             if fill_left and fill_right:

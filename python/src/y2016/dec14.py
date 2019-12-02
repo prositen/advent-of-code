@@ -114,5 +114,5 @@ if __name__ == '__main__':
         start = timer()
         hash_keys = fn("ngcjuoqr", keystretch=2016)
         end = timer()
-        print(fn.__name__, end-start)
+        print(fn.__name__, end - start)
     print("The 64th key index with super stretching is", hash_keys[63])

@@ -13,7 +13,7 @@ def decompressed_length(text, version, return_text=False):
             no_chars = int(result.group(1))
             no_repeat = int(result.group(2))
             text_length += result.start() - pos
-            decompressed = text[result.end():result.end()+no_chars]
+            decompressed = text[result.end():result.end() + no_chars]
 
             if return_text:
                 decompressed_text.append(text[pos:result.start()])
@@ -32,6 +32,7 @@ def decompressed_length(text, version, return_text=False):
     if return_text:
         return "".join(decompressed_text)
     return text_length
+
 
 if __name__ == '__main__':
     with open('../../../data/2016/input.9.txt', 'r') as fh:

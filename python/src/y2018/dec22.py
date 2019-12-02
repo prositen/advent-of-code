@@ -52,9 +52,9 @@ class Dec22(Day):
     def part_2(self):
 
         # time estimate, time spent, y, x, equipment
-        to_visit = [(self.ty+self.tx, 0, 0, 0, self.TORCH)]
+        to_visit = [(self.ty + self.tx, 0, 0, 0, self.TORCH)]
         time_to_region = {
-            (0,0,1): 0
+            (0, 0, 1): 0
         }
         while to_visit:
             _, time, y, x, eq = heappop(to_visit)

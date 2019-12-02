@@ -19,7 +19,7 @@ def password_valid(password):
 
 
 def increase_char(char):
-    return chr(ord(char)+1)
+    return chr(ord(char) + 1)
 
 
 def increase(password):

@@ -12,13 +12,15 @@ class Dec15Tests(unittest.TestCase):
     def test_best_recipe(self):
         result = dec15.best_recipe(self.ingredients, 100)
         self.assertEqual(62842880, result.score)
-        self.assertEquals(44, result.measurements['Butterscotch'])
-        self.assertEquals(56, result.measurements['Cinnamon'])
+        self.assertEqual(44, result.measurements['Butterscotch'])
+        self.assertEqual(56, result.measurements['Cinnamon'])
 
     def test_best_recipe_500_cals(self):
         result = dec15.best_recipe(self.ingredients, teaspoons=100, calories=500)
         self.assertEqual(57600000, result.score)
         self.assertEqual(40, result.measurements['Butterscotch'])
         self.assertEqual(60, result.measurements['Cinnamon'])
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -27,12 +27,12 @@ class Dec04Tests(unittest.TestCase):
                                                 'totally-real-room-200[decoy]']))
 
     def test_sum_valid_sector_ids(self):
-        self.assertEquals(1514,
-                          dec04.sum_valid_sector_ids(['aaaaa-bbb-z-y-x-123[abxyz]',
-                                                      'a-b-c-d-e-f-g-h-987[abcde]',
-                                                      'not-a-real-room-404[oarel]',
-                                                      'totally-real-room-200[decoy]']))
+        self.assertEqual(1514,
+                         dec04.sum_valid_sector_ids(['aaaaa-bbb-z-y-x-123[abxyz]',
+                                                     'a-b-c-d-e-f-g-h-987[abcde]',
+                                                     'not-a-real-room-404[oarel]',
+                                                     'totally-real-room-200[decoy]']))
 
     def test_decrypt(self):
-        self.assertEquals('very encrypted name',
-                          dec04.decrypt_name('qzmt-zixmtkozy-ivhz', 343))
+        self.assertEqual('very encrypted name',
+                         dec04.decrypt_name('qzmt-zixmtkozy-ivhz', 343))

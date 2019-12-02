@@ -68,5 +68,3 @@ if __name__ == '__main__':
             lines = [x.strip() for x in i.split(',')]
             print(distance(lines))
             print(visited_twice(lines))
-
-

@@ -18,4 +18,3 @@ class TestDigitalPlumber(unittest.TestCase):
         self.assertEqual(6, len(groups.get(0)))
         self.assertEqual(2, dec12.count_groups(groups))
         self.assertSetEqual({0, 2, 3, 4, 5, 6}, groups.get(0))
-

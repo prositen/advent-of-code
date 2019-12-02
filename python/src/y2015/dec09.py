@@ -4,7 +4,6 @@ import sys
 
 __author__ = 'anna'
 
-
 RE_DISTANCE = r'(\w+) to (\w+) = (\d+)'
 
 
@@ -54,4 +53,3 @@ if __name__ == '__main__':
         print("Shortest path: {distance}".format(distance=shortest_path(fh.readlines())))
         fh.seek(0)
         print("Longest path: {distance}".format(distance=longest_path(fh.readlines())))
-

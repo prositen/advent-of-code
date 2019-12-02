@@ -1,13 +1,14 @@
 __author__ = 'anna'
 
-""" To continue, please consult the code grid in the manual.  Enter the code at row 2947, column 3029. """
+""" To continue, please consult the code grid in the manual.
+Enter the code at row 2947, column 3029. """
 
 
 def next_cell():
     row = 0
     while True:
         row += 1
-        for col in range(1, row+1):
+        for col in range(1, row + 1):
             yield row - col + 1, col
 
 
@@ -23,7 +24,6 @@ def code(row_index, col_index):
 def main():
     print(code(2947, 3029))
 
+
 if __name__ == '__main__':
     main()
-
-

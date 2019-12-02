@@ -43,7 +43,8 @@ class OffsetInstruction(Instruction):
 
 
 class HlfInstruction(RegistryInstruction):
-    """hlf r sets register r to half its current value, then continues with the next instruction."""
+    """hlf r sets register r to half its current value,
+    then continues with the next instruction."""
     regexp = re.compile(r'(?P<i>hlf) (?P<reg>\w)')
 
     def run(self, registers):
@@ -52,7 +53,8 @@ class HlfInstruction(RegistryInstruction):
 
 
 class TplInstruction(RegistryInstruction):
-    """tpl r sets register r to triple its current value, then continues with the next instruction."""
+    """tpl r sets register r to triple its current value,
+    then continues with the next instruction."""
     regexp = re.compile(r'(?P<i>tpl) (?P<reg>\w)')
 
     def run(self, registers):
@@ -61,7 +63,8 @@ class TplInstruction(RegistryInstruction):
 
 
 class IncInstruction(RegistryInstruction):
-    """inc r increments register r, adding 1 to it, then continues with the next instruction."""
+    """inc r increments register r, adding 1 to it,
+    then continues with the next instruction."""
     regexp = re.compile(r'(?P<i>inc) (?P<reg>\w)')
 
     def run(self, registers):

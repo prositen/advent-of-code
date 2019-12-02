@@ -1,6 +1,7 @@
 from itertools import cycle
 from python.src.common import Day
 
+
 class Dec01(Day):
     def __init__(self, instructions=None):
         super().__init__(2018, 1, instructions)

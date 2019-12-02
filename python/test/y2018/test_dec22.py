@@ -22,4 +22,3 @@ class TestDec22(unittest.TestCase):
 
         d = Dec22(instructions=instructions)
         self.assertEqual(45, d.part_2())
-

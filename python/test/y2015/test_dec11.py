@@ -16,13 +16,14 @@ class Dec11Tests(unittest.TestCase):
         self.assertFalse(dec11.password_valid('abbcegjk'))
 
     def test_next_password_example1(self):
-        self.assertEquals('abcdffaa', dec11.next_password('abcdefgh'))
+        self.assertEqual('abcdffaa', dec11.next_password('abcdefgh'))
 
     def test_next_password_example2(self):
-        self.assertEquals('ghjaabcc', dec11.next_password('ghijklmn'))
+        self.assertEqual('ghjaabcc', dec11.next_password('ghijklmn'))
 
     def test_filter_bad(self):
-        self.assertEquals('abcjaaa', dec11.filter_bad('abcijkl'))
+        self.assertEqual('abcjaaa', dec11.filter_bad('abcijkl'))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,6 +1,7 @@
 import unittest
 from python.src.y2017 import dec07
 
+
 class TestDec07(unittest.TestCase):
 
     def setUp(self):
@@ -28,5 +29,3 @@ class TestDec07(unittest.TestCase):
     def test_get_rebalanced_weight(self):
         rc = dec07.RecursiveCircus(self.puzzle_input)
         self.assertEqual(60, rc.balance_weights()[0])
-
-

@@ -17,8 +17,9 @@ class Dec23Tests(unittest.TestCase):
 
     def test_assembunny(self):
         self.computer.run()
-        self.assertEquals(3,
-                          self.computer.register('a'))
+        self.assertEqual(3,
+                         self.computer.register('a'))
+
 
 if __name__ == '__main__':
     unittest.main()

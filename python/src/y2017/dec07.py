@@ -3,10 +3,11 @@ from collections import deque
 
 from python.src.y2017.common import DATA_DIR
 
-""" 
-RecursiveCircus builds up the entire tree and does unspeakable things with it. 
+"""
+RecursiveCircus builds up the entire tree and does unspeakable things with it.
 
-I should really look at a graph library to do the actual tree building instead of hacking like this...
+I should really look at a graph library to do the actual tree building instead of
+hacking like this...
 """
 
 

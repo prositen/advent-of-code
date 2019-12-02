@@ -17,10 +17,10 @@ class Dec10Tests(unittest.TestCase):
 
     def test_example_instructions(self):
         self.factory.run()
-        self.assertEquals(5, self.factory.get_output(0))
-        self.assertEquals(2, self.factory.get_output(1))
-        self.assertEquals(3, self.factory.get_output(2))
-        self.assertEquals([2, 5], self.factory.get_bot_responsibility(2))
+        self.assertEqual(5, self.factory.get_output(0))
+        self.assertEqual(2, self.factory.get_output(1))
+        self.assertEqual(3, self.factory.get_output(2))
+        self.assertEqual([2, 5], self.factory.get_bot_responsibility(2))
         pass
 
 

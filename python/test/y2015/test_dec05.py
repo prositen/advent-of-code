@@ -37,5 +37,6 @@ class Dec05Tests(unittest.TestCase):
     def testNaughtyOrNiceExample9(self):
         self.assertFalse(dec05.naughty_or_nice_2('ieodomkazucvgmuy'))
 
+
 if __name__ == '__main__':
     unittest.main()

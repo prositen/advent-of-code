@@ -83,7 +83,6 @@ class Shield(Spell):
         return "Shield's timer is now {0}".format(self.turns)
 
     def expire(self, player):
-
         return super(Shield, self).expire(player)[:-1] + ", decreasing armor by 7."
 
     def cast(self, player, boss):
@@ -204,9 +203,10 @@ class Turn(object):
             damage = max(1, self.boss.damage - self.player.armor)
             self.player.hp -= damage
             if damage < self.boss.damage:
-                self.debug_print("Boss attacks for {0} - {1} = {2} damage.".format(self.boss.damage,
-                                                                                   self.player.armor,
-                                                                                   damage))
+                self.debug_print(
+                    "Boss attacks for {0} - {1} = {2} damage.".format(self.boss.damage,
+                                                                      self.player.armor,
+                                                                      damage))
             else:
                 self.debug_print("Boss attacks for {0} damage.".format(self.boss.damage))
             if self.player.dead():
@@ -227,7 +227,8 @@ class Turn(object):
             print("-- {0} turn {1}--".format(header, self.game_id), file=fh)
             print("- Player has {0} hit points, {1} armor, {2} mana".format(self.player.hp,
                                                                             self.player.armor,
-                                                                            self.player.mana), file=fh)
+                                                                            self.player.mana),
+                  file=fh)
             print("- Boss has {0} hit points".format(self.boss.hp), file=fh)
 
 
@@ -247,16 +248,16 @@ def play(player, boss, hard_mode=False):
                 games.append(move)
                 cheapest_found = min(cheapest_found, move.player.spent)
         else:
-            # DFS instead of BFS to decrease memory requirements. At least I'm pruning the search space
-            # a bit by only considering paths cheaper than the ones I've already found.
+            # DFS instead of BFS to decrease memory requirements. At least I'm pruning the search
+            # space a bit by only considering paths cheaper than the ones I've already found.
             if move.player.spent < cheapest_found:
                 moves.extendleft([(next_move, next_path) for next_move in move.next_moves()][::-1])
 
     return min(games, key=lambda x: x.player.spent)
 
+
 fh = None
 if __name__ == '__main__':
-
     winning_game = play(Character('Player', hp=50, mana=500),
                         Character('Boss', hp=71, damage=10))
     print("Part 1: Smallest mana cost is", winning_game.player.spent)

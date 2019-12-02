@@ -2,6 +2,7 @@ import unittest
 
 from python.src.y2017 import dec05
 
+
 class TestDec05(unittest.TestCase):
     def test_jump_offsets(self):
         offsets = [0, 3, 0, 1, -3]

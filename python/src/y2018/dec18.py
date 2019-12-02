@@ -3,12 +3,14 @@ from python.src.common import Day
 
 class Dec18(Day):
     """
-    - An open acre will become filled with trees if three or more adjacent acres contained trees.
+    - An open acre will become filled with trees if three or more adjacent
+      acres contained trees.
       Otherwise, nothing happens.
-    - An acre filled with trees will become a lumberyard if three or more adjacent acres were lumberyards.
+    - An acre filled with trees will become a lumberyard if three or more adjacent
+      acres were lumberyards.
       Otherwise, nothing happens.
-    - An acre containing a lumberyard will remain a lumberyard if it was adjacent to at least one other
-      lumberyard and at least one acre containing trees. Otherwise, it becomes open.
+    - An acre containing a lumberyard will remain a lumberyard if it was adjacent to at least
+      one other lumberyard and at least one acre containing trees. Otherwise, it becomes open.
 """
 
     OPEN = '.'
@@ -23,7 +25,9 @@ class Dec18(Day):
         self.rules = {
             self.OPEN: (lambda adj: adj.count(self.TREE) >= 3, self.TREE),
             self.TREE: (lambda adj: adj.count(self.LUMBERYARD) >= 3, self.LUMBERYARD),
-            self.LUMBERYARD: (lambda adj: adj.count(self.TREE) == 0 or adj.count(self.LUMBERYARD) == 0, self.OPEN)
+            self.LUMBERYARD: (lambda adj: (adj.count(self.TREE) == 0 or
+                                           adj.count(self.LUMBERYARD) == 0),
+                              self.OPEN)
         }
 
     @staticmethod

@@ -19,11 +19,11 @@ class Dec12(Day):
 
     def run(self, state, generations, zero_pos=0):
         """
-        The current state of pots is stored in a string. All non-living pots at either end are stripped off,
-        to keep the representation as small as possible.
+        The current state of pots is stored in a string. All non-living pots at
+        either end are stripped off, to keep the representation as small as possible.
 
-        The variable zero_pos keeps track of where the 0-pot is in relation to the first item of the string,
-        since this is needed for scoring
+        The variable zero_pos keeps track of where the 0-pot is in relation to the
+        first item of the string, since this is needed for scoring
 
         Each generation:
             - add padding pots to either side and update zero_pos
@@ -56,7 +56,8 @@ class Dec12(Day):
     def part_2(self):
         """ It's not feasible to run 50 billion generations of simulations.
 
-        The pattern becomes a spaceship (https://en.wikipedia.org/wiki/Spaceship_(cellular_automaton)) -
+        The pattern becomes a spaceship
+        (https://en.wikipedia.org/wiki/Spaceship_(cellular_automaton)) -
         a series of repeating pattern which moves to the right.
 
         The score also converges into increasing according to a linear pattern. Find the slope

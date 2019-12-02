@@ -92,7 +92,8 @@ class Dec16(Day):
             opcode = sample[1][0]
             samples_per_opcode[opcode] = samples_per_opcode.get(opcode, set()).union(matching_ops)
         while len(lookup) < len(self.device.instructions):
-            one_entry = {opcode: list(opname)[0] for opcode, opname in samples_per_opcode.items() if len(opname) == 1}
+            one_entry = {opcode: list(opname)[0]
+                         for opcode, opname in samples_per_opcode.items() if len(opname) == 1}
             for code, name in one_entry.items():
                 lookup[code] = name
                 for k in samples_per_opcode:

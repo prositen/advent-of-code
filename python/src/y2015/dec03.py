@@ -28,8 +28,9 @@ def houses(puzzle_input, santas=1):
 
 
 if __name__ == '__main__':
-    with open('../../../data/2015/input.3.txt','r') as fh:
+    with open('../../../data/2015/input.3.txt', 'r') as fh:
         for no, line in enumerate(fh.readlines()):
-            print("Instruction {line}: {houses} houses got gifts with 1 santa.".format(line=no, houses=houses(line, 1)))
-            print("Instruction {line}: {houses} houses got gifts with 2 santas.".format(line=no, houses=houses(line, 2)))
-
+            print("Instruction {line}: {houses} houses got gifts with "
+                  "1 santa.".format(line=no, houses=houses(line, 1)))
+            print("Instruction {line}: {houses} houses got gifts with "
+                  "2 santas.".format(line=no, houses=houses(line, 2)))

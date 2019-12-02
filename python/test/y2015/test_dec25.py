@@ -45,12 +45,9 @@ class MyTestCase(unittest.TestCase):
                      6: 27995004}
                  }
 
-        #dec25.code(6, 6)
-        #print(dec25.codes)
         for row_index, row in codes.items():
             for col_index, cell in row.items():
-                #self.assertEqual(cell, dec25.codes[row_index][col_index], (row_index, col_index))
-                self.assertEquals(cell, dec25.code(row_index, col_index), (row_index, col_index))
+                self.assertEqual(cell, dec25.code(row_index, col_index), (row_index, col_index))
 
 
 if __name__ == '__main__':

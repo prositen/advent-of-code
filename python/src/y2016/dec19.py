@@ -64,5 +64,7 @@ if __name__ == '__main__':
     #    smart = steal_across(i)
     #    print(i, dumb, smart, dumb == smart)
 
-    print("The remaining elf when starting with 3014603 and stealing the next elf's present is", remaining_elf(3014603))
-    print("The remaining elf when starting with 3014603 and stealing from the elf across is", steal_across(3014603))
+    print("The remaining elf when starting with 3014603 and stealing the next elf's present is",
+          remaining_elf(3014603))
+    print("The remaining elf when starting with 3014603 and stealing from the elf across is",
+          steal_across(3014603))

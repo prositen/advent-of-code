@@ -2,6 +2,7 @@ import re
 from copy import deepcopy
 from collections import deque
 
+
 def make_node(size, used, large=200):
     if used == 0:
         return '_'
@@ -76,8 +77,10 @@ class Grid(object):
         y2, x2 = to_node
 
         c = self.nodes[y1][x1]
-        self.nodes[y2] = self.nodes[y2][:x2] + c + (self.nodes[y2][x2+1:] if x2 < self.max_dim else '')
-        self.nodes[y1] = self.nodes[y1][:x1] + '_' + (self.nodes[y1][x1+1:] if x1 < self.max_dim else '')
+        self.nodes[y2] = self.nodes[y2][:x2] + c + (self.nodes[y2][x2 + 1:]
+                                                    if x2 < self.max_dim else '')
+        self.nodes[y1] = self.nodes[y1][:x1] + '_' + (self.nodes[y1][x1 + 1:]
+                                                      if x1 < self.max_dim else '')
         if self.goal_node == from_node:
             self.goal_node = to_node
         self.empty_node = from_node
@@ -87,8 +90,9 @@ class Grid(object):
         moves = []
         for neighbor in [(-1, 0), (0, -1), (1, 0), (0, 1)]:
             from_node = to_node[0] + neighbor[0], to_node[1] + neighbor[1]
-            if 0 <= from_node[0] < self.max_dim and 0 <= from_node[1] < self.max_dim and self.viable_move(from_node,
-                                                                                                          to_node):
+            if (0 <= from_node[0] < self.max_dim
+                    and 0 <= from_node[1] < self.max_dim
+                    and self.viable_move(from_node, to_node)):
                 new_grid = deepcopy(self)
 
                 new_grid.move(from_node, to_node)

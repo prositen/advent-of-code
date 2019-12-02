@@ -14,7 +14,8 @@ class Item(object):
         self.armor = armor
 
     def __repr__(self):
-        return "{0}: cost {1}, damage {2}, armor {3}".format(self.name, self.cost, self.damage, self.armor)
+        return "{0}: cost {1}, damage {2}, armor {3}".format(self.name, self.cost, self.damage,
+                                                             self.armor)
 
 
 Weapons = [
@@ -64,14 +65,17 @@ class Character(object):
     def hit(self, damage, debug=False):
         self.current_hp -= max(1, damage - self.armor)
         if debug:
-            print("{0} was hit for {1} ({3} after armor), remaining HP {2}".format(self.name, damage, self.current_hp,
-                                                                                   max(1, damage - self.armor)))
+            print("{0} was hit for {1} ({3} after armor), "
+                  "remaining HP {2}".format(self.name, damage,
+                                            self.current_hp,
+                                            max(1, damage - self.armor)))
 
     def alive(self):
         return self.current_hp > 0
 
     def __repr__(self):
-        return "{0}  HP {1}/{2}, Damage {3}, Armor {4}".format(self.name, self.current_hp, self.hp, self.damage,
+        return "{0}  HP {1}/{2}, Damage {3}, Armor {4}".format(self.name, self.current_hp, self.hp,
+                                                               self.damage,
                                                                self.armor)
 
 
@@ -88,20 +92,24 @@ def fight(player, boss, debug=False):
 
 
 def find_best_equipment():
-    equipment = filter(lambda x: (x[2].cost == 0) or (x[2] != x[3]), product(Weapons, Armor, Rings, Rings))
+    equipment = filter(lambda x: (x[2].cost == 0) or (x[2] != x[3]),
+                       product(Weapons, Armor, Rings, Rings))
 
-    won_games = filter(lambda e: fight(Character('Player', 100, sum([x.damage for x in e]), sum([x.armor for x in e])),
-                                       Character("Boss", 104, 8, 1)),
+    won_games = filter(lambda e: fight(
+        Character('Player', 100, sum([x.damage for x in e]), sum([x.armor for x in e])),
+        Character("Boss", 104, 8, 1)),
                        equipment)
 
     return min([sum([x.cost for x in eq]) for eq in won_games])
 
 
 def find_worst_equipment():
-    equipment = filter(lambda x: (x[2].cost == 0) or (x[2] != x[3]), product(Weapons, Armor, Rings, Rings))
+    equipment = filter(lambda x: (x[2].cost == 0) or (x[2] != x[3]),
+                       product(Weapons, Armor, Rings, Rings))
     won_games = filter(
-        lambda e: not fight(Character('Player', 100, sum([x.damage for x in e]), sum([x.armor for x in e])),
-                            Character("Boss", 104, 8, 1)),
+        lambda e: not fight(
+            Character('Player', 100, sum([x.damage for x in e]), sum([x.armor for x in e])),
+            Character("Boss", 104, 8, 1)),
         equipment)
 
     return max([sum([x.cost for x in eq]) for eq in won_games])

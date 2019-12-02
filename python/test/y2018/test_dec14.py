@@ -5,7 +5,6 @@ from python.src.y2018.dec14 import Dec14
 
 class TestDec14(unittest.TestCase):
 
-
     def test_part_1(self):
 
         cases = [

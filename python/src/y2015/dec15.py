@@ -14,7 +14,8 @@ class CookieProperties(object):
 
 class Ingredient(CookieProperties):
     RE_INGREDIENT = \
-        re.compile(r'(\w+): capacity (-?\d+), durability (-?\d+), flavor (-?\d+), texture (-?\d+), calories (-?\d+)')
+        re.compile(r'(\w+): capacity (-?\d+), durability (-?\d+), '
+                   r'flavor (-?\d+), texture (-?\d+), calories (-?\d+)')
 
     def __init__(self, line):
         super(Ingredient, self).__init__()
@@ -49,7 +50,10 @@ class Recipe(CookieProperties):
             self.flavor += ingredient.flavor * teaspoons
             self.texture += ingredient.texture * teaspoons
             self.calories += ingredient.calories * teaspoons
-        self.score = max(self.capacity, 0) * max(self.durability, 0) * max(self.flavor, 0) * max(self.texture, 0)
+        self.score = (max(self.capacity, 0) *
+                      max(self.durability, 0) *
+                      max(self.flavor, 0) *
+                      max(self.texture, 0))
 
 
 def next_measure(ingredients, teaspoons, tail=None):
@@ -61,8 +65,8 @@ def next_measure(ingredients, teaspoons, tail=None):
         for m in range(teaspoons):
             if tail is None:
                 tail = dict()
-            tail[current.name] = m+1
-            for x in next_measure(ingredients[1:], teaspoons-m-1, tail):
+            tail[current.name] = m + 1
+            for x in next_measure(ingredients[1:], teaspoons - m - 1, tail):
                 yield x
 
 
@@ -94,6 +98,7 @@ def main():
         print("With a calorie limit of 500, the best score is {score} "
               "using measurements {measurements}".format(score=result.score,
                                                          measurements=result.measurements))
+
 
 if __name__ == '__main__':
     main()

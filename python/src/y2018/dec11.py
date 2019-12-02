@@ -26,11 +26,14 @@ class Dec11(Day):
 
     def calc_grid(self, square_size=3):
         row_sums = [
-            [sum(self.grid[y][:square_size])] + [0 for _ in range(square_size, 300)] for y in range(300)
+            [sum(self.grid[y][:square_size])] +
+            [0 for _ in range(square_size, 300)] for y in range(300)
         ]
         for y in range(300):
             for x in range(1, 300 - square_size):
-                row_sums[y][x] = row_sums[y][x - 1] + self.grid[y][x + square_size - 1] - self.grid[y][x - 1]
+                row_sums[y][x] = (row_sums[y][x - 1] +
+                                  self.grid[y][x + square_size - 1] -
+                                  self.grid[y][x - 1])
 
         max_sum = (0, 1, 1)
 

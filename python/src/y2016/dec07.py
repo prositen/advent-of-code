@@ -47,6 +47,7 @@ def count_ips_with_tls(ips):
 def count_ips_with_ssl(ips):
     return len(list(filter(ipv7_supports_ssl, ips)))
 
+
 if __name__ == '__main__':
     with open('../../../data/2016/input.7.txt', 'r') as fh:
         lines = fh.readlines()

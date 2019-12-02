@@ -26,5 +26,6 @@ if __name__ == '__main__':
     with open(os.path.join(DATA_DIR, 'input.5.txt')) as fh:
         puzzle_input = list(map(int, fh.readlines()))
         print('It takes {} jumps to exit the list.'.format(jump_offsets(puzzle_input)))
-        print('With "stranger jumps" it takes {} jumps to exit the list'.format(jump_offsets(puzzle_input,
-                                                                                             strange_jumps=True)))
+        print('With "stranger jumps" it takes {} jumps '
+              'to exit the list'.format(jump_offsets(puzzle_input,
+                                                     strange_jumps=True)))

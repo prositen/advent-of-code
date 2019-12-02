@@ -26,7 +26,8 @@ def convert_to_vertical(lines):
 
 def vertical_triangles(lines):
     """
-    In your puzzle input, and instead reading by columns, how many of the listed triangles are possible?
+    In your puzzle input, and instead reading by columns,
+    how many of the listed triangles are possible?
     """
     triples = convert_to_vertical(lines)
     valid_triangles = len(list(filter(lambda x: valid_triangle(x[0], x[1], x[2]), triples)))

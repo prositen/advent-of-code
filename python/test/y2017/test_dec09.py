@@ -2,6 +2,7 @@ import unittest
 
 from python.src.y2017 import dec09
 
+
 class TestStreamProcessing(unittest.TestCase):
 
     def test_group_score(self):
@@ -22,12 +23,12 @@ class TestStreamProcessing(unittest.TestCase):
         test_cases = [
             ("<>", 0),
             ("<random characters>", 17),
-            ("<<<<>",3),
+            ("<<<<>", 3),
             ("<{!>}>", 2),
             ("<!!>", 0),
             ("<!!!>>", 0),
             ('<{o"i!a,<[i<a>', 10)
-            ]
+        ]
         for stream, expected in test_cases:
             tree = dec09.build_tree(stream)
             self.assertEqual(expected, tree.sum_tree()[1])

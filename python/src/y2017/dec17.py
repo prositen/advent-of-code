@@ -24,16 +24,18 @@ class Spinlock(object):
         # 0 is always first, keep track of what's changed behind it.
         after_0 = self.values[1]
         pos = self.position
-        for x in range(2017+1, 50000000):
+        for x in range(2017 + 1, 50000000):
             pos = 1 + ((pos + self.skip) % x)
             if pos == 1:
                 after_0 = x
         return after_0
 
+
 def main():
     s = Spinlock(344)
     print("Part 1:", s.part_1())
     print("Part 2:", s.part_2())
+
 
 if __name__ == '__main__':
     main()
