@@ -17,7 +17,6 @@ function spiral_step() {
     declare -A m
     m[0,0]=1
     while true; do
-        local side
         for side in 1 2; do
             local step=0
             while [ ${step} -lt ${steps} ]; do
@@ -26,13 +25,13 @@ function spiral_step() {
                     local r_1=$((m[$x,$((y-1))]       + m[$x,$y]       + m[$x,$((y+1))]))
                     local r_2=$((m[$((x+1)),$((y-1))] + m[$((x+1)),$y] + m[$((x+1)),$((y+1))]))
                     local m0=$((r_0 + r_1 + r_2))
-                    if (( $m0 > $input )); then
+                    if (( m0 > input )); then
                         echo "${m0}"
                         return
                     fi
                     m[${x},${y}]=${m0}
                 fi
-                if [ ${value} -ge ${input} ]; then
+                if (( value >= input )); then
                     if [ "$part" == "part1" ]; then
                         x=$(abs ${x})
                         y=$(abs ${y})

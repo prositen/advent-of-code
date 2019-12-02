@@ -3,13 +3,13 @@ source ../common.bash
 function high_entropy_passphrases() {
     local valid_passphrases=0
     local uniq
-    for i1 in ${!dec04_input[@]}; do
+    for i1 in "${!dec04_input[@]}"; do
         local phrase
-        read -r -a phrase <<< ${dec04_input[i1]}
+        read -r -a phrase <<< "${dec04_input[i1]}"
         if [ "$1" == "part2" ]; then
             local sorted_phrase=()
-            for p1 in ${!phrase[@]}; do
-                sorted_phrase+=($(sort_letters ${phrase[p1]}))
+            for p1 in "${!phrase[@]}"; do
+                sorted_phrase+=("$(sort_letters "${phrase[p1]}")")
             done
             read -r -a phrase <<< "${sorted_phrase[@]}"
         fi

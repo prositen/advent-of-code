@@ -6,8 +6,8 @@
 function read_file_to_var() {
 	local year=$1
 	local day=$2
-	local value=$(<../../data/${year}/input.${day}.txt)
-	echo ${value}
+	local value=$(<../../data/"${year}"/input."${day}".txt)
+	echo "${value}"
 }
 
 ##
@@ -17,7 +17,7 @@ function read_file_to_arr() {
     # array keys: ${!array[@]}
     local year=$1
     local day=$2
-    readarray -t "$3" < ../../data/${year}/input.${day}.txt
+    readarray -t "$3" < ../../data/"${year}"/input."${day}".txt
 }
 
 function sort_arr() {
