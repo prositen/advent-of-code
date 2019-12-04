@@ -36,7 +36,9 @@ function dec05_test() {
 function dec05_main() {
   declare -a dec05_input
   read_file_to_arr 2017 5 dec05_input
-  echo "Part 1: $(jump_offsets)"
+  echo "Part 1: $(jump_offsets part1)"
+  read_file_to_arr 2017 5 dec05_input
+  echo "Part 1: $(jump_offsets part2)"
 }
 
 
