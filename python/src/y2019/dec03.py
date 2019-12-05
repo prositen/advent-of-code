@@ -1,5 +1,4 @@
 from python.src.common import Day
-from python.src.y2019.intcode import IntCode
 
 
 class Grid(object):
