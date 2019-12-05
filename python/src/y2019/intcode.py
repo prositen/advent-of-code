@@ -1,6 +1,3 @@
-from enum import Enum
-
-
 class Operator(object):
     op_code = 0
     operators = dict()

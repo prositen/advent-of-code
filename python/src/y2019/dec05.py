@@ -1,5 +1,5 @@
 from python.src.common import Day
-from python.src.y2019.intcode import IntCode, Operator
+from python.src.y2019.intcode import IntCode
 
 
 class Dec05(Day):
