@@ -21,4 +21,4 @@ class TestDec02(unittest.TestCase):
         for case in cases:
             ic = IntCode(case[0])
             ic.run()
-            self.assertEqual(case[1], ic.instructions)
+            self.assertEqual(case[1], ic.data)
