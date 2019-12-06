@@ -6,6 +6,7 @@ from python.src.common import Day
 class Node(object):
     def __init__(self, name):
         self.name = name
+        self.parent = None
         self.children = list()
         self.metadata = list()
 
