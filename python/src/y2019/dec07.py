@@ -50,4 +50,4 @@ class Dec07(Day):
 if __name__ == '__main__':
     d = Dec07()
     print("Largest output signal:", d.part_1())
-    print(":", d.part_2())
+    print("Highest signal with feedback loop mode:", d.part_2())
