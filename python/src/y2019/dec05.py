@@ -15,13 +15,13 @@ class Dec05(Day):
 
     def part_1(self):
         ic = IntCode(self.instructions)
-        ic.input = 1
+        ic.input = [1]
         ic.run()
         return ic.output
 
     def part_2(self):
         ic = IntCode(self.instructions)
-        ic.input = 5
+        ic.input = [5]
         ic.run()
         return ic.output
 

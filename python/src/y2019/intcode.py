@@ -72,8 +72,10 @@ class Multiply(Operator, op_code=2, operands=3):
 
 class Input(Operator, op_code=3, operands=1):
     def run(self, context):
-        context.data[self.op[0]] = context.input
-        return super().run(context)
+        if context.input:
+            context.data[self.op[0]] = context.input.pop(0)
+            return super().run(context)
+        return context.pc
 
 
 class Output(Operator, op_code=4, operands=1):
@@ -126,14 +128,17 @@ class Exit(Operator, op_code=99):
 class IntCode(object):
     def __init__(self, instructions):
         self.data = [i for i in instructions]
-        self.input = 0
-        self.output = 0
+        self.input = []
+        self.output = None
         self.pc = 0
 
-    def run(self, debug=False):
-        while self.pc < len(self.data):
+    def step(self, debug=False):
+        if self.pc is not None and self.pc < len(self.data):
             operator = Operator.operator_from(self.data[self.pc:])
             if debug:
                 print(operator.str(self))
             self.pc = operator.run(self)
-        return self.data[0]
+
+    def run(self, debug=False):
+        while self.pc < len(self.data):
+            self.step(debug)

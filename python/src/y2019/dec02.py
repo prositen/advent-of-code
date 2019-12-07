@@ -16,14 +16,18 @@ class Dec02(Day):
     def part_1(self):
         self.instructions[1] = 12
         self.instructions[2] = 2
-        return IntCode(self.instructions).run()
+        ic = IntCode(self.instructions)
+        ic.run()
+        return ic.data[0]
 
     def part_2(self):
         for verb in range(0, 99):
             for noun in range(0, 99):
                 self.instructions[1] = noun
                 self.instructions[2] = verb
-                if IntCode(self.instructions).run() == 19690720:
+                ic = IntCode(self.instructions)
+                ic.run()
+                if ic.data[0] == 19690720:
                     return 100 * noun + verb
 
 
