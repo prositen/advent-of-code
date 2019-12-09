@@ -23,7 +23,7 @@ class Dec07(Day):
                 amp = IntCode(self.instructions)
                 amp.input = [phases[i], prev_output]
                 amp.run()
-                prev_output = amp.output
+                prev_output = amp.output[-1]
             output = max(output, prev_output)
         return output
 
@@ -34,14 +34,14 @@ class Dec07(Day):
             for i in range(5):
                 amps.append(IntCode(self.instructions))
                 amps[i].input = [phases[i]]
-            amps[4].output = 0
+            amps[4].output = [0]
 
             while amps[4].pc < len(amps[4].data):
                 for i in range(5):
                     amps[i].step()
-                    if amps[i].output is not None:
-                        amps[(i + 1) % 5].input.append(amps[i].output)
-                        amps[i].output = None
+                    if amps[i].output:
+                        amps[(i + 1) % 5].input.append(amps[i].output[0])
+                        amps[i].output = []
 
             output = max(output, amps[0].input[-1])
         return output
