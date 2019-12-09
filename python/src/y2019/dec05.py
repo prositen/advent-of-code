@@ -17,13 +17,13 @@ class Dec05(Day):
         ic = IntCode(self.instructions)
         ic.input = [1]
         ic.run()
-        return ic.output
+        return ic.output.pop()
 
     def part_2(self):
         ic = IntCode(self.instructions)
         ic.input = [5]
         ic.run()
-        return ic.output
+        return ic.output.pop()
 
 
 if __name__ == '__main__':
