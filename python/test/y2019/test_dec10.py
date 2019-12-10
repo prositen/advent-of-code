@@ -93,6 +93,16 @@ class TestDec10(unittest.TestCase):
         self.assertEqual(210, d.part_1())
         self.assertEqual((11, 13), d.best_position)
 
+    def test_vaporize(self):
+        starmap = [".#....#####...#..",
+                   "##...##.#####..##",
+                   "##...#...#.#####.",
+                   "..#.....#...###..",
+                   "..#.#.....#....##"]
+        d = dec10.Dec10(instructions=starmap)
+        d.part_1()
+        self.assertEqual((8, 3), d.best_position)
+
 
 if __name__ == '__main__':
     unittest.main()

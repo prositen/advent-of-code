@@ -23,15 +23,13 @@ class Dec10(Day):
         for me in self.asteroids:
             lines_of_sight = set()
             for other in self.asteroids:
-                if me == other:
-                    continue
-                sign = me < other
-
-                try:
-                    angle = (me[1]-other[1])/(me[0]-other[0])
-                except ZeroDivisionError:
-                    angle = 1000
-                lines_of_sight.add((sign, angle))
+                if me != other:
+                    sign = me < other
+                    try:
+                        angle = (me[1]-other[1])/(me[0]-other[0])
+                    except ZeroDivisionError:
+                        angle = 1000
+                    lines_of_sight.add((sign, angle))
 
             if len(lines_of_sight) > best:
                 best = len(lines_of_sight)
@@ -39,6 +37,7 @@ class Dec10(Day):
         return best
 
     def part_2(self):
+
         pass
 
 
