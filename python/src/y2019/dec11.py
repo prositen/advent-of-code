@@ -32,7 +32,7 @@ class PaintBot(object):
         for k, v in self.panels.items():
             posy = k[1] - miny
             posx = k[0] - minx
-            output[posy][posx] = '#' if v else '.'
+            output[posy][posx] = '#' if v else ' '
 
         for row in output:
             print(''.join(row))
