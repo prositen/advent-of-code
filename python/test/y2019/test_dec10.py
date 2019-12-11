@@ -67,7 +67,7 @@ class TestDec10(unittest.TestCase):
             self.assertEqual(satellites, d.part_1())
             self.assertEqual(pos, d.best_position)
 
-    def test_part_1_large_map(self):
+    def test_large_map(self):
         starmap = [".#..##.###...#######",
                    "##.############..##.",
                    ".#.######.########.#",
@@ -92,16 +92,7 @@ class TestDec10(unittest.TestCase):
         d = dec10.Dec10(instructions=starmap)
         self.assertEqual(210, d.part_1())
         self.assertEqual((11, 13), d.best_position)
-
-    def test_vaporize(self):
-        starmap = [".#....#####...#..",
-                   "##...##.#####..##",
-                   "##...#...#.#####.",
-                   "..#.....#...###..",
-                   "..#.#.....#....##"]
-        d = dec10.Dec10(instructions=starmap)
-        d.part_1()
-        self.assertEqual((8, 3), d.best_position)
+        self.assertEqual(802, d.part_2())
 
 
 if __name__ == '__main__':
