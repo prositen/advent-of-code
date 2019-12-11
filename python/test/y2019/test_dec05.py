@@ -26,9 +26,9 @@ class TestDec05(unittest.TestCase):
         for case in cases:
             ic = IntCode(case[0])
             for test in (1,):
-                ic.input = [case[1][test]]
+                ic.add_input(case[1][test])
                 ic.run()
-                self.assertEqual([test], ic.output)
+                self.assertEqual(test, ic.get_output())
 
     def test_jumps(self):
         cases = [
@@ -39,9 +39,9 @@ class TestDec05(unittest.TestCase):
         for case in cases:
             for inp in (0, 1):
                 ic = IntCode(case)
-                ic.input = [inp]
+                ic.add_input(inp)
                 ic.run()
-                self.assertEqual([inp], ic.output)
+                self.assertEqual(inp, ic.get_output())
 
     def test_large_exampple(self):
         program = [3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
@@ -50,6 +50,6 @@ class TestDec05(unittest.TestCase):
 
         for (inp, outp) in [(7, 999), (8, 1000), (9, 1001)]:
             ic = IntCode(program)
-            ic.input = [inp]
+            ic.add_input(inp)
             ic.run()
-            self.assertEqual([outp], ic.output)
+            self.assertEqual(outp, ic.get_output())
