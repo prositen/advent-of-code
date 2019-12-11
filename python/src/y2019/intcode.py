@@ -68,7 +68,6 @@ class Add(Operator, op_code=1, operands=3):
     def run(self, context):
         context.data[self.get_address(2, context)] = (self.get_value(0, context) +
                                                       self.get_value(1, context))
-        # context.data[self.op[2]] = self.get_value(0, context) + self.get_value(1, context)
         return super().run(context)
 
 
@@ -79,16 +78,16 @@ class Multiply(Operator, op_code=2, operands=3):
     def run(self, context):
         context.data[self.get_address(2, context)] = (self.get_value(0, context) *
                                                       self.get_value(1, context))
-        # context.data[self.op[2]] = self.get_value(0, context) * self.get_value(1, context)
         return super().run(context)
 
 
 class Input(Operator, op_code=3, operands=1):
     def run(self, context):
         if context.input:
+            context.waiting_for_input = False
             context.data[self.get_address(0, context)] = context.input.pop(0)
-            # context.data[self.op[0]] = context.input.pop(0)
             return super().run(context)
+        context.waiting_for_input = True
         return context.pc
 
 
@@ -160,6 +159,15 @@ class IntCode(object):
         self.output = []
         self.pc = 0
         self.relative_base = 0
+        self.waiting_for_input = False
+
+    def get_output(self):
+        if self.output:
+            return self.output.pop(0)
+
+    def add_input(self, data):
+        if data is not None:
+            self.input.append(data)
 
     def step(self, debug=False):
         if self.pc is not None and self.pc < len(self.data):
@@ -172,3 +180,10 @@ class IntCode(object):
     def run(self, debug=False):
         while self.pc < len(self.data):
             self.step(debug)
+
+    def run_and_wait(self, debug=False):
+        while self.pc < len(self.data):
+            self.step(debug)
+            if self.waiting_for_input:
+                return False
+        return True
