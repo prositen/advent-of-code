@@ -47,7 +47,7 @@ class Game(object):
             print(''.join(Tile.SHOW[c] for c in row.values()))
         print("Score:", self.score)
 
-    def plan_move(self):
+    def move(self):
         if self.ball[0] < self.paddle[0]:
             return -1
         elif self.ball[0] == self.paddle[0]:
@@ -80,11 +80,9 @@ class Dec13(Day):
         while not ic.run_and_wait():
             game.parse(ic.output)
             ic.output = []
-            m = game.plan_move()
-            ic.add_input(m)
+            ic.add_input(game.move())
         game.parse(ic.output)
         return game.score
-
 
 
 if __name__ == '__main__':
