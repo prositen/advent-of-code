@@ -55,6 +55,15 @@ class Game(object):
         else:
             return 1
 
+    def input(self):
+        self.print()
+        c = input("<(a) (s) (d)>")
+        if c == 'a':
+            return -1
+        elif c == 's':
+            return 0
+        elif c == 'd':
+            return 1
 
 class Dec13(Day):
     def __init__(self, filename=None, instructions=None):
@@ -81,6 +90,7 @@ class Dec13(Day):
             game.parse(ic.output)
             ic.output = []
             ic.add_input(game.move())
+            # ic.add_input(game.input())
         game.parse(ic.output)
         return game.score
 
