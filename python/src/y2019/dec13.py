@@ -65,6 +65,7 @@ class Game(object):
         elif c == 'd':
             return 1
 
+
 class Dec13(Day):
     def __init__(self, filename=None, instructions=None):
         super().__init__(2019, 13, instructions, filename)
