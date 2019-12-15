@@ -21,21 +21,13 @@ class Reaction(object):
         self.result = Ingredient(result)
 
 
-class Dec14(Day):
-    def __init__(self, filename=None, instructions=None):
-        super().__init__(2019, 14, instructions, filename)
-        self.least_cost = 0
-        self.reactions = {
-            r.result.name: (r.result.amount, r.ingredients)
-            for r in self.instructions
-        }
+class Factory(object):
+    def __init__(self, reactions):
+        self.reactions = reactions
         self._needs = Counter()
         self.ore = 1000000000000
         self._chems = Counter({'ORE': self.ore})
-
-    @staticmethod
-    def parse_instructions(instructions):
-        return [Reaction(i) for i in instructions]
+        self.least_cost = 0
 
     def add_chem(self, chem, amount):
         self._chems[chem] += amount
@@ -61,33 +53,36 @@ class Dec14(Day):
                 self.take_chem(c.name, c.amount)
             self.add_chem(chem, amount)
 
-    def part_1(self, needs=1):
-        while needs > 0:
-            self._needs['FUEL'] = True
-            while self.needs('FUEL'):
-                for chem, (amount, cost) in self.reactions.items():
-                    if self.needs(chem):
-                        self.try_create(chem, amount, cost)
-            needs -= 1
+    def create_fuel(self, fuel_amount=1):
+        self._needs['FUEL'] = fuel_amount
+        while self.needs('FUEL'):
+            for chem, (amount, cost) in self.reactions.items():
+                if self.needs(chem):
+                    self.try_create(chem, amount, cost)
+
         if not self.least_cost:
             self.least_cost = self.ore - self._chems['ORE']
         return self.least_cost
 
-    def part_2(self):
-        ore1 = self.least_cost
-        goal = 1000 ** 4
-        maxfuel = goal // ore1
-        l = maxfuel
-        r = maxfuel * 2
-        while l <= r:
-            mid = l + (r - l) // 2
-            if self.part_1(mid) < goal:
-                maxfuel = mid
-                l = mid + 1
-            else:
-                r = mid - 1
 
-        return maxfuel
+class Dec14(Day):
+    def __init__(self, filename=None, instructions=None):
+        super().__init__(2019, 14, instructions, filename)
+        self.reactions = {
+            r.result.name: (r.result.amount, r.ingredients)
+            for r in self.instructions
+        }
+
+    @staticmethod
+    def parse_instructions(instructions):
+        return [Reaction(i) for i in instructions]
+
+    def part_1(self):
+        f = Factory(self.reactions)
+        return f.create_fuel(1)
+
+    def part_2(self):
+        pass
 
 
 if __name__ == '__main__':
