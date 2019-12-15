@@ -1,6 +1,4 @@
-import math
 from collections import Counter, deque
-
 from python.src.common import Day
 
 
@@ -10,9 +8,6 @@ class Ingredient(object):
         i = s.index(' ')
         self.amount = int(s[:i])
         self.name = s[i + 1:]
-
-    def __repr__(self):
-        return '{} {}'.format(self.amount, self.name)
 
 
 class Reaction(object):
@@ -43,8 +38,8 @@ class Dec14(Day):
                 needed -= stock[chem]
                 stock[chem] = 0
                 no_created, recipe = self.reactions[chem]
-                reps = int(math.ceil(needed / no_created))
-                stock[chem] += int(no_created * reps - needed)
+                reps = (needed + no_created - 1) // no_created
+                stock[chem] += no_created * reps - needed
                 to_create.extend([(c.name, reps * c.amount) for c in recipe])
         return -stock['ORE']
 
