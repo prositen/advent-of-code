@@ -40,7 +40,7 @@ class TestDec14(unittest.TestCase):
                      "3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT"]
         d = Dec14(instructions=reactions)
         self.assertEqual(13312, d.part_1())
-        # self.assertEqual(82892753, d.part_2())
+        self.assertEqual(82892753, d.part_2())
 
     def test_part_1_d(self):
         reactions = ["2 VPVL, 7 FWMGM, 2 CXFTF, 11 MNCFX => 1 STKFG",

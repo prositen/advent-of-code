@@ -1,4 +1,5 @@
-from collections import Counter
+import math
+from collections import Counter, deque
 
 from python.src.common import Day
 
@@ -21,50 +22,6 @@ class Reaction(object):
         self.result = Ingredient(result)
 
 
-class Factory(object):
-    def __init__(self, reactions):
-        self.reactions = reactions
-        self._needs = Counter()
-        self.ore = 1000000000000
-        self._chems = Counter({'ORE': self.ore})
-        self.least_cost = 0
-
-    def add_chem(self, chem, amount):
-        self._chems[chem] += amount
-        self._needs[chem] = False
-
-    def take_chem(self, chem, amount):
-        self._chems[chem] -= amount
-
-    def has_chem(self, chem, amount):
-        return self._chems[chem] >= amount
-
-    def needs(self, chem):
-        return self._needs.get(chem)
-
-    def try_create(self, chem, amount, cost):
-        can_create = True
-        for c in cost:
-            if not self.has_chem(c.name, c.amount):
-                self._needs[c.name] = True
-                can_create = False
-        if can_create:
-            for c in cost:
-                self.take_chem(c.name, c.amount)
-            self.add_chem(chem, amount)
-
-    def create_fuel(self, fuel_amount=1):
-        self._needs['FUEL'] = fuel_amount
-        while self.needs('FUEL'):
-            for chem, (amount, cost) in self.reactions.items():
-                if self.needs(chem):
-                    self.try_create(chem, amount, cost)
-
-        if not self.least_cost:
-            self.least_cost = self.ore - self._chems['ORE']
-        return self.least_cost
-
-
 class Dec14(Day):
     def __init__(self, filename=None, instructions=None):
         super().__init__(2019, 14, instructions, filename)
@@ -72,17 +29,47 @@ class Dec14(Day):
             r.result.name: (r.result.amount, r.ingredients)
             for r in self.instructions
         }
+        self.cost_per_fuel = 0
+
+    def create_fuel(self, fuel_amount=1):
+        to_create = deque()
+        to_create.append(('FUEL', fuel_amount))
+        stock = Counter()
+        while to_create:
+            chem, needed = to_create.popleft()
+            if chem == 'ORE' or stock[chem] >= needed:
+                stock[chem] -= needed
+            else:
+                needed -= stock[chem]
+                stock[chem] = 0
+                no_created, recipe = self.reactions[chem]
+                reps = int(math.ceil(needed / no_created))
+                stock[chem] += int(no_created * reps - needed)
+                to_create.extend([(c.name, reps * c.amount) for c in recipe])
+        return -stock['ORE']
 
     @staticmethod
     def parse_instructions(instructions):
         return [Reaction(i) for i in instructions]
 
     def part_1(self):
-        f = Factory(self.reactions)
-        return f.create_fuel(1)
+        self.cost_per_fuel = self.create_fuel(1)
+        return self.cost_per_fuel
 
     def part_2(self):
-        pass
+        goal = 10 ** 12
+        usage = goal // self.cost_per_fuel
+        low = usage
+        high = 2 * low
+        while low <= high:
+            mid = low + (high - low) // 2
+            if self.create_fuel(mid) < goal:
+                usage = mid
+                low = mid + 1
+            else:
+                high = mid - 1
+
+        return usage
 
 
 if __name__ == '__main__':
