@@ -153,12 +153,12 @@ class Exit(Operator, op_code=99):
 
 
 class IntCode(object):
-    def __init__(self, instructions):
+    def __init__(self, instructions, pc=0, relative_base=0):
         self.data = {index: instruction for index, instruction in enumerate(instructions)}
         self.input = []
         self.output = []
-        self.pc = 0
-        self.relative_base = 0
+        self.pc = pc
+        self.relative_base = relative_base
         self.waiting_for_input = False
 
     def get_output(self):
@@ -187,3 +187,7 @@ class IntCode(object):
             if self.waiting_for_input:
                 return False
         return True
+
+    def clone(self):
+        return IntCode(instructions=self.data.values(),
+                       pc=self.pc, relative_base=self.relative_base)
