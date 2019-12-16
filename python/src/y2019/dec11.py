@@ -48,9 +48,7 @@ class Dec11(Day):
 
     @staticmethod
     def parse_instructions(instructions):
-        return [
-            int(row) for row in instructions[0].split(',')
-        ]
+        return Day.parse_int_line(instructions)
 
     @staticmethod
     def turn(current_dir, turn_right):

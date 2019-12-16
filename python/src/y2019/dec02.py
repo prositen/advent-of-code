@@ -9,9 +9,8 @@ class Dec02(Day):
 
     @staticmethod
     def parse_instructions(instructions):
-        return [
-            int(row) for row in instructions[0].split(',')
-        ]
+        return Day.parse_int_line(instructions)
+
 
     def part_1(self):
         self.instructions[1] = 12
