@@ -18,6 +18,10 @@ class Day(object):
     def parse_int_line(instructions):
         return [int(c) for c in instructions[0].split(',')]
 
+    @staticmethod
+    def parse_digits(instructions):
+        return [int(c) for c in instructions[0]]
+
     def read_input(self, filename=None):
         """ If filename is given, use that. Otherwise default to data/<year>/input.<day>.txt """
         if filename is None:

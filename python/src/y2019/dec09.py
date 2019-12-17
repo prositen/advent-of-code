@@ -9,9 +9,7 @@ class Dec09(Day):
 
     @staticmethod
     def parse_instructions(instructions):
-        return [
-            int(c) for c in instructions[0].split(',')
-        ]
+        return Day.parse_int_line(instructions)
 
     def part_1(self):
         ic = IntCode(instructions=self.instructions)
