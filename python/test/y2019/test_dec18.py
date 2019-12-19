@@ -47,6 +47,47 @@ class TestDec16(unittest.TestCase):
                 "########################"]
         self.assertEqual(81, Dec18(instructions=maze).part_1())
 
+    def test_part_2_a(self):
+        maze = ["#######",
+                "#a.#Cd#",
+                "##...##",
+                "##.@.##",
+                "##...##",
+                "#cB#Ab#",
+                "#######"]
+        self.assertEqual(8, Dec18(instructions=maze).part_2())
+
+    def test_part_2_b(self):
+        maze = ["###############",
+                "#d.ABC.#.....a#",
+                "######...######",
+                "######.@.######",
+                "######...######",
+                "#b.....#.....c#",
+                "###############"]
+        self.assertEqual(24, Dec18(instructions=maze).part_2())
+
+    def test_part_2_c(self):
+        maze = ["#############",
+                "#DcBa.#.GhKl#",
+                "#.###...#I###",
+                "#e#d#.@.#j#k#",
+                "###C#...###J#",
+                "#fEbA.#.FgHi#",
+                "#############"]
+        self.assertEqual(32, Dec18(instructions=maze).part_2())
+
+    def test_part_2_d(self):
+        maze = ["#############",
+                "#g#f.D#..h#l#",
+                "#F###e#E###.#",
+                "#dCba...BcIJ#",
+                "#####.@.#####",
+                "#nK.L...G...#",
+                "#M###N#H###.#",
+                "#o#m..#i#jk.#",
+                "#############"]
+        self.assertEqual(72, Dec18(instructions=maze).part_2())
 
 if __name__ == '__main__':
     unittest.main()
