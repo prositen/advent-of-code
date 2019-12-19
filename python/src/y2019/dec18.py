@@ -14,7 +14,7 @@ class Dec18(Day):
 
     @staticmethod
     def parse_instructions(instructions):
-        _line = ''.join(instructions).strip()
+        _line = ''.join(instructions).strip().replace('\n', '')
         keys = ''.join(sorted(''.join(c for c in _line if c.islower())))
         return _line.index('@'), keys, [[c for c in row.strip()] for row in instructions]
 
@@ -36,21 +36,22 @@ class Dec18(Day):
                 if c.islower() or c in '@1234':
                     to_visit = deque()
                     to_visit.append(((ry, rx), '', 0))
-                    visited = {(ry, rx)}
+                    visited = dict()
                     paths[c] = list()
 
                     while to_visit:
                         (y, x), doors, steps = to_visit.popleft()
+                        if (y, x) in visited:
+                            continue
+                        visited[(y, x)] = steps
                         this = self.grid[y][x]
                         if this.islower() and this != c:
                             paths[c].append((this, steps, doors))
                         elif this.isupper():
                             doors += this
-
                         for dy, dx in (-1, 0), (0, 1), (1, 0), (0, -1):
                             ny, nx = y + dy, x + dx
-                            if (ny, nx) not in visited and self.can_go(ny, nx):
-                                visited.add((ny, nx))
+                            if self.can_go(ny, nx):
                                 to_visit.append(((ny, nx), doors, steps + 1))
         return paths
 
@@ -59,14 +60,11 @@ class Dec18(Day):
         # When a bot reaches a key, trace the step
         # from it to the next one, as contained in paths
 
-        # to_visit = deque()
-        # to_visit.append((bots, '', 0))
         to_visit = list()
         to_visit.append((0, bots, frozenset()))
         visited = dict()
         best_move = 10 ** 6
         while to_visit:
-            # bots, keys, steps = to_visit.popleft()
             steps, bots, keys = heappop(to_visit)
             if (bots, keys) in visited:
                 continue
@@ -83,8 +81,6 @@ class Dec18(Day):
                     next_steps = steps + steps_to_dest
                     heappush(to_visit, (next_steps,
                                         next_move, next_keys))
-                    # to_visit.append((next_move, next_keys, next_steps))
-                    # visited[(next_move, next_keys)] = next_steps
 
         return best_move
 

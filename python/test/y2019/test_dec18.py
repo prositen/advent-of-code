@@ -3,7 +3,7 @@ import unittest
 from python.src.y2019.dec18 import Dec18
 
 
-class TestDec16(unittest.TestCase):
+class TestDec18(unittest.TestCase):
     def test_part_1_a(self):
         maze = ["#########",
                 "#b.A.@.a#",
