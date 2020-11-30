@@ -1,4 +1,21 @@
 import os
+import time
+from functools import wraps
+
+
+def timer(part, show_result=True):
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            start_time = time.time()
+            result = f(*args, **kwargs)
+            if show_result:
+                print(f'Part {part}: {result}  {(time.time() - start_time)*1e3:.2f} ms')
+            return result
+
+        return wrapper
+
+    return decorator
 
 
 class Day(object):

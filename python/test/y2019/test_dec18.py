@@ -89,5 +89,6 @@ class TestDec18(unittest.TestCase):
                 "#############"]
         self.assertEqual(72, Dec18(instructions=maze).part_2())
 
+
 if __name__ == '__main__':
     unittest.main()
