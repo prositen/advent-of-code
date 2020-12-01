@@ -10,9 +10,9 @@ class Dec01(Day):
 
     @staticmethod
     def parse_instructions(instructions):
-        return [
+        return sorted(
             int(row) for row in instructions
-        ]
+        )
 
     @timer(part=1)
     def part_1(self):
