@@ -1,7 +1,5 @@
 import unittest
 
-from python.src.y2019 import dec01
-from python.src.y2020.dec01 import Dec01
 from python.src.y2020.dec02 import Dec02
 
 
