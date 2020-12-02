@@ -1,6 +1,8 @@
 __author__ = 'anna'
 import re
 
+from python.src.common import input_for, Timer
+
 
 class Instruction(object):
     regexp = re.compile('')
@@ -155,12 +157,13 @@ class Program(object):
 
 
 def main():
-    with open('../../,,/data/2015/input.23.txt', 'r') as fh:
+    with open(input_for(2015,23), 'r') as fh:
         program = Program(fh.readlines())
 
-    print(program.run({'a': 0, 'b': 0}))
+    with Timer():
+        print(program.run({'a': 0, 'b': 0}))
 
-    print(program.run({'a': 1, 'b': 0}))
+        print(program.run({'a': 1, 'b': 0}))
 
 
 if __name__ == '__main__':

@@ -19,9 +19,21 @@ def timer(part, show_result=True, title=''):
     return decorator
 
 
+class Timer(object):
+    def __init__(self):
+        self.start_time = 0
+
+    def __enter__(self):
+        self.start_time = time.time()
+
+    def __exit__(self, *exc_info):
+        elapsed_time = time.time() - self.start_time
+        print(f'{elapsed_time * 1e3:.2f} ms')
+
+
 def input_for(year, day):
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..',
-                            'data', str(year), 'input.{}.txt'.format(day))
+                        'data', str(year), 'input.{}.txt'.format(day))
 
 
 class Day(object):

@@ -2,7 +2,7 @@
 
 __author__ = 'anna'
 
-from python.src.common import input_for
+from python.src.common import input_for, Timer
 
 
 def floor(start=0, instructions=""):
@@ -24,7 +24,8 @@ def when_on_floor(start=0, instructions="", wanted_floor=0):
 
 
 if __name__ == '__main__':
-    with open(input_for(2015, 1)) as fh:
-        for no, line in enumerate(fh.readlines()):
-            print("Instruction {line}: Floor {floor}".format(line=no, floor=floor(0, line)))
-            print("On floor -1: ", when_on_floor(0, line, -1))
+    with Timer():
+        with open(input_for(2015, 1)) as fh:
+            for no, line in enumerate(fh.readlines()):
+                print("Instruction {line}: Floor {floor}".format(line=no, floor=floor(0, line)))
+                print("On floor -1: ", when_on_floor(0, line, -1))
