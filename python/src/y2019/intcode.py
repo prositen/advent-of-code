@@ -161,9 +161,11 @@ class IntCode(object):
         self.relative_base = relative_base
         self.waiting_for_input = False
 
-    def get_output(self):
+    def get_output(self, pos=None):
         if self.output:
-            return self.output.pop(0)
+            if pos is not None:
+                return self.output.pop(pos)
+            return self.output.pop()
 
     def add_input(self, data):
         if data is not None:

@@ -1,4 +1,4 @@
-from python.src.common import Day
+from python.src.common import Day, timer
 
 
 class Dec01(Day):
@@ -8,10 +8,9 @@ class Dec01(Day):
 
     @staticmethod
     def parse_instructions(instructions):
-        return [
-            int(row) for row in instructions
-        ]
+        return Day.parse_int_lines(instructions)
 
+    @timer(part=1, title='Fuel requirements')
     def part_1(self):
         return sum([self.fuel_cost(x) for x in self.instructions])
 
@@ -19,6 +18,7 @@ class Dec01(Day):
     def fuel_cost(mass):
         return max((mass // 3) - 2, 0)
 
+    @timer(part=2, title='Total requirements')
     def part_2(self):
         total_weight = 0
         for module in self.instructions:
@@ -30,6 +30,4 @@ class Dec01(Day):
 
 
 if __name__ == '__main__':
-    d = Dec01()
-    print("Fuel requirements: ", d.part_1())
-    print("Total requirements: ", d.part_2())
+    Dec01().run_day()

@@ -13,7 +13,6 @@ class Dec07(Day):
     def parse_instructions(instructions):
         return Day.parse_int_line(instructions)
 
-
     def part_1(self):
         output = 0
         for phases in itertools.permutations([0, 1, 2, 3, 4]):

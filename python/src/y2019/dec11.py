@@ -60,16 +60,16 @@ class Dec11(Day):
     def paint(self, ic, pb, start):
         ic.add_input(start)
         while not ic.run_and_wait():
-            color = ic.get_output()
+            color = ic.get_output(pos=0)
             if color is not None:
                 pb.paint(color)
-                turn_right = ic.get_output()
+                turn_right = ic.get_output(pos=0)
                 pb.turn(turn_right=turn_right)
 
             cam = int(pb.cam())
             ic.add_input(cam)
 
-        color = ic.get_output()
+        color = ic.get_output(pos=0)
         if color:
             pb.paint(color)
 

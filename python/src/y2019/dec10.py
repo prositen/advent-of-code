@@ -16,7 +16,7 @@ class Dec10(Day):
     def parse_instructions(instructions):
         pos = list()
         for y, row in enumerate(instructions):
-            for x, c in enumerate(row.strip()):
+            for x, c in enumerate(row):
                 if c != '.':
                     pos.append((x, y))
         return len(instructions[0]), len(instructions), pos

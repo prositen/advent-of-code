@@ -1,4 +1,4 @@
-from python.src.common import Day
+from python.src.common import Day, timer
 from python.src.y2019.intcode import IntCode
 
 
@@ -11,13 +11,14 @@ class Dec05(Day):
     def parse_instructions(instructions):
         return Day.parse_int_line(instructions)
 
-
+    @timer(part=1)
     def part_1(self):
         ic = IntCode(self.instructions)
         ic.add_input(1)
         ic.run()
         return ic.get_output()
 
+    @timer(part=2)
     def part_2(self):
         ic = IntCode(self.instructions)
         ic.add_input(5)
@@ -26,6 +27,4 @@ class Dec05(Day):
 
 
 if __name__ == '__main__':
-    d = Dec05()
-    print("Part 1:", d.part_1())
-    print("Part 2:", d.part_2())
+    Dec05().run_day()

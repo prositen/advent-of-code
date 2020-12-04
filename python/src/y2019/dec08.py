@@ -30,9 +30,7 @@ class Dec08(Day):
 
     @staticmethod
     def parse_instructions(instructions):
-        return [
-            int(c) for c in instructions[0]
-        ]
+        return Day.parse_digits(instructions)
 
     def part_1(self):
         min_zeroes = self.image.h_w
@@ -47,7 +45,7 @@ class Dec08(Day):
 
     def part_2(self):
         image = self.image.render()
-        image = ''.join('x' if c is 1 else ' ' for c in image)
+        image = ''.join('x' if c == 1 else ' ' for c in image)
         for start in range(0, len(image), self.image.width):
             print(image[start:start + self.image.width])
 

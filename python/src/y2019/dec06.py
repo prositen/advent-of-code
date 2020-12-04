@@ -12,7 +12,7 @@ class Dec06(Day):
 
     @staticmethod
     def parse_instructions(instructions):
-        return [x.strip().split(')') for x in instructions]
+        return [x.split(')') for x in instructions]
 
     def build_tree(self):
         vertices = dict()
