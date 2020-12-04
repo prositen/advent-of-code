@@ -57,10 +57,24 @@ class Day(object):
     def parse_digits(instructions):
         return [int(c) for c in instructions[0]]
 
+    @staticmethod
+    def parse_int_lines(instructions):
+        return [int(row) for row in instructions]
+
     def read_input(self, filename=None):
         """ If filename is given, use that. Otherwise default to data/<year>/input.<day>.txt """
         if filename is None:
             filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..',
                                     'data', str(self.year), 'input.{}.txt'.format(self.day))
         with open(filename) as fh:
-            return fh.readlines()
+            return [x.strip() for x in fh.readlines()]
+
+    def part_1(self):
+        return 0
+
+    def part_2(self):
+        return 0
+
+    def run_day(self):
+        self.part_1()
+        self.part_2()
