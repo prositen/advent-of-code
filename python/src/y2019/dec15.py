@@ -1,6 +1,6 @@
 from collections import defaultdict, deque
 
-from python.src.common import Day
+from python.src.common import Day, timer
 from python.src.y2019.intcode import IntCode
 
 
@@ -109,14 +109,14 @@ class Dec15(Day):
     def parse_instructions(instructions):
         return Day.parse_int_line(instructions)
 
+    @timer(part=1, title='Minimum # of movement commands needed')
     def part_1(self):
         return len(self.ship.fill_map())
 
+    @timer(part=2, title='Minutes to fill ship with oxygen')
     def part_2(self):
         return self.ship.fill_with_oxygen()
 
 
 if __name__ == '__main__':
-    day = Dec15()
-    print("Part 1:", day.part_1())
-    print("Part 2:", day.part_2())
+    Dec15().run_day()

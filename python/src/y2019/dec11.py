@@ -1,5 +1,5 @@
 from collections import defaultdict
-from python.src.common import Day
+from python.src.common import Day, timer
 from python.src.y2019.intcode import IntCode
 
 
@@ -73,12 +73,14 @@ class Dec11(Day):
         if color:
             pb.paint(color)
 
+    @timer(part=1, title='Panels painted at least once')
     def part_1(self):
         ic = IntCode(instructions=self.instructions)
         pb = PaintBot()
         self.paint(ic, pb, start=0)
         return len(pb.panels)
 
+    @timer(part=2, title='Registration identifier')
     def part_2(self):
         ic = IntCode(instructions=self.instructions)
         pb = PaintBot()
@@ -87,7 +89,4 @@ class Dec11(Day):
 
 
 if __name__ == '__main__':
-    d = Dec11()
-    print("Part 1:", d.part_1())
-    print("Part 2:")
-    d.part_2()
+    Dec11().run_day()

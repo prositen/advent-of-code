@@ -11,7 +11,7 @@ class Dec19(Day):
     def parse_instructions(instructions):
         return Day.parse_int_line(instructions)
 
-    @timer(part=1)
+    @timer(part=1, title='Points affected')
     def part_1(self):
         area = 0
         min_x = 0
@@ -64,23 +64,21 @@ class Dec19(Day):
             return True, False
         return False, False
 
-    @timer(part=2)
+    @timer(part=2, title='X * 10000 + Y for closest point that fits the ship')
     def part_2(self):
         x = 500
         y = 1000
 
         while True:
-            bl, tr = self.fits_ship(y=y, x=x)
-            if bl:
-                if tr:
+            bottom_left, top_right = self.fits_ship(y=y, x=x)
+            if bottom_left:
+                if top_right:
                     return (10000 * x) + y - 99
-                else:
+                else:  # Move down
                     y += 1
-            else:
+            else:  # Move right
                 x += 1
 
 
 if __name__ == '__main__':
-    day = Dec19()
-    day.part_1()
-    day.part_2()
+    Dec19().run_day()

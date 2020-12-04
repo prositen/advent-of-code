@@ -74,7 +74,7 @@ class Dec13(Day):
     def parse_instructions(instructions):
         return Day.parse_int_line(instructions)
 
-    @timer(part=1)
+    @timer(part=1, title='Block tiles on the screen when the game exists')
     def part_1(self):
         ic = IntCode(self.instructions)
         ic.run()
@@ -84,7 +84,7 @@ class Dec13(Day):
             tiles[tile_id] += 1
         return tiles[2]
 
-    @timer(part=2)
+    @timer(part=2, title='Score after all blocks are broken')
     def part_2(self):
         ic = IntCode(self.instructions)
         ic.data[0] = 2

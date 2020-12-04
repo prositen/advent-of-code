@@ -1,7 +1,7 @@
 from collections import deque
 from heapq import heappush, heappop
 
-from python.src.common import Day
+from python.src.common import Day, timer
 
 
 class Dec18(Day):
@@ -23,6 +23,7 @@ class Dec18(Day):
             return self.grid[pos_y][pos_x] != '#'
         return False
 
+    @timer(part=1, title='Shortest path to collect all keys')
     def part_1(self):
         bots = '@'
         paths = self.find_path_between_keys()
@@ -84,6 +85,7 @@ class Dec18(Day):
                         heappush(to_visit, (steps + steps_to_dest,
                                             next_move, next_keys))
 
+    @timer(part=2, title='Shortest path to collect all keys in four mazes')
     def part_2(self):
         y = self.pos_y
         x = self.pos_x
@@ -96,8 +98,4 @@ class Dec18(Day):
 
 
 if __name__ == '__main__':
-    import time
-
-    day = Dec18()
-    print("Part 1:", day.part_1())
-    print("Part 2:", day.part_2())
+    Dec18().run_day()
