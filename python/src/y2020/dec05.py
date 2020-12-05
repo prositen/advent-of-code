@@ -1,4 +1,4 @@
-from python.src.common import Day, timer
+from python.src.common import Day, timer, Timer
 
 
 class Dec05(Day):
@@ -30,4 +30,5 @@ class Dec05(Day):
 
 
 if __name__ == '__main__':
-    Dec05().run_day()
+    with Timer():
+        Dec05().run_day()

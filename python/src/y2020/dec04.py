@@ -1,6 +1,6 @@
 import re
 
-from python.src.common import Day, timer
+from python.src.common import Day, timer, Timer
 
 
 class Dec04(Day):
@@ -54,6 +54,7 @@ class Dec04(Day):
 
 
 if __name__ == '__main__':
-    d = Dec04()
-    d.part_1()
-    d.part_2()
+    with Timer():
+        d = Dec04()
+        d.part_1()
+        d.part_2()
