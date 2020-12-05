@@ -1,4 +1,4 @@
-from python.src.common import Day
+from python.src.common import Day, timer
 from python.src.y2019.intcode import IntCode
 
 
@@ -11,12 +11,14 @@ class Dec09(Day):
     def parse_instructions(instructions):
         return Day.parse_int_line(instructions)
 
+    @timer(part=1, title='BOOST keycode')
     def part_1(self):
         ic = IntCode(instructions=self.instructions)
         ic.add_input(1)
         ic.run()
         return ic.get_output()
 
+    @timer(part=2, title='Coordinates of distress signal')
     def part_2(self):
         ic = IntCode(instructions=self.instructions)
         ic.add_input(2)
@@ -25,6 +27,4 @@ class Dec09(Day):
 
 
 if __name__ == '__main__':
-    d = Dec09()
-    print("Part 1: ", d.part_1())
-    print("Part 2: ", d.part_2())
+    Dec09().run_day()

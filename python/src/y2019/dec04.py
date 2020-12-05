@@ -1,4 +1,4 @@
-from python.src.common import Day
+from python.src.common import Day, timer
 
 
 def is_valid_password(password, max_repeated=6):
@@ -27,14 +27,14 @@ class Dec04(Day):
                                range(self.instructions[0], self.instructions[1])
                                )))
 
+    @timer(part=1, title='Number of valid passwords')
     def part_1(self):
         return self.get_count()
 
+    @timer(part=2, title='Passwords with extra check')
     def part_2(self):
         return self.get_count(max_repeated=2)
 
 
 if __name__ == '__main__':
-    d = Dec04(instructions=(138307, 654504))
-    print("Number of valid passwords", d.part_1())
-    print("Passwords with extra check", d.part_2())
+    Dec04(instructions=(138307, 654504)).run_day()

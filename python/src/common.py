@@ -11,7 +11,8 @@ def timer(part, show_result=True, title=''):
             result = f(*args, **kwargs)
             if show_result:
                 header = title or f'Part {part}'
-                print(f'{header}: {result}  {(time.time() - start_time) * 1e3:.2f} ms')
+                print(f'{header}: {result if result else ""}  '
+                      f'{(time.time() - start_time) * 1e3:.2f} ms')
             return result
 
         return wrapper

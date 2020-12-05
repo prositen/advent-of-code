@@ -1,5 +1,5 @@
 from collections import defaultdict
-from python.src.common import Day
+from python.src.common import Day, timer
 from python.src.y2019.intcode import IntCode
 
 
@@ -60,25 +60,27 @@ class Dec11(Day):
     def paint(self, ic, pb, start):
         ic.add_input(start)
         while not ic.run_and_wait():
-            color = ic.get_output()
+            color = ic.get_output(pos=0)
             if color is not None:
                 pb.paint(color)
-                turn_right = ic.get_output()
+                turn_right = ic.get_output(pos=0)
                 pb.turn(turn_right=turn_right)
 
             cam = int(pb.cam())
             ic.add_input(cam)
 
-        color = ic.get_output()
+        color = ic.get_output(pos=0)
         if color:
             pb.paint(color)
 
+    @timer(part=1, title='Panels painted at least once')
     def part_1(self):
         ic = IntCode(instructions=self.instructions)
         pb = PaintBot()
         self.paint(ic, pb, start=0)
         return len(pb.panels)
 
+    @timer(part=2, title='Registration identifier')
     def part_2(self):
         ic = IntCode(instructions=self.instructions)
         pb = PaintBot()
@@ -87,7 +89,4 @@ class Dec11(Day):
 
 
 if __name__ == '__main__':
-    d = Dec11()
-    print("Part 1:", d.part_1())
-    print("Part 2:")
-    d.part_2()
+    Dec11().run_day()

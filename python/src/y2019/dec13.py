@@ -1,6 +1,6 @@
 from collections import Counter, defaultdict
 
-from python.src.common import Day
+from python.src.common import Day, timer
 from python.src.y2019.intcode import IntCode
 
 
@@ -74,6 +74,7 @@ class Dec13(Day):
     def parse_instructions(instructions):
         return Day.parse_int_line(instructions)
 
+    @timer(part=1, title='Block tiles on the screen when the game exists')
     def part_1(self):
         ic = IntCode(self.instructions)
         ic.run()
@@ -83,6 +84,7 @@ class Dec13(Day):
             tiles[tile_id] += 1
         return tiles[2]
 
+    @timer(part=2, title='Score after all blocks are broken')
     def part_2(self):
         ic = IntCode(self.instructions)
         ic.data[0] = 2
@@ -98,5 +100,5 @@ class Dec13(Day):
 
 if __name__ == '__main__':
     d = Dec13()
-    print("Part 1:", d.part_1())
-    print("Part 2:", d.part_2())
+    d.part_1()
+    d.part_2()
