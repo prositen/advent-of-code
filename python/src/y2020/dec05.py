@@ -28,6 +28,6 @@ class Dec05(Day):
         all_seats = set(range(seats[0], seats[-1] + 1))
         return all_seats.difference(seats).pop()
 
-20
+
 if __name__ == '__main__':
     Dec05().run_day()
