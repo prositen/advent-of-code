@@ -24,14 +24,11 @@ class Dec04(Day):
     @staticmethod
     def parse_instructions(instructions):
         passports = list()
-        current = dict()
-        for row in instructions:
-            if not row:
-                passports.append({k: v for k, v in current.items()})
-                current = dict()
-                continue
-            current |= (tuple(rr.split(':')) for rr in row.split(' '))
-        passports.append(current)
+        for group in Day.parse_groups(instructions):
+            current = dict()
+            for row in group:
+                current |= (tuple(rr.split(':')) for rr in row.split(' '))
+            passports.append(current)
         return passports
 
     @timer(part=1)

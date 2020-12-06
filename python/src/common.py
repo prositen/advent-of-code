@@ -62,6 +62,20 @@ class Day(object):
     def parse_int_lines(instructions):
         return [int(row) for row in instructions]
 
+    @staticmethod
+    def parse_groups(instructions):
+        result = list()
+        g = list()
+        for row in instructions:
+            if len(row):
+                g.append(row)
+            else:
+                result.append([r for r in g])
+                g = []
+        if g:
+            result.append(g)
+        return result
+
     def read_input(self, filename=None):
         """ If filename is given, use that. Otherwise default to data/<year>/input.<day>.txt """
         if filename is None:
