@@ -12,11 +12,8 @@ class Dec05(Day):
 
     @staticmethod
     def seat_id(boarding_pass):
-        row = boarding_pass[0:7].replace('F', '0').replace('B', '1')
-        row_id = int(row, 2)
-        seat = boarding_pass[7:].replace('L', '0').replace('R', '1')
-        seat_id = int(seat, 2)
-        return row_id * 8 + seat_id
+        row = boarding_pass.translate(str.maketrans('FBLR', '0101'))
+        return int(row, 2)
 
     @timer(part=1)
     def part_1(self):
