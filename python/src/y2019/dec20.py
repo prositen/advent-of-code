@@ -6,7 +6,7 @@ from python.src.common import Day, timer, Timer
 class Dec20(Day):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 20, instructions, filename)
+        super().__init__(2019, 20, instructions, filename)
         self.maze = self.instructions
         self.portals = dict()
         self.connections = dict()
@@ -17,7 +17,7 @@ class Dec20(Day):
         return instructions
 
     def get_pos(self, row, col):
-        if 0 <= row < len(self.maze) and 0 <= col < len(self.maze[0]):
+        if 0 <= row < len(self.maze) and 0 <= col < len(self.maze[row]):
             return self.maze[row][col]
         return ''
 
@@ -50,7 +50,7 @@ class Dec20(Day):
                 self.connections[name] = list()
             self.connections[name] += [pos]
 
-    def find_path(self):
+    def find_path(self, use_portals):
         start_pos = self.connections['AA'][0]
         end_pos = self.connections['ZZ'][0]
         to_visit = deque()
@@ -65,14 +65,21 @@ class Dec20(Day):
                 continue
             if (row, col) == end_pos:
                 return steps
+            if use_portals:
+                portal = self.portals.get(pos)
+                if portal:
+                    connections = set(self.connections[portal]) - {pos}
+                    if connections:
+                        next_pos = connections.pop()
+                        to_visit.appendleft(((steps + 1), next_pos))
             for next_pos in (row - 1, col), (row, col + 1), (row + 1, col), (row, col - 1):
                 if self.get_pos(*next_pos) == '.' and next_pos not in visited:
-                    to_visit.append((steps + 1, next_pos))
+                    to_visit.appendleft((steps + 1, next_pos))
         return None
 
     @timer(part=1)
     def part_1(self, use_portals=True):
-        return self.find_path()
+        return self.find_path(use_portals)
 
     @timer(part=2)
     def part_2(self):

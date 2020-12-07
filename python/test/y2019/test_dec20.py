@@ -30,7 +30,7 @@ class TestDec20(unittest.TestCase):
         ]
         day = Dec20(instructions=maze)
         self.assertEqual(26, day.part_1(use_portals=False))
-        # self.assertEqual(23, day.part_1(use_portals=True))
+        self.assertEqual(23, day.part_1(use_portals=True))
 
     def test_part_1_larger_maze(self):
         maze = [
@@ -75,7 +75,8 @@ class TestDec20(unittest.TestCase):
         ]
         day = Dec20(instructions=maze)
         self.assertEqual(None, day.part_1(use_portals=False))
-        # self.assertEqual(58, day.part_1(use_portals=True))
+        self.assertEqual(58, day.part_1(use_portals=True))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -83,7 +83,7 @@ class Day(object):
             filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..',
                                     'data', str(self.year), 'input.{}.txt'.format(self.day))
         with open(filename) as fh:
-            return [x.strip() for x in fh.readlines()]
+            return [x.rstrip('\n') for x in fh.readlines()]
 
     def part_1(self):
         return 0
