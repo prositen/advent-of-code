@@ -24,7 +24,7 @@ class NAT(object):
             if self.traffic[index]:
                 for t in self.traffic[index]:
                     computer.add_input(t)
-                self.traffic[index] =  []
+                self.traffic[index] = []
             else:
                 computer.add_input(-1)
                 if index not in self.idle_nodes:
