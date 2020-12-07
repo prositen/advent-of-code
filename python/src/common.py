@@ -21,15 +21,16 @@ def timer(part, show_result=True, title=''):
 
 
 class Timer(object):
-    def __init__(self):
+    def __init__(self, title=''):
         self.start_time = 0
+        self.title = f'{title}: ' if title else ''
 
     def __enter__(self):
         self.start_time = time.time()
 
     def __exit__(self, *exc_info):
         elapsed_time = time.time() - self.start_time
-        print(f'{elapsed_time * 1e3:.2f} ms')
+        print(f'{self.title}{elapsed_time * 1e3:.2f} ms')
 
 
 def input_for(year, day):
