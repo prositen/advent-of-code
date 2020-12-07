@@ -1,6 +1,6 @@
 import unittest
 
-from src.y2020.dec07 import Dec07
+from python.src.y2020.dec07 import Dec07
 
 
 class TestDec07(unittest.TestCase):
