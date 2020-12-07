@@ -14,14 +14,14 @@ class TestDec17(unittest.TestCase):
                 "..#...#...#..",
                 "..#####...^.."]
 
-        d = Dec17()
+        d = Dec17(instructions=[])
         d.height = len(view)
         d.width = len(view[0])
 
         self.assertEqual(76, d.alignment_parameters(view))
 
     def test_part_2(self):
-        d = Dec17()
+        d = Dec17(instructions=[])
         path = ['R', '8', 'R', '8', 'R', '4', 'R', '4', 'R', '8', 'L', '6', 'L', '2',
                 'R', '4', 'R', '4', 'R', '8', 'R', '8', 'R', '8', 'L', '6', 'L', '2']
         sub = dict()
