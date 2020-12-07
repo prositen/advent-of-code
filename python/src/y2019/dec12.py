@@ -1,6 +1,6 @@
 import re
 
-from python.src.common import Day
+from python.src.common import Day, timer
 
 
 class Moon(object):
@@ -50,10 +50,12 @@ class Dec12(Day):
             i.append(result.groups())
         return i
 
+    @timer(part=1, title='Total energy after 1000 steps')
     def part_1(self):
         self.simulate(1000)
         return self.get_energy()
 
+    @timer(part=2, title='Number of simulation steps before repeat')
     def part_2(self):
         while 0 in self.period:
             self.simulate(100)
@@ -78,6 +80,4 @@ class Dec12(Day):
 
 
 if __name__ == '__main__':
-    d = Dec12()
-    print("Part 1:", d.part_1())
-    print("Part 2:", d.part_2())
+    Dec12().run_day()

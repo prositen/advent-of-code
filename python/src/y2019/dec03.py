@@ -1,4 +1,4 @@
-from python.src.common import Day
+from python.src.common import Day, timer
 
 
 class Grid(object):
@@ -17,7 +17,7 @@ class Grid(object):
     def next_move(self, pos, m):
         _dir = self.DIRS.get(m[0])
         for step in range(1, int(m[1:]) + 1):
-            yield (pos[0] + step * _dir[0], pos[1] + step * _dir[1])
+            yield pos[0] + step * _dir[0], pos[1] + step * _dir[1]
 
     def add_wire(self, path, wire_id=0):
         pos = (0, 0)
@@ -55,14 +55,14 @@ class Dec03(Day):
     def parse_instructions(instructions):
         return [row.split(',') for row in instructions]
 
+    @timer(part=1, title='Manhattan distance to closest intersection')
     def part_1(self):
         return self.g.closest
 
+    @timer(part=2, title='Minimum number of steps to an intersection')
     def part_2(self):
         return self.g.delay
 
 
 if __name__ == '__main__':
-    d = Dec03()
-    print("Manhattan distance to closest intersection", d.part_1())
-    print("Minimum number of steps to an intersection", d.part_2())
+    Dec03().run_day()

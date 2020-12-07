@@ -1,4 +1,4 @@
-from python.src.common import Day
+from python.src.common import Day, timer
 from python.src.y2019.intcode import IntCode
 
 
@@ -20,6 +20,7 @@ class Dec17(Day):
     def parse_instructions(instructions):
         return Day.parse_int_line(instructions)
 
+    @timer(part=1, title='Sum of alignment parameters')
     def part_1(self):
         ic = IntCode(self.instructions)
         ic.run()
@@ -38,6 +39,7 @@ class Dec17(Day):
 
         return self.alignment_parameters(view)
 
+    @timer(part=2, title='Amount of dust collected')
     def part_2(self):
         path = self.find_path()
         main, a, b, c = self.compress_path(path)
@@ -132,6 +134,4 @@ class Dec17(Day):
 
 
 if __name__ == '__main__':
-    day = Dec17()
-    print("Part 1:", day.part_1())
-    print("Part 2:", day.part_2())
+    Dec17().run_day()

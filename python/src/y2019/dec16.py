@@ -1,6 +1,6 @@
 import itertools
 
-from python.src.common import Day
+from python.src.common import Day, timer
 
 
 class Dec16(Day):
@@ -29,9 +29,11 @@ class Dec16(Day):
             r = [0] + result
         return ''.join(str(c) for c in result)[:8]
 
+    @timer(part=1, title='First digits')
     def part_1(self):
         return self.phase(100)
 
+    @timer(part=2, title='Real signal')
     def part_2(self):
         offset = int(''.join(str(c) for c in self.instructions[:7]))
         r = (self.instructions * 10000)[offset:]
@@ -53,6 +55,4 @@ class Dec16(Day):
 
 
 if __name__ == '__main__':
-    day = Dec16()
-    print("Part 1:", day.part_1())
-    print("Part 2:", day.part_2())
+    Dec16().run_day()

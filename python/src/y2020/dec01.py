@@ -1,6 +1,6 @@
 import itertools
 
-from python.src.common import Day, timer
+from python.src.common import Day, timer, Timer
 
 
 class Dec01(Day):
@@ -28,6 +28,7 @@ class Dec01(Day):
 
 
 if __name__ == '__main__':
-    d = Dec01()
-    d.part_1()
-    d.part_2()
+    with Timer():
+        d = Dec01()
+        d.part_1()
+        d.part_2()

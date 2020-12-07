@@ -1,4 +1,4 @@
-from python.src.common import Day
+from python.src.common import Day, timer
 from python.src.y2019.intcode import IntCode
 
 
@@ -11,7 +11,7 @@ class Dec02(Day):
     def parse_instructions(instructions):
         return Day.parse_int_line(instructions)
 
-
+    @timer(part=1, title='Data in position 0')
     def part_1(self):
         self.instructions[1] = 12
         self.instructions[2] = 2
@@ -19,6 +19,7 @@ class Dec02(Day):
         ic.run()
         return ic.data[0]
 
+    @timer(part=2, title='100 * noun + verb')
     def part_2(self):
         for verb in range(0, 99):
             for noun in range(0, 99):
@@ -31,6 +32,4 @@ class Dec02(Day):
 
 
 if __name__ == '__main__':
-    d = Dec02()
-    print("Data in position 0: ", d.part_1())
-    print("100 * noun * verb: ", d.part_2())
+    Dec02().run_day()

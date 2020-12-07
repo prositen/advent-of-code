@@ -1,6 +1,6 @@
 import itertools
 
-from python.src.common import Day
+from python.src.common import Day, timer
 from python.src.y2019.intcode import IntCode
 
 
@@ -13,7 +13,7 @@ class Dec07(Day):
     def parse_instructions(instructions):
         return Day.parse_int_line(instructions)
 
-
+    @timer(part=1, title='Largest output signal')
     def part_1(self):
         output = 0
         for phases in itertools.permutations([0, 1, 2, 3, 4]):
@@ -27,6 +27,7 @@ class Dec07(Day):
             output = max(output, prev_output)
         return output
 
+    @timer(part=2, title='Highest signal with feedback loop mode')
     def part_2(self):
         output = 0
         for phases in itertools.permutations([5, 6, 7, 8, 9]):
@@ -44,6 +45,4 @@ class Dec07(Day):
 
 
 if __name__ == '__main__':
-    d = Dec07()
-    print("Largest output signal:", d.part_1())
-    print("Highest signal with feedback loop mode:", d.part_2())
+    Dec07().run_day()

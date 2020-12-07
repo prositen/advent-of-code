@@ -1,5 +1,5 @@
 from collections import Counter, deque
-from python.src.common import Day
+from python.src.common import Day, timer
 
 
 class Ingredient(object):
@@ -47,10 +47,12 @@ class Dec14(Day):
     def parse_instructions(instructions):
         return [Reaction(i) for i in instructions]
 
+    @timer(part=1, title='ORE required to produce 1 FUEL')
     def part_1(self):
         self.cost_per_fuel = self.create_fuel(1)
         return self.cost_per_fuel
 
+    @timer(part=2, title='Maximum amount of FUEL with 1 trillion ORE')
     def part_2(self):
         goal = 10 ** 12
         usage = goal // self.cost_per_fuel
@@ -68,6 +70,4 @@ class Dec14(Day):
 
 
 if __name__ == '__main__':
-    d = Dec14()
-    print("Part 1", d.part_1())
-    print("Part 2", d.part_2())
+    Dec14().run_day()

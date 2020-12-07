@@ -11,7 +11,8 @@ def timer(part, show_result=True, title=''):
             result = f(*args, **kwargs)
             if show_result:
                 header = title or f'Part {part}'
-                print(f'{header}: {result}  {(time.time() - start_time) * 1e3:.2f} ms')
+                print(f'{header}: {result if result else ""}  '
+                      f'{(time.time() - start_time) * 1e3:.2f} ms')
             return result
 
         return wrapper
@@ -60,6 +61,20 @@ class Day(object):
     @staticmethod
     def parse_int_lines(instructions):
         return [int(row) for row in instructions]
+
+    @staticmethod
+    def parse_groups(instructions):
+        result = list()
+        g = list()
+        for row in instructions:
+            if len(row):
+                g.append(row)
+            else:
+                result.append([r for r in g])
+                g = []
+        if g:
+            result.append(g)
+        return result
 
     def read_input(self, filename=None):
         """ If filename is given, use that. Otherwise default to data/<year>/input.<day>.txt """

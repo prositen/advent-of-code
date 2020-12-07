@@ -1,6 +1,6 @@
 import math
 from collections import defaultdict
-from python.src.common import Day
+from python.src.common import Day, timer
 
 
 class Dec10(Day):
@@ -16,7 +16,7 @@ class Dec10(Day):
     def parse_instructions(instructions):
         pos = list()
         for y, row in enumerate(instructions):
-            for x, c in enumerate(row.strip()):
+            for x, c in enumerate(row):
                 if c != '.':
                     pos.append((x, y))
         return len(instructions[0]), len(instructions), pos
@@ -37,6 +37,7 @@ class Dec10(Day):
                     positions[angle].append((self.dist(me, other), other))
             self.positions[me] = positions
 
+    @timer(part=1, title='Asteroids detected')
     def part_1(self):
         best = 0
         for asteroid, positions in self.positions.items():
@@ -45,6 +46,7 @@ class Dec10(Day):
                 self.best_position = asteroid
         return best
 
+    @timer(part=2, title='Last vaporized asteroid @ X*100 + Y')
     def part_2(self):
         starmap = self.positions[self.best_position]
         sorted_map = {
@@ -64,6 +66,4 @@ class Dec10(Day):
 
 
 if __name__ == '__main__':
-    d = Dec10()
-    print("Part 1:", d.part_1())
-    print("Part 2:", d.part_2())
+    Dec10().run_day()
