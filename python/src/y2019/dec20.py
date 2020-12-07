@@ -50,40 +50,51 @@ class Dec20(Day):
                 self.connections[name] = list()
             self.connections[name] += [pos]
 
-    def find_path(self, use_portals):
+    def recurse(self, pos):
+        y, x = pos
+        if y == 2 or y == len(self.maze) - 3 or x == 2 or x == len(self.maze[0]) - 3:
+            return -1
+        return 1
+
+    def find_path(self, use_portals=True, use_recursion=False):
         start_pos = self.connections['AA'][0]
         end_pos = self.connections['ZZ'][0]
         to_visit = deque()
-        to_visit.append((0, start_pos))
+        to_visit.append((0, 0, start_pos))
         visited = set()
         while to_visit:
-            steps, pos = to_visit.pop()
-            visited.add(pos)
-            row, col = pos
-            c = self.get_pos(row, col)
-            if c != '.':
+            depth, steps, pos = to_visit.popleft()
+            if (depth, pos) in visited:
                 continue
-            if (row, col) == end_pos:
+            visited.add((depth, pos))
+            row, col = pos
+            if self.get_pos(row, col) != '.':
+                continue
+            if depth == 0 and (row, col) == end_pos:
                 return steps
+            for next_pos in (row - 1, col), (row, col + 1), (row + 1, col), (row, col - 1):
+                if self.get_pos(*next_pos) == '.' and (depth, next_pos) not in visited:
+                    to_visit.append((depth, steps + 1, next_pos))
             if use_portals:
                 portal = self.portals.get(pos)
-                if portal:
+                if portal and portal not in ('AA', 'ZZ'):
                     connections = set(self.connections[portal]) - {pos}
                     if connections:
                         next_pos = connections.pop()
-                        to_visit.appendleft(((steps + 1), next_pos))
-            for next_pos in (row - 1, col), (row, col + 1), (row + 1, col), (row, col - 1):
-                if self.get_pos(*next_pos) == '.' and next_pos not in visited:
-                    to_visit.appendleft((steps + 1, next_pos))
+                        next_depth = depth
+                        if use_recursion:
+                            next_depth += self.recurse(pos)
+                        if 0 <= next_depth <= len(self.portals):
+                            to_visit.append((next_depth, (steps + 1), next_pos))
         return None
 
-    @timer(part=1)
+    @timer(part=1, title='With portals')
     def part_1(self, use_portals=True):
         return self.find_path(use_portals)
 
-    @timer(part=2)
+    @timer(part=2, title='With recursion')
     def part_2(self):
-        return 0
+        return self.find_path(use_recursion=True)
 
 
 if __name__ == '__main__':
