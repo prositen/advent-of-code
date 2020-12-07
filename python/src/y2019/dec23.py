@@ -5,7 +5,7 @@ from src.y2019.intcode import IntCode
 class NAT(object):
     def __init__(self, int_code, computers):
         self.computers = list()
-        for cid in range(50):
+        for cid in range(computers):
             c = IntCode(instructions=int_code)
             c.add_input(cid)
             self.computers.append(c)
@@ -13,28 +13,34 @@ class NAT(object):
         self.packet = (0, 0)
         self.step_count = 0
         self.idle = False
+        self.traffic = [[] for _ in range(computers)]
 
-    def step(self):
+    def run(self):
         self.step_count += 1
         self.idle = True
-        for computer in self.computers:
-            computer.step()
-            if computer.waiting_for_input:
+        idle_count = 0
+        for index, computer in enumerate(self.computers):
+            computer.run_and_wait()
+            if self.traffic[index]:
+                for t in self.traffic[index]:
+                    computer.add_input(t)
+            else:
                 computer.add_input(-1)
-            if len(computer.output) > 2:
+                idle_count += 1
 
+            if len(computer.output) > 2:
                 target = computer.get_output(0)
                 x = computer.get_output(0)
                 y = computer.get_output(0)
                 if target < len(self.computers):
-                    self.computers[target].add_input(x)
-                    self.computers[target].add_input(y)
+                    self.traffic[target].append(x)
+                    self.traffic[target].append(y)
                 elif target == 255:
                     self.packet = x, y
 
     def run_until_first(self):
         while self.packet == (0, 0):
-            self.step()
+            self.run()
         return self.packet[1]
 
 
