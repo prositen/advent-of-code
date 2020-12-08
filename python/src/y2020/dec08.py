@@ -26,11 +26,12 @@ class GameInspector(object):
         self.seen = set()
 
     def run(self):
-        while True:
+        while self.console.pc < len(self.console.instructions):
             self.console.step()
             if self.console.pc in self.seen:
-                return self.console.acc
+                return False, self.console.acc
             self.seen.add(self.console.pc)
+        return True, self.console.acc
 
 class Dec08(Day):
 
@@ -46,15 +47,35 @@ class Dec08(Day):
             result.append((op, arg))
         return result
 
+    def change_program(self):
+        code = self.instructions
+        for index, line in enumerate(code):
+            if line[0] == 'jmp':
+                new_op = ('nop', line[1])
+            elif line[0] == 'nop':
+                new_op = ('jmp', line[1])
+            else:
+                continue
+            new_code = [new_op]
+            if index > 0:
+                new_code = code[:index] + new_code
+            if index <= len(code):
+                new_code = new_code + code[index + 1:]
+            yield Console(instructions=new_code)
+
     @timer(part=1)
     def part_1(self):
         console = Console(instructions=self.instructions)
         inspector = GameInspector(console=console)
-        return inspector.run()
+        return inspector.run()[1]
 
     @timer(part=2)
     def part_2(self):
-        return 0
+        for game in self.change_program():
+            inspector = GameInspector(console=game)
+            finished, acc = inspector.run()
+            if finished:
+                return acc
 
 
 if __name__ == '__main__':
