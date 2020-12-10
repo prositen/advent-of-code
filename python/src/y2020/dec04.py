@@ -1,5 +1,3 @@
-import re
-
 from python.src.common import Day, timer, Timer
 
 
@@ -14,7 +12,8 @@ class Dec04(Day):
         'eyr': lambda x: len(x) == 4 and 2020 <= int(x) <= 2030,
         'hgt': lambda x: (x.endswith('cm') and (150 <= int(x[:-2]) <= 193) or
                           x.endswith('in') and (59 <= int(x[:-2]) <= 76)),
-        'hcl': lambda x: re.match('#[0-9a-f]{6}', x) is not None,
+        'hcl': lambda x: (len(x) == 7 and x[0] == '#' and
+                          all(c in '0123456789abcdef' for c in x[1:])),
         'ecl': lambda x: x in ('amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth'),
         'pid': lambda x: len(x) == 9 and x.isnumeric(),
         'cid': lambda x: True

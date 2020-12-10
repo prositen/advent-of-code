@@ -8,7 +8,7 @@ class Dec05(Day):
 
     @staticmethod
     def parse_instructions(instructions):
-        return [Dec05.seat_id(i) for i in instructions]
+        return sorted([Dec05.seat_id(i) for i in instructions])
 
     @staticmethod
     def seat_id(boarding_pass):
@@ -17,11 +17,11 @@ class Dec05(Day):
 
     @timer(part=1)
     def part_1(self):
-        return max(self.instructions)
+        return self.instructions[-1]
 
     @timer(part=2)
     def part_2(self):
-        seats = sorted(self.instructions)
+        seats = self.instructions
         all_seats = set(range(seats[0], seats[-1] + 1))
         return all_seats.difference(seats).pop()
 
