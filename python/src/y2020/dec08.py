@@ -33,6 +33,7 @@ class GameInspector(object):
             self.seen.add(self.console.pc)
         return True, self.console.acc
 
+
 class Dec08(Day):
 
     def __init__(self, instructions=None, filename=None):
