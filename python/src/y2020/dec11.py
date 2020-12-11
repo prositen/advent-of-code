@@ -1,3 +1,5 @@
+from functools import cache
+
 from python.src.common import Day, timer, Timer
 
 
@@ -11,6 +13,7 @@ class Dec11(Day):
     def parse_instructions(instructions):
         return instructions, len(instructions), len(instructions[0])
 
+    @cache
     def seat(self, row, col):
         if 0 <= row < self.rows and 0 <= col < self.cols:
             return self.grid[row][col]
@@ -25,7 +28,7 @@ class Dec11(Day):
         def nearest_seat(dy, dx):
             for i in range(1, length):
                 v = self.seat(r + dy * i, c + dx * i)
-                if v in ('#', 'L'):
+                if v in ('#', 'L', ''):
                     return v
 
         length = max(self.rows, self.cols)
@@ -39,6 +42,7 @@ class Dec11(Day):
             look = self.count_neighbours
         while True:
             next_grid = list()
+            self.seat.cache_clear()
             for r in range(self.rows):
                 row = list()
                 for c in range(self.cols):
