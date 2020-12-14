@@ -29,7 +29,7 @@ class TestDec22(unittest.TestCase):
         day.shuffle(cards=10)
         self.assertEqual([6, 3, 0, 7, 4, 1, 8, 5, 2, 9], day.cards)
 
-    def test_shuffle_4(self):
+    def test_part_1_d(self):
         data = ["deal into new stack",
                 "cut -2",
                 "deal with increment 7",
@@ -43,3 +43,4 @@ class TestDec22(unittest.TestCase):
         day = Dec22(instructions=data)
         day.shuffle(cards=10)
         self.assertEqual([9, 2, 5, 8, 1, 4, 7, 0, 3, 6], day.cards)
+        self.assertEqual(7, day.find_position_of(card=0, size=10))
