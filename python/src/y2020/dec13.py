@@ -37,15 +37,23 @@ class Dec13(Day):
         buses = [c for c in enumerate(self.buses) if c[1]]
         largest = max(buses, key=lambda b: b[1])
         largest_offset = largest[0]
-        buses = [(c[0] - largest[0], c[1]) for c in buses]
+        buses = list(sorted(((c[0] - largest[0], c[1]) for c in buses),
+                            key=lambda c: -c[1]))
         n = 1
+        step = largest[1]
+        start = 1
+        timestamp = 0
         while True:
-            timestamp = largest[1] * n
+            timestamp += step
             valid = True
-            for offset, bus in buses:
+            for offset, bus in buses[start:]:
                 if (timestamp + offset) % bus:
                     valid = False
                     break
+                else:
+                    start += 1
+                    step *= bus
+                    n = 0
             if valid:
                 return timestamp - largest_offset
             n += 1
