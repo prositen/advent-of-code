@@ -23,3 +23,13 @@ class TestDec24(unittest.TestCase):
 
         self.assertEqual(2129920,
                          Dec24(instructions=layout).get_biodiversity())
+
+    def test_run_recursive(self):
+        layout = ["....#",
+                  "#..#.",
+                  "#..##",
+                  "..#..",
+                  "#...."]
+
+        self.assertEqual(99,
+                         Dec24(instructions=layout).run(10))
