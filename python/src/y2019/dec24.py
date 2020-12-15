@@ -7,19 +7,20 @@ class Dec24(Day):
 
     def __init__(self, instructions=None, filename=None):
         super().__init__(2019, 24, instructions, filename)
-        self.grid = dict()
+        self.grids = dict()
+        self.grids[0] = dict()
         for y, row in enumerate(self.instructions):
             for x, col in enumerate(row):
-                self.grid[(y, x)] = col
+                self.grids[0][(y, x)] = col
         self.max_x = 5
         self.max_y = 5
 
     def get_biodiversity(self):
-        return sum(2 ** i for i, c in enumerate(self.grid.values()) if c == '#')
+        return sum(2 ** i for i, c in enumerate(self.grids[0].values()) if c == '#')
 
-    def pos(self, row, col):
+    def pos(self, row, col, level=0):
         if 0 <= row < self.max_y and 0 <= col < self.max_x:
-            return self.grid[(row, col)]
+            return self.grids[level][(row, col)]
         return '.'
 
     def count_neighbours(self, row, col):
@@ -27,6 +28,10 @@ class Dec24(Day):
         for dy, dx in [(-1, 0), (0, 1), (1, 0), (0, -1)]:
             c += self.pos(row + dy, col + dx) == '#'
         return c
+
+    @staticmethod
+    def is_middle(y, x):
+        return x == 2 and y == 2
 
     def step(self):
         new_layout = dict()
@@ -40,7 +45,7 @@ class Dec24(Day):
                     new_layout[(y, x)] = '#'
                 else:
                     new_layout[(y, x)] = col
-        self.grid = new_layout
+        self.grids[0] = new_layout
 
     @timer(part=1)
     def part_1(self):
