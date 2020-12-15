@@ -42,10 +42,6 @@ class Dec24(Day):
                     new_layout[(y, x)] = col
         self.grid = new_layout
 
-    def print(self):
-        print('\n'.join(self.instructions))
-        print('\n\n')
-
     @timer(part=1)
     def part_1(self):
         seen = set()
