@@ -1,5 +1,5 @@
 from python.src.common import Day, timer, Timer
-from src.gol import GameOfLife
+from python.src.gol import GameOfLife
 
 
 class Dec17(Day):
@@ -24,14 +24,14 @@ class Dec17(Day):
 
     @timer(part=1)
     def part_1(self):
-        gol = GameOfLife(stay_alive=(2, 3), new_life=(3,), dimensions=3)
+        gol = GameOfLife(stay_alive=(2, 3), new_life=(3,), dimensions=3, stay_in_bounds=False)
         gol.set(self.make_grid(dimensions=3))
         gol.step(steps=6)
         return gol.count()
 
     @timer(part=2)
     def part_2(self):
-        gol = GameOfLife(stay_alive=(2, 3), new_life=(3,), dimensions=4)
+        gol = GameOfLife(stay_alive=(2, 3), new_life=(3,), dimensions=4, stay_in_bounds=False)
         gol.set(self.make_grid(dimensions=4))
         gol.step(steps=6)
         return gol.count()
