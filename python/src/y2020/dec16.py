@@ -1,3 +1,5 @@
+from collections import deque
+
 from python.src.common import Day, timer, Timer
 
 
@@ -27,15 +29,44 @@ class Dec16(Day):
     @timer(part=1)
     def part_1(self):
         errors = 0
+        valid = list()
         for ticket in self.other_tickets:
             for number in ticket:
                 if not any(self.check_rule(r, number) for r in self.rules):
                     errors += number
+                    break
+            else:
+                valid.append(ticket)
+        self.other_tickets = valid
         return errors
 
     @timer(part=2)
     def part_2(self):
-        return 0
+        valid = dict()
+        transposed = dict()
+        for i in range(len(self.my_ticket)):
+            transposed[i] = [o[i] for o in self.other_tickets]
+            for name in self.rules:
+                if all(self.check_rule(name, j) for j in transposed[i]):
+                    valid[name] = valid.get(name, list()) + [i]
+        rule_to_column = dict()
+        to_visit = deque(sorted(valid.items(), key=lambda cols: len(cols[1])))
+        while to_visit:
+            rule, columns = to_visit.popleft()
+            if len(columns) == 1:
+                rule_to_column[rule] = columns[0]
+                for x in to_visit:
+                    x[1].remove(columns[0])
+            else:
+                to_visit.append((rule, columns))
+        departure_number = 1
+        for k,v in rule_to_column.items():
+            if k.startswith('departure'):
+                departure_number *= self.my_ticket[v]
+        return departure_number
+
+
+
 
 
 if __name__ == '__main__':
