@@ -3,11 +3,13 @@ from collections import deque
 from python.src.common import Day, timer, Timer
 
 
-class LTRCalculator(object):
+class Calculator(object):
 
     def __init__(self, expression):
         self.expression = self._tokenize(expression)
-        self.ast = self.calc_ast()
+
+    PRIO_LTR = {'*': 1, '+': 1}
+    PRIO_PLUS = {'+': 2, '*': 1}
 
     def _tokenize(self, expression):
         prev_char = ''
@@ -20,57 +22,50 @@ class LTRCalculator(object):
             prev_char = char
         return stack
 
-    def calc_ast(self):
-        stack = deque()
+    def shunting_yard(self, prio):
+        operators = deque()
+        output = deque()
         for token in self.expression:
             if token.isdigit():
-                stack.append(int(token))
+                output.append((int(token), None, None))
+            elif token == '(':
+                operators.append(token)
             elif token == ')':
-                right = stack.pop()
-                op = stack.pop()
-                left = stack.pop()
-                if op == '+':
-                    stack.append(left + right)
-                else:
-                    stack.append(left * right)
-            elif token in ('+', '*'):
-                stack.append(token)
-        return stack
+                while (op := operators.pop()) != '(':
+                    output.append((op,
+                                   output.pop(),
+                                   output.pop()))
+            elif token in '+*':
+                while operators:
+                    op = operators[-1]
+                    if op == '(' or (prio[op] < prio[token]):
+                        break
+                    output.append((operators.pop(),
+                                   output.pop(),
+                                   output.pop()))
+                operators.append(token)
+        while operators:
+            output.append((operators.pop(),
+                           output.pop(),
+                           output.pop()))
 
+        return output.pop()
 
-    def calculate(self):
-        print(self.ast)
-        current_number = 0
-        operand = 0
-        operator = ''
-        memory = deque()
-        for token in self.expression:
-            if current_number and operator and operand:
-                if operator == '+':
-                    current_number += operand
-                elif operator == '*':
-                    current_number *= operand
-                operand = 0
-                operator = ''
-
-            if token == '(':
-                memory.append((operand, operator))
-                operator = ''
-                operand = 0
-            elif token == ')':
-                operand, operator = memory.pop()
-            elif token in ('+', '*'):
-                operand, current_number = current_number, 0
-                operator = token
+    def evaluate(self, node):
+        (data, l_child, r_child) = node
+        if l_child is None:
+            return data
+        else:
+            l_value = self.evaluate(l_child)
+            r_value = self.evaluate(r_child)
+            if data == '+':
+                return l_value + r_value
             else:
-                current_number = int(token)
+                return l_value * r_value
 
-        if current_number and operator and operand:
-            if operator == '+':
-                current_number += operand
-            elif operator == '*':
-                current_number *= operand
-        return current_number
+    def calculate(self, prio):
+        root = self.shunting_yard(prio)
+        return self.evaluate(root)
 
 
 class Dec18(Day):
@@ -84,12 +79,13 @@ class Dec18(Day):
 
     @timer(part=1)
     def part_1(self):
-        return sum(LTRCalculator(line).calculate()
+        return sum(Calculator(line).calculate(Calculator.PRIO_LTR)
                    for line in self.instructions)
 
     @timer(part=2)
     def part_2(self):
-        return 0
+        return sum(Calculator(line).calculate(Calculator.PRIO_PLUS)
+                   for line in self.instructions)
 
 
 if __name__ == '__main__':
