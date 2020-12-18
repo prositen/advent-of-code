@@ -6,35 +6,70 @@ from python.src.common import Day, timer, Timer
 class LTRCalculator(object):
 
     def __init__(self, expression):
-        self.memory = deque()
-        self.expression = '(' + expression.replace(' ', '') + ')'
+        self.expression = self._tokenize(expression)
+        self.ast = self.calc_ast()
+
+    def _tokenize(self, expression):
+        prev_char = ''
+        stack = deque()
+        for char in expression:
+            if char.isdigit() and prev_char.isdigit():
+                stack.append(stack.pop() + char)
+            elif char != ' ':
+                stack.append(char)
+            prev_char = char
+        return stack
+
+    def calc_ast(self):
+        stack = deque()
+        for token in self.expression:
+            if token.isdigit():
+                stack.append(int(token))
+            elif token == ')':
+                right = stack.pop()
+                op = stack.pop()
+                left = stack.pop()
+                if op == '+':
+                    stack.append(left + right)
+                else:
+                    stack.append(left * right)
+            elif token in ('+', '*'):
+                stack.append(token)
+        return stack
+
 
     def calculate(self):
+        print(self.ast)
         current_number = 0
         operand = 0
         operator = ''
-        for char in self.expression:
-            if str.isnumeric(char):
-                current_number = (current_number * 10) + int(char)
+        memory = deque()
+        for token in self.expression:
+            if current_number and operator and operand:
+                if operator == '+':
+                    current_number += operand
+                elif operator == '*':
+                    current_number *= operand
+                operand = 0
+                operator = ''
+
+            if token == '(':
+                memory.append((operand, operator))
+                operator = ''
+                operand = 0
+            elif token == ')':
+                operand, operator = memory.pop()
+            elif token in ('+', '*'):
+                operand, current_number = current_number, 0
+                operator = token
             else:
-                if current_number and operator and operand:
-                    if operator == '+':
-                        current_number += operand
-                    elif operator == '*':
-                        current_number *= operand
-                    operand = 0
-                    operator = ''
+                current_number = int(token)
 
-                if char == '(':
-                    self.memory.append((operand, operator))
-                    operator = ''
-                    operand = 0
-                elif char == ')':
-                    operand, operator = self.memory.pop()
-                elif char in ('+', '*'):
-                    operand, current_number = current_number, 0
-                    operator = char
-
+        if current_number and operator and operand:
+            if operator == '+':
+                current_number += operand
+            elif operator == '*':
+                current_number *= operand
         return current_number
 
 

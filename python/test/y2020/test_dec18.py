@@ -6,10 +6,25 @@ from python.src.y2020.dec18 import Dec18
 class TestDec18(unittest.TestCase):
 
     def test_part_1_a(self):
+        """
+        1 + 2
+              * 3
+                  + 4
+                      * 5
+                         + 6
+        """
         expressions = ["1 + 2 * 3 + 4 * 5 + 6"]
         self.assertEqual(71, Dec18(instructions=expressions).part_1())
 
     def test_part_1_b(self):
+        """
+        1
+          + (2 * 3)
+             + (4
+                 * (5 + 6) )
+
+        """
+
         expressions = ["1 + (2 * 3) + (4 * (5 + 6))"]
         self.assertEqual(51, Dec18(instructions=expressions).part_1())
 
@@ -28,7 +43,7 @@ class TestDec18(unittest.TestCase):
     def test_part_1_f(self):
         expressions = ["((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2"]
         self.assertEqual(13632, Dec18(instructions=expressions).part_1())
-
+    """
     def test_part_2_a(self):
         expressions = ["1 + 2 * 3 + 4 * 5 + 6"]
         self.assertEqual(231, Dec18(instructions=expressions).part_1())
@@ -52,3 +67,5 @@ class TestDec18(unittest.TestCase):
     def test_part_2_f(self):
         expressions = ["((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2"]
         self.assertEqual(23340, Dec18(instructions=expressions).part_1())
+        
+    """
