@@ -5,19 +5,15 @@ from python.src.common import Day, timer, Timer
 
 
 class Image(object):
+    TR = str.maketrans(' .#', '001')
+
     def __init__(self, data):
         self.image = data
         self.height = len(self.image)
         self.width = len(self.image[0])
 
     def flip_x(self):
-        self.image = [
-            row[::-1]
-            for row in self.image
-        ]
-
-    def flip_y(self):
-        self.image = self.image[::-1]
+        self.image = [row[::-1] for row in self.image]
 
     def rotate_right(self):
         new_image = list()
@@ -29,13 +25,20 @@ class Image(object):
         self.image = new_image
         self.width, self.height = self.height, self.width
 
-    TR = str.maketrans(' .#', '001')
-
     def int_list(self):
-        return [
-            int(row.translate(self.TR), 2)
-            for row in self.image
-        ]
+        return [int(row.translate(self.TR), 2)
+                for row in self.image]
+
+    def slice(self, *, x, y, width, height):
+        return Image([row[x:x + width] for row in self.image[y:y + height]])
+
+    def remove(self, *, x, y, mask):
+        for yy in range(mask.height):
+            line = [c for c in self.image[yy + y]]
+            for xx in range(mask.width):
+                if mask.image[yy][xx] == '#':
+                    line[xx + x] = '.'
+            self.image[yy + y] = ''.join(line)
 
 
 class Tile(object):
@@ -44,10 +47,8 @@ class Tile(object):
         self.number = int(number, 10)
 
         data = data[1:]
-        self.borders = [data[0],
-                        ''.join(d[-1] for d in data),
-                        data[-1],
-                        ''.join(d[0] for d in data)]
+        self.borders = [data[0], ''.join(d[-1] for d in data),
+                        data[-1], ''.join(d[0] for d in data)]
         self._image = Image([row[1:-1] for row in data[1:-1]])
         self.edges = [0, 0, 0, 0]
 
@@ -67,14 +68,6 @@ class Tile(object):
                         self.borders[2][::-1],
                         self.borders[1]]
         self.edges[1], self.edges[3] = self.edges[3], self.edges[1]
-
-    def flip_y(self):
-        self._image.flip_y()
-        self.borders = [self.borders[2],
-                        self.borders[1][::-1],
-                        self.borders[0],
-                        self.borders[3][::-1]]
-        self.edges[0], self.edges[2] = self.edges[2], self.edges[0]
 
     def rotate_right(self):
         self._image.rotate_right()
@@ -112,12 +105,6 @@ class Grid(object):
         2: (1, 0),
         3: (0, -1)
     }
-
-    SEA_MONSTER = Image(data=[
-        "                  # ",
-        "#    ##    ##    ###",
-        "#  #  #  #  #  #    "
-    ])
 
     def find_matches(self):
         for en1, n1 in enumerate(self.tiles):
@@ -158,7 +145,7 @@ class Grid(object):
 
         image = dict()
         h = nw.height()
-        for (y, x), tile in sorted(grid.items(), key=lambda x: x[0]):
+        for (y, x), tile in sorted(grid.items()):
             for i, row in enumerate(tile.image()):
                 row_no = (y * h) + i
                 image[row_no] = image.get(row_no, '') + row
@@ -171,6 +158,30 @@ class Dec20(Day):
         super().__init__(2020, 20, instructions, filename)
         self.grid = Grid(self.instructions)
 
+    SEA_MONSTER = Image(data=[
+        "                  # ",
+        "#    ##    ##    ###",
+        " #  #  #  #  #  #   "
+    ])
+
+    def remove_sea_monsters(self, image):
+        monster_mask = self.SEA_MONSTER.int_list()
+        found = False
+        h = self.SEA_MONSTER.height
+        w = self.SEA_MONSTER.width
+        for _ in range(2):
+            for _ in range(4):
+                for y in range(image.height - h):
+                    for x in range(image.width - w):
+                        img = image.slice(y=y, x=x, width=w, height=h).int_list()
+                        if all(img[i] & monster_mask[i] == monster_mask[i] for i in range(h)):
+                            found = True
+                            image.remove(y=y, x=x, mask=self.SEA_MONSTER)
+                if found:
+                    return
+                image.rotate_right()
+            image.flip_x()
+
     @staticmethod
     def parse_instructions(instructions):
         return [Tile(g) for g in Day.parse_groups(instructions)]
@@ -181,9 +192,9 @@ class Dec20(Day):
 
     @timer(part=2)
     def part_2(self):
-        print(self.grid.SEA_MONSTER.int_list())
-        self.grid.form_image()
-        return 273
+        sea = self.grid.form_image()
+        self.remove_sea_monsters(sea)
+        return sum(row.count('#') for row in sea.image)
 
 
 if __name__ == '__main__':

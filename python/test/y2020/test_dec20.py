@@ -170,12 +170,6 @@ class TestTile(unittest.TestCase):
         self.assertEqual(["#..", ".#.", "###"], t.image())
         self.assertEqual(["54321", "1680B", "FEDCB", "579AF"], t.borders)
 
-    def test_flip_image_y(self):
-        t = Tile(self.image)
-        t.flip_y()
-        self.assertEqual(["###", ".#.", "..#"], t.image())
-        self.assertEqual(["BCDEF", "FA975", "12345", "B0861"], t.borders)
-
     def test_rotate(self):
         image = [
             "Tile 1:",
