@@ -1,6 +1,6 @@
 import unittest
 
-from python.src.y2020.dec20 import Dec20
+from python.src.y2020.dec20 import Dec20, Tile
 
 
 class TestDec20(unittest.TestCase):
@@ -116,28 +116,74 @@ class TestDec20(unittest.TestCase):
         self.assertEqual(20899048083289, Dec20(instructions=self.data).part_1())
 
     def test_part_2_image(self):
-        expected_image = """.#.#..#.##...#.##..#####
-###....#.#....#..#......
-##.##.###.#.#..######...
-###.#####...#.#####.#..#
-##.#....#.##.####...#.##
-...########.#....#####.#
-....#..#...##..#.#.###..
-.####...#..#.....#......
-#..#.##..#..###.#.##....
-#.####..#.####.#.#.###..
-###.#.#...#.######.#..##
-#.####....##..########.#
-##..##.#...#...#.#.#.#..
-...#..#..#.#.##..###.###
-.#.#....#.##.#...###.##.
-###.#...#..#.##.######..
-.#.#.###.##.##.#..#.##..
-.####.###.#...###.#..#.#
-..#.#..#..#.#.#.####.###
-#..####...#.#.#.###.###.
-#####..#####...###....##
-#.##..#..#...#..####...#
-.#.###..##..##..####.##.
-...###...##...#...#..###"""
-        # self.assertEqual(expected_image, Dec20(instructions=self.data).form_image())
+        expected_image = [".#.#..#.##...#.##..#####",
+                          "###....#.#....#..#......",
+                          "##.##.###.#.#..######...",
+                          "###.#####...#.#####.#..#",
+                          "##.#....#.##.####...#.##",
+                          "...########.#....#####.#",
+                          "....#..#...##..#.#.###..",
+                          ".####...#..#.....#......",
+                          "#..#.##..#..###.#.##....",
+                          "#.####..#.####.#.#.###..",
+                          "###.#.#...#.######.#..##",
+                          "#.####....##..########.#",
+                          "##..##.#...#...#.#.#.#..",
+                          "...#..#..#.#.##..###.###",
+                          ".#.#....#.##.#...###.##.",
+                          "###.#...#..#.##.######..",
+                          ".#.#.###.##.##.#..#.##..",
+                          ".####.###.#...###.#..#.#",
+                          "..#.#..#..#.#.#.####.###",
+                          "#..####...#.#.#.###.###.",
+                          "#####..#####...###....##",
+                          "#.##..#..#...#..####...#",
+                          ".#.###..##..##..####.##.",
+                          "...###...##...#...#..###"]
+        result = Dec20(instructions=self.data).grid.form_image()
+        for _ in range(2):
+            result.flip_x()
+            for _ in range(4):
+                result.rotate_right()
+                if result.image == expected_image:
+                    return True
+
+        self.assertTrue(False)
+
+
+class TestTile(unittest.TestCase):
+    image = [
+        "Tile 1:",
+        "12345",
+        "6..#7",
+        "8.#.9",
+        "0###A",
+        "BCDEF"
+    ]
+
+    def test_flip_image_x(self):
+        t = Tile(self.image)
+        t.flip_x()
+        self.assertEqual(["#..", ".#.", "###"], t.image())
+        self.assertEqual(["54321", "1680B", "FEDCB", "579AF"], t.borders)
+
+    def test_flip_image_y(self):
+        t = Tile(self.image)
+        t.flip_y()
+        self.assertEqual(["###", ".#.", "..#"], t.image())
+        self.assertEqual(["BCDEF", "FA975", "12345", "B0861"], t.borders)
+
+    def test_rotate(self):
+        image = [
+            "Tile 1:",
+            "+1234+",
+            "aABCDe",
+            "bEFGHf",
+            "cIJKLg",
+            "dMNOPh",
+            "+5678+"
+        ]
+        t = Tile(image)
+        t.rotate_right()
+        self.assertEqual(['MIEA', 'NJFB', 'OKGC', 'PLHD'], t.image())
+        self.assertEqual(['+dcba+', '+1234+', '+hgfe+', '+5678+'], t.borders)
