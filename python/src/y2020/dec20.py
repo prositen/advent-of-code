@@ -29,6 +29,14 @@ class Image(object):
         self.image = new_image
         self.width, self.height = self.height, self.width
 
+    TR = str.maketrans(' .#', '001')
+
+    def int_list(self):
+        return [
+            int(row.translate(self.TR), 2)
+            for row in self.image
+        ]
+
 
 class Tile(object):
     def __init__(self, data):
@@ -105,6 +113,12 @@ class Grid(object):
         3: (0, -1)
     }
 
+    SEA_MONSTER = Image(data=[
+        "                  # ",
+        "#    ##    ##    ###",
+        "#  #  #  #  #  #    "
+    ])
+
     def find_matches(self):
         for en1, n1 in enumerate(self.tiles):
             for n2 in list(self.tiles)[en1 + 1:]:
@@ -167,7 +181,9 @@ class Dec20(Day):
 
     @timer(part=2)
     def part_2(self):
+        print(self.grid.SEA_MONSTER.int_list())
         self.grid.form_image()
+        return 273
 
 
 if __name__ == '__main__':

@@ -150,6 +150,9 @@ class TestDec20(unittest.TestCase):
 
         self.assertTrue(False)
 
+    def test_part_2_roughness(self):
+        self.assertEqual(273, Dec20(instructions=self.data).part_2())
+
 
 class TestTile(unittest.TestCase):
     image = [
