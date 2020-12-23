@@ -94,3 +94,7 @@ class Day(object):
     def run_day(self):
         self.part_1()
         self.part_2()
+
+
+def stringify(int_list):
+    return ','.join(str(c) for c in int_list)
