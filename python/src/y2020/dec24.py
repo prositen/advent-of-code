@@ -1,11 +1,12 @@
-from collections import defaultdict
-
 from python.src.common import Day, timer, Timer
+from src.gol import GameOfLife
 
 
-class HexGrid(object):
+class HexGrid(GameOfLife):
     def __init__(self):
-        self.tiles = dict()
+        super().__init__(stay_alive=(1, 2),
+                         new_life=(2,), stay_in_bounds=False)
+        self.delta = self.DIRECTIONS.values()
 
     DIRECTIONS = {
         'nw': (-0.5, -0.5),
@@ -21,20 +22,19 @@ class HexGrid(object):
         for step in path:
             dy, dx = self.DIRECTIONS[step]
             pos = pos[0] + dy, pos[1] + dx
-        self.tiles[pos] = not self.at(pos)
+        self.grid[pos] = not self.at(pos)
 
     def count_black(self):
-        return sum(self.tiles.values())
-
-    def at(self, pos):
-        return self.tiles.get(pos, False)
+        return sum(self.grid.values())
 
 
 class Dec24(Day):
 
     def __init__(self, instructions=None, filename=None):
         super().__init__(2020, 24, instructions, filename)
-        self.grid = None
+        self.grid = HexGrid()
+        for path in self.instructions:
+            self.grid.walk_and_flip(path)
 
     @staticmethod
     def parse_instructions(instructions):
@@ -59,14 +59,12 @@ class Dec24(Day):
 
     @timer(part=1)
     def part_1(self):
-        self.grid = HexGrid()
-        for path in self.instructions:
-            self.grid.walk_and_flip(path)
         return self.grid.count_black()
 
     @timer(part=2)
     def part_2(self):
-        return 0
+        self.grid.step(100)
+        return self.grid.count_black()
 
 
 if __name__ == '__main__':
