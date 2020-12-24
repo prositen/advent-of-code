@@ -96,5 +96,5 @@ class Day(object):
         self.part_2()
 
 
-def stringify(int_list):
-    return ','.join(str(c) for c in int_list)
+def stringify(int_list, separator=','):
+    return separator.join(str(c) for c in int_list)
