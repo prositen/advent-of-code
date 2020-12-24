@@ -1,5 +1,5 @@
 from python.src.common import Day, timer, Timer
-from src.gol import GameOfLife
+from python.src.gol import GameOfLife
 
 
 class HexGrid(GameOfLife):
