@@ -1,16 +1,13 @@
 from python.src.common import Day, timer, Timer
 
 
-def transform(public_key=None, loop_size=None, subject_number=7):
+def find_loop(public_key=None):
     value = 1
     loop = 0
-    while True:
+    while value != public_key:
         loop += 1
-        value = (value * subject_number) % 20201227
-        if loop_size == loop:
-            return value
-        elif value == public_key:
-            return loop
+        value = (value * 7) % 20201227
+    return loop
 
 
 class Dec25(Day):
@@ -24,9 +21,8 @@ class Dec25(Day):
 
     @timer(part=1)
     def part_1(self):
-        card_loop = transform(public_key=self.card)
-        return transform(subject_number=self.door,
-                         loop_size=card_loop)
+        card_loop = find_loop(public_key=self.card)
+        return pow(self.door, card_loop, 20201227)
 
     def part_2(self):
         return 0
