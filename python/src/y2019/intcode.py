@@ -181,6 +181,12 @@ class IntCode(object):
         self.output = []
         return s
 
+    def run_command(self, command):
+        if command:
+            self.input_ascii_string(command)
+        self.run_and_wait()
+        return self.get_ascii_string()
+
     def step(self, debug=False):
         if self.pc is not None and self.pc < len(self.data):
             operands = [self.data.get(self.pc + i, 0) for i in range(4)]
