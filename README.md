@@ -19,7 +19,7 @@
 
 ## 2019
 
-- Python (in progress)
+- Python (complete)
 
 ## 2020
 
