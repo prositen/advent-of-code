@@ -14,20 +14,13 @@ class Dec21(Day):
     def program_computer(self, spring_code):
         ic = IntCode(instructions=self.instructions)
         for line in spring_code:
-            for c in line:
-                ic.add_input(ord(c))
-            ic.add_input(10)
+            ic.input_ascii_string(line)
         ic.run()
         if ic.output[-1] < 128:
-            self.display_output(ic)
+            print(ic.get_ascii_string())
             return None
         else:
             return ic.get_output()
-
-    @staticmethod
-    def display_output(ic):
-        for c in ic.output:
-            print(chr(c), end='')
 
     @timer(part=1)
     def part_1(self):
@@ -54,7 +47,7 @@ class Dec21(Day):
         code = [
             "NOT B T",
             "NOT C J",
-            "OR T J",   # B or C is a hole
+            "OR T J",  # B or C is a hole
             "AND D J",  # ..and D is ground
             "AND H J",  # and H is ground
 

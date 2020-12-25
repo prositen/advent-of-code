@@ -171,6 +171,22 @@ class IntCode(object):
         if data is not None:
             self.input.append(data)
 
+    def input_ascii_string(self, line):
+        for c in line:
+            self.add_input(ord(c))
+        self.add_input(10)
+
+    def get_ascii_string(self):
+        s = ''.join(chr(c) for c in self.output)
+        self.output = []
+        return s
+
+    def run_command(self, command):
+        if command:
+            self.input_ascii_string(command)
+        self.run_and_wait()
+        return self.get_ascii_string()
+
     def step(self, debug=False):
         if self.pc is not None and self.pc < len(self.data):
             operands = [self.data.get(self.pc + i, 0) for i in range(4)]
