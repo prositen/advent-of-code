@@ -39,7 +39,6 @@ class Ship(object):
         self.doors[room] = list()
         door_start, door_end = 0, 0
         items_start, items_end = 0, 0
-        command = False
         for index, line in enumerate(desc):
             if line.startswith('Doors here'):
                 door_start = index + 1
@@ -118,16 +117,15 @@ class Ship(object):
 
     def pass_checkpoint(self):
         all_items = self.items['all']
-        more, less = list(), list()
+        heavy_items = list()
         drop_all = [
             f'drop {item}' for item in all_items
         ]
         self.run_commands(drop_all, self.ic)
-
         for r in range(1, 7):
             combos = list(itertools.combinations(all_items, r=r))
             for items in combos:
-                if any(heavy_items.intersection(items) == heavy_items for heavy_items in less):
+                if any(heavy.intersection(items) == heavy for heavy in heavy_items):
                     continue
                 commands = [
                     f'take {item}' for item in items
@@ -135,10 +133,9 @@ class Ship(object):
                 commands += ['west']
                 output = self.run_commands(commands, ic=copy.deepcopy(self.ic))
                 if 'lighter' in output[-1]:
-                    less.append(set(items))
+                    heavy_items.append(set(items))
                 elif 'keypad' in output[-1]:
-                    print(output[-1].splitlines()[-1])
-                    return
+                    return output[-1].splitlines()[-1]
 
 
 class Dec25(Day):
@@ -171,7 +168,7 @@ class Dec25(Day):
             ship.run_commands(commands=ship.find_path(),
                               ic=ship.ic)
         with Timer('Pass checkpoint'):
-            ship.pass_checkpoint()
+            print(ship.pass_checkpoint())
 
 
 if __name__ == '__main__':
