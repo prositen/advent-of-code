@@ -23,4 +23,4 @@
 
 ## 2020
 
-- Python (in progress)
+- Python (complete)
