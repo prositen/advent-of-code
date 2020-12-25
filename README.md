@@ -2,25 +2,27 @@
 
 ## 2015
 
-- Python (complete)
+- Python (🎄 50⭐)
 
 ## 2016
 
-- Python (complete)
+- Python (🎄 50⭐)
 
 ## 2017
 
-- Python (complete)
-- Bash (in progress)
+- Python (🎄 50⭐)
+- Bash (10⭐)
 
 ## 2018
 
-- Python (complete)
+- Python (🎄 50⭐)
+- Bash (2⭐)
 
 ## 2019
 
-- Python (complete)
+- Python (🎄 50⭐)
 
 ## 2020
 
-- Python (complete)
+- Python (🎄 50⭐)
+- Bash (2⭐)
