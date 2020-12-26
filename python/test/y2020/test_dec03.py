@@ -3,7 +3,7 @@ import unittest
 from python.src.y2020.dec03 import Dec03
 
 
-class TestDec02(unittest.TestCase):
+class TestDec03(unittest.TestCase):
     area_map = [
         "..##.......",
         "#...#...#..",

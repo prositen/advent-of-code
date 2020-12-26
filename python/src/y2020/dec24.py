@@ -28,10 +28,10 @@ class HexGrid(GameOfLife):
         return sum(self.grid.values())
 
 
-class Dec24(Day):
+class Dec24(Day, year=2020, day=24):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 24, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.grid = HexGrid()
         for path in self.instructions:
             self.grid.walk_and_flip(path)
@@ -41,18 +41,18 @@ class Dec24(Day):
         paths = list()
         for instruction in instructions:
             path = list()
-            prev = ''
+            prev = None
             char = ''
             for char in instruction:
-                if prev in ('n', 's'):
+                if prev and prev in 'ns':
                     path.append(prev + char)
-                    prev = ''
+                    prev = None
                 elif char in 'ns':
                     prev = char
                 else:
                     path.append(char)
-                    prev = ''
-            if prev in ('n', 's'):
+                    prev = None
+            if prev and prev in 'ns':
                 path.append(prev + char)
             paths.append(path)
         return paths
@@ -68,7 +68,5 @@ class Dec24(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
-        d = Dec24()
-        d.part_1()
-        d.part_2()
+    with Timer('Lobby Layout'):
+        Dec24().run_day()

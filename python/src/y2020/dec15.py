@@ -1,10 +1,7 @@
 from python.src.common import Day, timer, Timer
 
 
-class Dec15(Day):
-
-    def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 15, instructions, filename)
+class Dec15(Day, year=2020, day=15):
 
     @staticmethod
     def parse_instructions(instructions):
@@ -17,7 +14,7 @@ class Dec15(Day):
             numbers[n] = turn
             turn += 1
         next_number = self.instructions[-1]
-        for turn in range(turn-1, rounds):
+        for turn in range(turn - 1, rounds):
             last_turn = numbers.get(next_number, 0)
             numbers[next_number] = turn
             if last_turn:
@@ -36,7 +33,5 @@ class Dec15(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
-        d = Dec15()
-        d.part_1()
-        d.part_2()
+    with Timer('Rambunctious Recitation'):
+        Dec15().run_day()

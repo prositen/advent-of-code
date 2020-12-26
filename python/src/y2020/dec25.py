@@ -10,9 +10,9 @@ def find_loop(public_key=None):
     return loop
 
 
-class Dec25(Day):
+class Dec25(Day, year=2020, day=25):
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 25, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.door, self.card = self.instructions
 
     @staticmethod
@@ -29,5 +29,5 @@ class Dec25(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
+    with Timer('Combo breaker'):
         Dec25().run_day()

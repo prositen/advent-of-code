@@ -1,14 +1,10 @@
-import functools
-import itertools
-from collections import defaultdict
-
 from python.src.common import Day, timer, Timer
 
 
-class Dec09(Day):
+class Dec09(Day, year=2020, day=9):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 9, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.weakness = 0
 
     @staticmethod
@@ -37,7 +33,7 @@ class Dec09(Day):
                 elif v > weakness:
                     del sums[k]
                 else:
-                    sums[k]=v
+                    sums[k] = v
 
             sums[i] = num
 
@@ -52,7 +48,5 @@ class Dec09(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
-        d = Dec09()
-        d.part_1()
-        d.part_2()
+    with Timer('Encoding Error'):
+        Dec09().run_day()

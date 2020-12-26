@@ -1,12 +1,10 @@
-from collections import deque
-
 from python.src.common import Day, timer, Timer
 
 
-class Dec19(Day):
+class Dec19(Day, year=2020, day=19):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 19, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.rules = dict()
         rule_strings, self.messages = self.instructions
         self.parse_rules(rule_strings)
@@ -60,5 +58,5 @@ class Dec19(Day):
 
 
 if __name__ == '__main__':
-    with Timer():
+    with Timer('Monster Messages'):
         Dec19().run_day()

@@ -3,10 +3,7 @@ import itertools
 from python.src.common import Day, timer, Timer
 
 
-class Dec01(Day):
-
-    def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 1, instructions, filename)
+class Dec01(Day, year=2020, day=1):
 
     @staticmethod
     def parse_instructions(instructions):
@@ -28,7 +25,5 @@ class Dec01(Day):
 
 
 if __name__ == '__main__':
-    with Timer():
-        d = Dec01()
-        d.part_1()
-        d.part_2()
+    with Timer('Report Repair'):
+        Dec01().run_day()

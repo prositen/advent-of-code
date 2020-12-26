@@ -3,10 +3,10 @@ from collections import defaultdict
 from python.src.common import Day, Timer, timer
 
 
-class Dec10(Day):
+class Dec10(Day, year=2020, day=10):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 10, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.adapters = [0] + self.instructions + [self.instructions[-1] + 3]
 
     @staticmethod
@@ -38,5 +38,5 @@ class Dec10(Day):
 
 
 if __name__ == '__main__':
-    with Timer():
+    with Timer('Adapter Array'):
         Dec10().run_day()

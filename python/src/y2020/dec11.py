@@ -3,10 +3,10 @@ from functools import cache
 from python.src.common import Day, timer, Timer
 
 
-class Dec11(Day):
+class Dec11(Day, year=2020, day=11):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 11, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.grid, self.rows, self.cols = self.instructions
 
     @staticmethod
@@ -78,7 +78,5 @@ class Dec11(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
-        d = Dec11()
-        d.part_1()
-        d.part_2()
+    with Timer('Seating System'):
+        Dec11().run_day()

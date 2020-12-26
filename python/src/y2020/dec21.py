@@ -1,10 +1,10 @@
 from python.src.common import Day, timer, Timer
 
 
-class Dec21(Day):
+class Dec21(Day, year=2020, day=21):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 21, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.foods = self.instructions
         self.allergens = dict()
         self.non_allergens = set()
@@ -55,7 +55,5 @@ class Dec21(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
-        d = Dec21()
-        d.part_1()
-        d.part_2()
+    with Timer('Allergen Assessment'):
+        Dec21().run_day()

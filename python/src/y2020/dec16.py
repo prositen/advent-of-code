@@ -3,10 +3,10 @@ from collections import deque
 from python.src.common import Day, timer, Timer
 
 
-class Dec16(Day):
+class Dec16(Day, year=2020, day=16):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 16, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         groups = self.instructions
         self.rules = dict()
         for line in groups[0]:
@@ -60,17 +60,12 @@ class Dec16(Day):
             else:
                 to_visit.append((rule, columns))
         departure_number = 1
-        for k,v in rule_to_column.items():
+        for k, v in rule_to_column.items():
             if k.startswith('departure'):
                 departure_number *= self.my_ticket[v]
         return departure_number
 
 
-
-
-
 if __name__ == '__main__':
-    with Timer('Total'):
-        d = Dec16()
-        d.part_1()
-        d.part_2()
+    with Timer('Ticket Translation'):
+        Dec16().run_day()

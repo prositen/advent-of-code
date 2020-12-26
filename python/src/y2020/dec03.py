@@ -3,10 +3,10 @@ from math import prod
 from python.src.common import Day, timer, Timer
 
 
-class Dec03(Day):
+class Dec03(Day, year=2020, day=3):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 3, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.pos = (0, 0)
         self.height = len(self.instructions)
         self.width = len(self.instructions[0])
@@ -37,7 +37,5 @@ class Dec03(Day):
 
 
 if __name__ == '__main__':
-    with Timer():
-        d = Dec03()
-        d.part_1()
-        d.part_2()
+    with Timer('Toboggan Trajectory'):
+        Dec03().run_day()

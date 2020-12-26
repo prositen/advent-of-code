@@ -1,11 +1,7 @@
 from python.src.common import Day, timer, Timer
 
 
-class Dec05(Day):
-
-    def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 5, instructions, filename)
-
+class Dec05(Day, year=2020, day=5):
     @staticmethod
     def parse_instructions(instructions):
         return sorted([Dec05.seat_id(i) for i in instructions])
@@ -27,5 +23,5 @@ class Dec05(Day):
 
 
 if __name__ == '__main__':
-    with Timer():
+    with Timer('Binary Boarding'):
         Dec05().run_day()

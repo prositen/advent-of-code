@@ -10,7 +10,7 @@ def timer(part, show_result=True, title=''):
             start_time = time.time()
             result = f(*args, **kwargs)
             if show_result:
-                header = title or f'Part {part}'
+                header = title or f'  - Part {part}'
                 print(f'{header}: {result if result else ""}  '
                       f'{(time.time() - start_time) * 1e3:.2f} ms')
             return result
@@ -38,11 +38,28 @@ def input_for(year, day):
                         'data', str(year), 'input.{}.txt'.format(day))
 
 
+_registry = dict()
+
+
 class Day(object):
 
-    def __init__(self, year, day, instructions=None, filename=None):
-        self.year = year
-        self.day = day
+    @staticmethod
+    def get_all_days(year):
+        return _registry.get(year, dict())
+
+    def __init_subclass__(cls, year=None, day=None, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.year = year
+        cls.day = day
+        if year not in _registry:
+            _registry[year] = dict()
+        _registry[year][day] = cls
+
+    def __init__(self, year=None, day=None, instructions=None, filename=None):
+        if year:
+            self.year = year
+        if day:
+            self.day = day
         if not instructions:
             instructions = self.read_input(filename)
         self.instructions = self.parse_instructions(instructions)

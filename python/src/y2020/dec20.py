@@ -152,10 +152,10 @@ class Grid(object):
         return Image(list(image.values()))
 
 
-class Dec20(Day):
+class Dec20(Day, year=2020, day=20):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 20, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.grid = Grid(self.instructions)
 
     SEA_MONSTER = Image(data=[
@@ -198,5 +198,5 @@ class Dec20(Day):
 
 
 if __name__ == '__main__':
-    with Timer():
+    with Timer('Jurassic Jigsaw'):
         Dec20().run_day()

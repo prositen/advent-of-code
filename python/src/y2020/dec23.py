@@ -44,10 +44,7 @@ class CrabCups(object):
         ]
 
 
-class Dec23(Day):
-
-    def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 23, instructions, filename)
+class Dec23(Day, year=2020, day=23):
 
     @staticmethod
     def parse_instructions(instructions):
@@ -69,7 +66,5 @@ class Dec23(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
-        d = Dec23()
-        d.part_1()
-        d.part_2()
+    with Timer('Crab Cups'):
+        Dec23().run_day()

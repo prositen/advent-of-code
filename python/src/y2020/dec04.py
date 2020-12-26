@@ -1,11 +1,7 @@
 from python.src.common import Day, timer, Timer
 
 
-class Dec04(Day):
-
-    def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 4, instructions, filename)
-
+class Dec04(Day, year=2020, day=4):
     PASSPORT_RULES = {
         'byr': lambda x: len(x) == 4 and 1920 <= int(x) <= 2020,
         'iyr': lambda x: len(x) == 4 and 2010 <= int(x) <= 2020,
@@ -50,7 +46,5 @@ class Dec04(Day):
 
 
 if __name__ == '__main__':
-    with Timer():
-        d = Dec04()
-        d.part_1()
-        d.part_2()
+    with Timer('Passport Processing'):
+        Dec04().run_day()

@@ -4,10 +4,10 @@ from collections import defaultdict, deque
 from python.src.common import Day, timer, Timer
 
 
-class Dec07(Day):
+class Dec07(Day, year=2020, day=7):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 7, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.bag_contains = dict()
         self.bag_contained_by = defaultdict(set)
         self.lookup_bags()
@@ -55,7 +55,5 @@ class Dec07(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
-        d = Dec07()
-        d.part_1()
-        d.part_2()
+    with Timer('Handy Haversacks'):
+        Dec07().run_day()

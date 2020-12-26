@@ -34,10 +34,7 @@ class GameInspector(object):
         return True, self.console.acc
 
 
-class Dec08(Day):
-
-    def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 8, instructions, filename)
+class Dec08(Day, year=2020, day=8):
 
     @staticmethod
     def parse_instructions(instructions):
@@ -80,7 +77,5 @@ class Dec08(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
-        d = Dec08()
-        d.part_1()
-        d.part_2()
+    with Timer('Handheld Halting'):
+        Dec08().run_day()

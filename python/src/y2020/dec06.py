@@ -1,10 +1,7 @@
 from python.src.common import Day, timer, Timer
 
 
-class Dec06(Day):
-
-    def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 6, instructions, filename)
+class Dec06(Day, year=2020, day=6):
 
     @staticmethod
     def parse_instructions(instructions):
@@ -32,5 +29,5 @@ class Dec06(Day):
 
 
 if __name__ == '__main__':
-    with Timer():
+    with Timer('Custom Customs'):
         Dec06().run_day()

@@ -68,14 +68,7 @@ class Calculator(object):
         return self.evaluate(root)
 
 
-class Dec18(Day):
-
-    def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 18, instructions, filename)
-
-    @staticmethod
-    def parse_instructions(instructions):
-        return instructions
+class Dec18(Day, year=2020, day=18):
 
     @timer(part=1)
     def part_1(self):
@@ -89,7 +82,5 @@ class Dec18(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
-        d = Dec18()
-        d.part_1()
-        d.part_2()
+    with Timer('Operation Order'):
+        Dec18().run_day()

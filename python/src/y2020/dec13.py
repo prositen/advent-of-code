@@ -14,10 +14,10 @@ def lcmm(*args):
     return reduce(lcm, args)
 
 
-class Dec13(Day):
+class Dec13(Day, year=2020, day=13):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 13, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.timestamp, self.buses = self.instructions
 
     @staticmethod
@@ -60,5 +60,5 @@ class Dec13(Day):
 
 
 if __name__ == '__main__':
-    with Timer():
+    with Timer('Shuttle Search'):
         Dec13().run_day()

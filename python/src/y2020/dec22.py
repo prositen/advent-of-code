@@ -60,10 +60,10 @@ class Combat(object):
                                 0)
 
 
-class Dec22(Day):
+class Dec22(Day, year=2020, day=22):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 22, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.my_cards, self.their_cards = self.instructions
 
     @staticmethod
@@ -85,5 +85,5 @@ class Dec22(Day):
 
 
 if __name__ == '__main__':
-    with Timer():
+    with Timer('Crab Combat'):
         Dec22().run_day()

@@ -83,10 +83,7 @@ class Waypoint(Ship):
         return self.ship.distance(distance_from)
 
 
-class Dec12(Day):
-
-    def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 12, instructions, filename)
+class Dec12(Day, year=2020, day=12):
 
     @staticmethod
     def parse_instructions(instructions):
@@ -104,5 +101,5 @@ class Dec12(Day):
 
 
 if __name__ == '__main__':
-    with Timer():
+    with Timer('Rain Risk'):
         Dec12().run_day()

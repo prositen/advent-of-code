@@ -2,10 +2,7 @@ from python.src.common import Day, timer, Timer
 from python.src.gol import GameOfLife
 
 
-class Dec17(Day):
-
-    def __init__(self, instructions=None, filename=None):
-        super().__init__(2020, 17, instructions, filename)
+class Dec17(Day, year=2020, day=17):
 
     @staticmethod
     def parse_instructions(instructions):
@@ -38,7 +35,5 @@ class Dec17(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
-        d = Dec17()
-        d.part_1()
-        d.part_2()
+    with Timer('Conway Cubes'):
+        Dec17().run_day()
