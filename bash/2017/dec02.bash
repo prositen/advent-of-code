@@ -14,7 +14,7 @@ function corruption_checksum() {
     echo ${checksum}
 }
 
-function even_divisble_checksum() {
+function even_divisible_checksum() {
     local checksum=0
     for i1 in "${!dec02_input[@]}"; do
         local line
@@ -40,7 +40,7 @@ function even_divisble_checksum() {
             fi
         done
     done
-    echo ${checksum}
+    echo "${checksum}"
 }
 
 
@@ -49,7 +49,7 @@ function dec02_test() {
     (( $(corruption_checksum) == 18 )) || return 1
 
     dec02_input=("5 9   2   8" "9   4   7   3" "3   8   6   5")
-    (( $(even_divisble_checksum) == 9)) || return 1
+    (( $(even_divisible_checksum) == 9)) || return 1
 
 }
 
@@ -58,7 +58,7 @@ function dec02_main() {
     read_file_to_arr 2017 2 dec02_input
 
     echo "Part 1: $(corruption_checksum)"
-    echo "Part 2: $(even_divisble_checksum)"
+    echo "Part 2: $(even_divisible_checksum)"
 }
 
 

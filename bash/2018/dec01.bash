@@ -3,7 +3,7 @@ source ../common.bash
 
 function frequency_change() {
     local sum=0
-    for i1 in ${!dec01_input[@]}; do
+    for i1 in "${!dec01_input[@]}"; do
         local term=${dec01_input[$i1]}
         ((sum = sum + term))
     done
@@ -17,7 +17,7 @@ function first_repeating_frequency() {
     freqs[${sum}]=1
     for (( ; ; ${#freqs[@]} > 10000000))
     do
-        for i1 in ${!dec01_input[@]}; do
+        for i1 in "${!dec01_input[@]}"; do
             local term=${dec01_input[$i1]}
             ((sum = sum + term))
             if [ -n "${freqs[${sum}]}" ];
