@@ -22,5 +22,5 @@ class TestDec03(unittest.TestCase):
     def test_power_consumption(self):
         self.assertEqual(198, Dec03(instructions=self.data).part_1())
 
-    def test_life_supprt_rating(self):
+    def test_life_support_rating(self):
         self.assertEqual(230, Dec03(instructions=self.data).part_2())
