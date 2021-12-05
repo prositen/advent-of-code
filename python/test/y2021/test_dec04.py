@@ -1,6 +1,6 @@
 import unittest
 
-from python.src.y2021.dec03 import Dec04
+from python.src.y2021.dec04 import Dec04
 
 
 class TestDec04(unittest.TestCase):
@@ -29,4 +29,6 @@ class TestDec04(unittest.TestCase):
     def test_final_score(self):
         self.assertEqual(4512, Dec04(instructions=self.data).part_1())
 
+    def score_of_losing_card(self):
+        self.assertEqual(1924, Dec04(instructions=self.data).part_2())
 
