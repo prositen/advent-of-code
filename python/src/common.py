@@ -69,8 +69,8 @@ class Day(object):
         return instructions
 
     @staticmethod
-    def parse_int_line(instructions):
-        return [int(c) for c in instructions[0].split(',')]
+    def parse_int_line(instructions, separator=','):
+        return [int(c) for c in instructions[0].split(separator)]
 
     @staticmethod
     def parse_digits(instructions):
@@ -85,7 +85,7 @@ class Day(object):
         result = list()
         g = list()
         for row in instructions:
-            if len(row):
+            if len(row.strip()):
                 g.append(row)
             else:
                 result.append([r for r in g])
