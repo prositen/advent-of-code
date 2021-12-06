@@ -91,5 +91,5 @@ class Dec04(Day):
 
 
 if __name__ == '__main__':
-    with Timer('Total'):
+    with Timer('Giant Squid'):
         Dec04().run_day()
