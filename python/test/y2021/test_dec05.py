@@ -3,7 +3,7 @@ import unittest
 from python.src.y2021.dec05 import Dec05
 
 
-class TestDec04(unittest.TestCase):
+class TestDec05(unittest.TestCase):
     data = [
         "0,9 -> 5,9",
         "8,0 -> 0,8",

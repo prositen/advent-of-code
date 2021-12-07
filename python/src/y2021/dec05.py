@@ -9,7 +9,6 @@ class Line(object):
         (y1, x1), (y2, x2) = [p.split(',') for p in line.split(' -> ')]
         (self.y1, self.x1, self.y2, self.x2) = (int(i) for i in (y1, x1, y2, x2))
 
-
     def step(self, diagonals):
         if self.y1 == self.y2:
             for x in range(min(self.x1, self.x2),
