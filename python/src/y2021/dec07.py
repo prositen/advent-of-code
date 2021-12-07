@@ -13,14 +13,23 @@ class Dec07(Day):
 
     @timer(part=1)
     def part_1(self):
+        median = self.crabs[len(self.crabs) // 2]
+        return sum(abs(crab - median) for crab in self.crabs)
+
+    def part_1_brute_force(self):
         return min(sum(abs(crab - x) for crab in self.crabs)
                    for x in range(self.crabs[0], self.crabs[-1]))
 
     @timer(part=2)
     def part_2(self):
+        mean = sum(self.crabs) // len(self.crabs)
+        return sum(
+            (steps := abs(crab - mean)) * (steps + 1) // 2 for crab in self.crabs)
+
+    def part_2_brute_force(self):
         return min(
             sum(
-                (steps := abs(crab - x)) * (steps+1) // 2 for crab in self.crabs
+                (steps := abs(crab - x)) * (steps + 1) // 2 for crab in self.crabs
             )
             for x in range(self.crabs[0], self.crabs[-1]))
 
