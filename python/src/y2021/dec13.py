@@ -36,17 +36,10 @@ class Sheet(object):
         return sum(len(self.dots[x]) for x in self.dots)
 
     def __repr__(self):
-        min_x, max_x = min(self.dots.keys()), max(self.dots.keys())
-        min_y = min(self.dots[min_x])
-        max_y = max(self.dots[max_x])
-        for x in self.dots:
-            min_y = min(min_y, min(self.dots[x]))
-            max_y = max(max_y, max(self.dots[x]))
-
         text = ['']
-        for y in range(min_y, max_y + 1):
+        for y in range(6):
             line = list()
-            for x in range(min_x, max_x + 1):
+            for x in range(40):
                 line.append('#' if x in self.dots and y in self.dots[x] else ' ')
             text.append(''.join(line))
         return '\n'.join(text)
