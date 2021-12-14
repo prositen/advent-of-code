@@ -20,7 +20,7 @@ class Dec14(Day):
 
     def run(self, steps=1):
         _pairs = Counter((c1, c2)
-                         for c1, c2 in zip(self.template, self.template[1:] + ' '))
+                         for c1, c2 in zip(self.template, self.template[1:]))
         for n in range(steps):
             _next_pairs = Counter()
             for pair, amount in _pairs.items():
@@ -33,6 +33,7 @@ class Dec14(Day):
         common = Counter()
         for (n1, n2), value in _pairs.items():
             common[n1] += value
+        common[self.template[-1]] += 1
         common = common.most_common()
         return common[0][1] - common[-1][1]
 
