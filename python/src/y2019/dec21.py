@@ -1,5 +1,5 @@
 from python.src.common import Day, timer, Timer
-from src.y2019.intcode import IntCode
+from python.src.y2019.intcode import IntCode
 
 
 class Dec21(Day):
