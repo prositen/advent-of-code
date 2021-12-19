@@ -19,4 +19,5 @@ class TestDec18(unittest.TestCase):
              '[[3,[2,[8,0]]],[9,[5,[7,0]]]]')
         ]
         for sf, expected in data:
-            self.assertEqual(expected, str(SnailFish.from_string(sf).explode()))
+            self.assertEqual(SnailFish.from_string(expected),
+                             SnailFish.from_string(sf).explode())
