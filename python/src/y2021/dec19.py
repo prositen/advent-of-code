@@ -1,4 +1,3 @@
-import itertools
 from collections import deque
 
 from python.src.common import Day, timer, Timer
