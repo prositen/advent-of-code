@@ -6,23 +6,25 @@ class ImageEnhancer(Grid):
 
     def __init__(self, state, algorithm):
         super().__init__(stay_in_bounds=True, state=state)
-        self.algorithm = algorithm
-        self.even_step = False
-        self.shitty_toggle = self.algorithm[0] == '#' and self.algorithm[-1] == '.'
+        self.algorithm = [ch == '#' for ch in algorithm]
+        self.default_lit = False
+        self.toggle_default = self.algorithm[0] and not self.algorithm[-1]
+        self.min_y, self.min_x = min(self.grid)
+        self.max_y, self.max_x = max(self.grid)
 
     def update_pos(self, pos):
         input_pixels = ''.join('1' if self.at(pos) else '0'
                                for pos in self.neighbours(pos))
         input_number = int(input_pixels, 2)
-        return self.algorithm[input_number] == '#'
+        return self.algorithm[input_number]
 
     def count(self):
         return sum(self.grid.values())
 
     def at(self, pos):
-        if (pos not in self.grid) and self.shitty_toggle:
-            return self.even_step
-        return super().at(pos)
+        if (pos not in self.grid) and self.toggle_default:
+            return self.default_lit
+        return self.grid[pos]
 
     def __str__(self):
         min_y, min_x = min(self.grid)
@@ -37,20 +39,20 @@ class ImageEnhancer(Grid):
     def step(self, steps=1):
         for _ in range(steps):
 
-            min_y, min_x = min(self.grid)
-            max_y, max_x = max(self.grid)
+            for y in range(self.min_y - 1, self.max_y + 2):
+                self.grid[(y, self.min_x - 1)] = self.default_lit
+                self.grid[(y, self.max_x + 1)] = self.default_lit
 
-            for y in range(min_y - 1, max_y + 2):
-                self.grid[(y, min_x - 1)] = self.even_step
-                self.grid[(y, max_x + 1)] = self.even_step
-
-            for x in range(min_x - 1, max_x + 2):
-                self.grid[(min_y - 1, x)] = self.even_step
-                self.grid[(max_y + 1, x)] = self.even_step
-
+            for x in range(self.min_x - 1, self.max_x + 2):
+                self.grid[(self.min_y - 1, x)] = self.default_lit
+                self.grid[(self.max_y + 1, x)] = self.default_lit
+            self.min_x -= 1
+            self.min_y -= 1
+            self.max_x += 1
+            self.max_y += 1
             super().step(1)
-            if self.shitty_toggle:
-                self.even_step = not self.even_step
+            if self.toggle_default:
+                self.default_lit = not self.default_lit
 
 
 class Dec20(Day):
