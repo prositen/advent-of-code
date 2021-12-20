@@ -5,12 +5,12 @@ from python.src.grid import Grid
 
 class GameOfLife(Grid):
 
-    def __init__(self, stay_alive, new_life, dimensions=2, stay_in_bounds=True):
+    def __init__(self, stay_alive, new_life, dimensions=2, stay_in_bounds=True,
+                 state=None):
         super().__init__(dimensions=dimensions, data_type=bool,
-                         stay_in_bounds=stay_in_bounds)
+                         stay_in_bounds=stay_in_bounds, state=state)
         self.stay_alive = set(stay_alive)
         self.new_life = set(new_life)
-        self.delta = list(itertools.product((-1, 0, 1), repeat=self.dimensions))
         self.delta.remove((0,) * self.dimensions)
 
     def count_neighbours(self, pos):
