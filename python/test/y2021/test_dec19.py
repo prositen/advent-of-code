@@ -275,4 +275,5 @@ class TestDec19(unittest.TestCase):
                               "1994,-1805,1792"
                           ])
         day = Dec19(instructions=data)
+        self.maxDiff = None
         self.assertEqual(expected, day.find_all_beacons())

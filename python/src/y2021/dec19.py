@@ -50,6 +50,12 @@ class Beacon(object):
         self.rotate_z(z)
         return self
 
+    def add(self, x, y, z):
+        self.x += x
+        self.y += y
+        self.z += z
+        return z
+
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y and self.z == other.z
 
@@ -60,16 +66,25 @@ class Beacon(object):
         return f'<{self.x}, {self.y}, {self.z}>'
 
     def distance(self, other):
-        return (abs(self.x - other.x),
-                abs(self.y - other.y), abs(self.z - other.z))
+        return (self.x - other.x,
+                self.y - other.y, self.z - other.z)
 
 
 class Scanner(object):
     def __init__(self, beacons):
         self.beacons = [b for b in beacons]
-        self.distances = {
-            a.distance(b) for a, b in itertools.permutations(self.beacons, 2)
-        }
+        self.x = 0
+        self.y = 0
+        self.z = 0
+        self._distances = dict()
+
+    @property
+    def distances(self):
+        if not self._distances:
+            for i, ba in enumerate(self.beacons):
+                for j, bb in enumerate(self.beacons[i + 1:]):
+                    self._distances[ba.distance(bb)] = (ba, bb)
+        return self._distances
 
     @staticmethod
     def from_string(instructions):
@@ -95,8 +110,22 @@ class Scanner(object):
         return f'<Scanner beacons={self.beacons}>'
 
     def overlaps(self, other):
-        a = self.distances.intersection(other.distances)
-        return len(a) >= 12
+        return set(self.distances).intersection(set(other.distances))
+
+    def reorient(self, other):
+        overlaps = self.overlaps(other)
+        if len(overlaps) > 11:
+            ol = overlaps.pop()
+            my_pos = self.distances[ol][0]
+            their_pos = other.distances[ol][0]
+            diff = their_pos.distance(my_pos)
+            self.x += diff[0]
+            self.y += diff[1]
+            self.z += diff[2]
+            for b in self.beacons:
+                b.add(*diff)
+            return True
+        return False
 
 
 class Dec19(Day):
@@ -104,40 +133,56 @@ class Dec19(Day):
     def __init__(self, instructions=None, filename=None):
         super().__init__(2021, 19, instructions, filename)
         self.scanners = self.instructions
+        self.beacons = list()
 
     @staticmethod
     def parse_instructions(instructions):
         return [Scanner.from_string(group[1:]) for group in Day.parse_groups(instructions)]
 
     def find_all_beacons(self):
-        to_visit = deque()
-        reoriented = list()
-        reoriented.append(self.scanners[0])
-        to_visit.extend(self.scanners[1:])
-        while to_visit:
-            sc = to_visit.pop()
-            for rs in sc.rotations():
-                overlaps = [rs.overlaps(other) for other in reoriented]
-                if any(overlaps):
-                    reoriented.append(rs)
-                    break
-            else:
-                to_visit.append(sc)
+        if not self.beacons:
+            to_visit = deque()
+            reoriented = list()
+            reoriented.append((0, self.scanners[0]))
+            to_visit.extend(list(enumerate(self.scanners[1:], start=1)))
+            tested = dict()
+            while to_visit:
+                i, sc = to_visit.popleft()
+                found = False
+                for j, compare in reoriented:
+                    if j in tested.get(i, list()):
+                        continue
 
-        beacons = set()
-        self.scanners = reoriented
-        for sc in self.scanners:
-            for beacon in sc.beacons:
-                beacons.add((beacon.x, beacon.y, beacon.z))
-        return sorted(Beacon(b) for b in beacons)
+                    for rs in sc.rotations():
+                        if rs.reorient(compare):
+                            reoriented.append((i, rs))
+                            found = True
+                            break
+                    tested[i] = tested.get(i, list()) +[j]
+                    if found:
+                        break
+                else:
+                    to_visit.append((i, sc))
+
+            beacons = set()
+            self.scanners = [sc for (_, sc) in reoriented]
+            for sc in self.scanners:
+                for beacon in sc.beacons:
+                    beacons.add((beacon.x, beacon.y, beacon.z))
+            self.beacons = sorted(Beacon(b) for b in beacons)
+        return self.beacons
 
     @timer(part=1)
     def part_1(self):
-        return 0
+        return len(self.find_all_beacons())
 
     @timer(part=2)
     def part_2(self):
-        return 0
+        self.find_all_beacons()
+        sc = Scanner(beacons=[
+            Beacon((sc.x, sc.y, sc.z)) for sc in self.scanners
+        ])
+        return max((abs(d[0])+abs(d[1])+abs(d[2])) for d in sc.distances.keys())
 
 
 if __name__ == '__main__':
