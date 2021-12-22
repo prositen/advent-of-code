@@ -26,5 +26,4 @@ class GameOfLife(Grid):
         else:
             return alive
 
-    def count(self):
-        return sum(self.grid.values())
+

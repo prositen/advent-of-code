@@ -37,3 +37,13 @@ class Grid(object):
                     next_grid[pos] = self.update_pos(pos)
 
             self.grid = next_grid
+
+    @staticmethod
+    def make_empty_state(*ranges, data_type=bool):
+        state = defaultdict(data_type)
+        for p in itertools.product(*ranges):
+            state[tuple(p)] = data_type(0)
+        return state
+    
+    def count(self):
+        return sum(self.grid.values())
