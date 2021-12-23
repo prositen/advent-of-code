@@ -22,15 +22,13 @@ class PodBurrow(object):
             self.room_x[pod_type] = pos[1]
         self.pods = tuple(Pod(pos=Point(x=pos[1], y=pos[0]), type=pod_type)
                           for pos, pod_type in pods.items())
+        self.corridor = {Point(y=1, x=x): '.' for x in range(1, self.max_x)}
 
     def cost_distance(self, pod_type, pos1: Point, pos2: Point):
         return self.COSTS[pod_type] * (abs(pos1.x - pos2.x) + abs(pos1.y - pos2.y))
 
-    def distance_home(self, pod: Pod):
-        return abs(pod.pos.x - self.room_x[pod.type]) + abs(pod.pos.y - 2.5)
-
     def move_to_corridor(self, pod: Pod, grid):
-        for r in (range(pod.pos.x-1, 0, -1), range(pod.pos.x + 1, self.max_x)):
+        for r in (range(pod.pos.x - 1, 0, -1), range(pod.pos.x + 1, self.max_x)):
             for x in r:
                 if grid[Point(y=1, x=x)] != '.':
                     break
@@ -73,7 +71,7 @@ class PodBurrow(object):
             py = 1
 
         sgn = -1 if px > target_x else 1
-        for x in range(px+sgn, target_x, sgn):
+        for x in range(px + sgn, target_x, sgn):
             if grid[Point(y=1, x=x)] != '.':
                 return None
         cost += self.cost_distance(pod.type, Point(y=py, x=px), Point(y=1, x=target_x))
@@ -104,27 +102,47 @@ class PodBurrow(object):
         )
         return '\n'.join(r)
 
+    def distance_home(self, pod: Pod):
+        return abs(pod.pos.x - self.room_x[pod.type]) + abs(pod.pos.y - 2.5)
+
+    def distance(self, pods):
+        sorted_pods = dict()
+        for pod in pods:
+            if pod.type not in sorted_pods:
+                sorted_pods[pod.type] = list()
+            sorted_pods[pod.type].append(pod.pos)
+        dist = 0
+        for pod_type, ps in sorted_pods.items():
+            tx = self.room_x[pod_type]
+            dist += self.COSTS[pod_type] * min([
+                ((abs(ps[0].x - tx) + abs(ps[0].y - 2) +
+                  (abs(ps[1].x - tx) + abs(ps[1].y - 3)))),
+                ((abs(ps[1].x - tx) + abs(ps[1].y - 2) +
+                  (abs(ps[0].x - tx) + abs(ps[0].y - 3))))
+            ]
+            )
+        return dist
+
     def organize(self):
-        to_visit = [((sum(self.distance_home(pod) for pod in self.pods), 0), self.pods, [])]
+        to_visit = [((self.distance(self.pods), 0), self.pods)]
         cache = set()
         while to_visit:
-            grid = {Point(y=1, x=x): '.' for x in range(1, 12)}
-            (step, cost), pods, path = heappop(to_visit)
-            for pod in pods:
-                grid[pod.pos] = pod.type
+            (_, cost), pods = heappop(to_visit)
             if self.all_home(pods):
                 return cost
 
+            grid = self.corridor.copy()
+            for pod in pods:
+                grid[pod.pos] = pod.type
             for i, pod in enumerate(pods):
                 moves = self.possible_moves(grid, pod)
                 for step_cost, pos in moves:
                     new_pods = pods[:i] + (Pod(pos=pos, type=pod.type),) + pods[i + 1:]
-                    distance = sum(self.distance_home(pod) for pod in new_pods)
-                    if (c_item := (cost + step_cost,) + new_pods) not in cache:
-                        cache.add(c_item)
-                        new_state = ((distance, cost + step_cost),
-                                     new_pods,
-                                     path + [(i, step_cost, pod[1], (pod[0], pos))])
+                    new_cost = cost + step_cost
+                    if new_pods not in cache:
+                        cache.add(new_pods)
+                        distance = self.distance(new_pods)
+                        new_state = ((distance + new_cost, new_cost), new_pods)
                         heappush(to_visit, new_state)
         return 0
 
