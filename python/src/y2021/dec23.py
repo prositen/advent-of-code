@@ -19,82 +19,86 @@ class PodBurrow(object):
         for pos, pod_type in rooms.items():
             self.rooms[pod_type].append(pos)
             self.room_x[pod_type] = pos[1]
-        self.pods = [(
-            pos, pod_type, False
-        ) for pos, pod_type in pods.items()]
+        self.pods = tuple((pos, pod_type, False) for pos, pod_type in pods.items())
 
-        self.grid = grid
+    def cost_distance(self, pod_type, pos1, pos2):
+        return self.COSTS[pod_type] * (abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1]))
 
-    def can_move(self, grid, pod):
-        return bool(self.possible_moves(grid, pod))
+    def distance_home(self, pod):
+        return abs(pod[0][1] - self.room_x[pod[1]]) + abs(pod[0][0] - 2)
+
+    def move_to_corridor(self, pod, grid):
+        (py, px), pod_type, left_room = pod
+        for r in (range(px, 0, -1), range(px, self.max_x)):
+            for x in r:
+                if grid[(1, x)] != '.':
+                    break
+                if x not in self.room_x.values():
+                    yield self.cost_distance(pod_type, (py, px), (1, x)), (1, x)
 
     def possible_moves(self, grid, pod):
-        def distance(pos1, pos2):
-            return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
-
         pos, pod_type, left_room = pod
-        cost = self.COSTS[pod_type]
         if left_room:
             if pos[0] > 1:
                 return []
             # Only possible positions are the target room positions
             target = self.rooms[pod_type]
-            target_x = target[0][0]
+            target_x = self.room_x[pod_type]
             if any((grid[(1, x)] != '.')
                    for x in range(target_x, pos[1], 1 if pos[1] < target_x else -1)):
                 # There's someone in the way in the corridor
                 return []
-            elif any((grid[t] not in (pod_type, '.')) for t in target):
+            elif any((grid.get(t, '.') not in (pod_type, '.')) for t in target):
                 # There's someone of the wrong type in the room
                 return []
             else:
-                new_pos = max(t for t in target if grid[t] == '.')
-                return [(cost * distance(pos, new_pos), new_pos)]
-        elif pos[0]:
-            if grid[(pos[0] - 1, pos[1])] != '.':
+                new_pos = max(t for t in target if grid.get(t, '.') == '.')
+                return [(self.cost_distance(pod_type, pos, new_pos), new_pos)]
+        elif pos[0] > 1:
+            if pos[1] == self.room_x[pod_type] and pos[0] == 3:
+                return []
+
+            if grid.get((pos[0] - 1, pos[1]), '.') != '.':
                 # Someone in the way above me
                 return []
-            positions = list()
-            for x in range(pos[1], 0, -1):
-                if grid[(1, x)] == '.':
-                    if x not in self.room_x.values():
-                        positions.append((cost * distance(pos, (1, x)), (1, x)))
-                else:
-                    break
-            for x in range(pos[1], self.max_x):
-                if grid[(1, x)] == '.':
-                    if x not in self.room_x.values():
-                        positions.append((cost * distance(pos, (1, x)), (1, x)))
-                else:
-                    break
-            return positions
+            return [p for p in self.move_to_corridor(pod, grid)]
 
-    def all_home(self, grid):
-        for k, v in self.rooms.items():
-            for pos in v:
-                if grid[pos] != k:
-                    return False
+    def all_home(self, pods):
+        for (pos, pod_type, left_room) in pods:
+            if pos[0] == 1 or pos[1] != self.room_x[pod_type]:
+                return False
         return True
 
+    def print_grid(self, grid):
+        r = [''.join(grid[(1, x)] for x in range(1, self.max_x))]
+        r.extend(
+            '  ' + '#'.join(grid.get((y, x), '.') for x in (3, 5, 7, 9))
+            for y in (2, 3)
+        )
+        return '\n'.join(r)
 
     def organize(self):
-        to_visit = [(0, self.pods.copy(), self.grid.copy())]
+        to_visit = [((sum(self.distance_home(pod) for pod in self.pods), 0), self.pods, [])]
         cache = set()
         while to_visit:
-            cost, pods, grid = heappop(to_visit)
-            if self.all_home(grid):
+            grid = {(1, x): '.' for x in range(1, 12)}
+            (step, cost), pods, path = heappop(to_visit)
+            for pos, pod_type, _ in pods:
+                grid[pos] = pod_type
+            if self.all_home(pods):
                 return cost
+
             for i, pod in enumerate(pods):
-                for step_cost, pos in self.possible_moves(grid, pod):
-                    new_grid = grid.copy()
-                    new_grid[pod[0]] = '.'
-                    new_grid[pos] = pod[1]
-                    new_pods = pods.copy()
-                    new_pods[i] = (pos, pod[1], True)
-                    state = f'{new_pods}'
-                    if state not in cache:
-                        cache.add(state)
-                        heappush(to_visit, (cost + step_cost, new_pods, new_grid))
+                moves = self.possible_moves(grid, pod)
+                for step_cost, pos in moves:
+                    new_pods = pods[:i] + ((pos, pod[1], True),) + pods[i + 1:]
+                    distance = sum(self.distance_home(pod) for pod in new_pods)
+                    if (c_item := (cost + step_cost,) + new_pods) not in cache:
+                        cache.add(c_item)
+                        new_state = ((distance, cost + step_cost),
+                                     new_pods,
+                                     path + [(i, step_cost, pod[1], (pod[0], pos))])
+                        heappush(to_visit, new_state)
         return 0
 
 
