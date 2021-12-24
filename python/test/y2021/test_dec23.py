@@ -15,10 +15,10 @@ class TestDec23(unittest.TestCase):
     def test_part_1(self):
         self.assertEqual(12521, Dec23(instructions=self.data).part_1())
 
-    def atest_part_2(self):
+    def test_part_2(self):
         self.assertEqual(44169, Dec23(instructions=self.data).part_2())
 
-    def atest_4_deep(self):
+    def test_4_deep(self):
         data = [
             "#############",
             "#...........#",
