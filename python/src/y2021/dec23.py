@@ -1,3 +1,4 @@
+import itertools
 from collections import defaultdict, namedtuple
 from heapq import heappush, heappop
 
@@ -18,12 +19,14 @@ class PodBurrow(object):
     def __init__(self, grid, pods, rooms):
         self.max_x = max(grid, key=lambda c: c[1])[1]
         self.room_x = dict()
+        self.room_y = set()
         self.burrow = {
             Point(y=1, x=x): '.' for x in range(1, self.max_x)
         }
         for pos, pod_type in rooms.items():
             self.burrow[Point(y=pos[0], x=pos[1])] = '.'
             self.room_x[pod_type] = pos[1]
+            self.room_y.add(pos[0])
         self.pods = tuple(Pod(pos=Point(x=pos[1], y=pos[0]), type=pod_type)
                           for pos, pod_type in pods.items())
 
@@ -41,23 +44,21 @@ class PodBurrow(object):
 
     def can_move_in(self, grid, pod: Pod):
         tx = self.room_x[pod.type]
-        return ((grid[Point(y=2, x=tx)] == '.') and
-                grid[Point(y=3, x=tx)] in (pod.type, '.'))
+        occupants = (grid[Point(y=ty, x=tx)] for ty in sorted(self.room_y))
+        return all(o in ('.', pod.type) for o in occupants)
 
     def can_move_out(self, grid, pod: Pod):
-        if pod.pos.y == 2 and (
-                (not pod.pos.x == self.room_x[pod.type])
-                or grid[Point(y=3, x=self.room_x[pod.type])] != pod.type):
-            return True
-        elif (pod.pos.y == 3
-              and not pod.pos.x == self.room_x[pod.type]
-              and grid.get(Point(y=2, x=pod.pos.x), '.') == '.'):
-            return True
-        return False
+        tx = self.room_x[pod.type]
+        is_in_right_room = pod.pos.x == tx
+        others_in_room = any(grid[Point(y=ty, x=tx)] not in ('.', pod.type)
+                             for ty in self.room_y)
+        empty_above = all(grid[Point(y=ty, x=tx)] == '.' for ty in range(2, pod.pos.y))
+
+        return empty_above and (others_in_room or not is_in_right_room)
 
     def move_in(self, grid, pod: Pod):
         tx = self.room_x[pod.type]
-        target = (Point(y=2, x=tx), Point(y=3, x=tx))
+        target = ((Point(y=ty, x=tx) for ty in self.room_y))
         new_pos = max(t for t in target if grid.get(t, '.') == '.')
         return self.cost_distance(pod.type, pod.pos, new_pos), new_pos
 
@@ -101,12 +102,9 @@ class PodBurrow(object):
         r = [''.join(grid[Point(y=1, x=x)] for x in range(1, self.max_x))]
         r.extend(
             '   ' + '#'.join(grid.get(Point(y=y, x=x), '.') for x in (3, 5, 7, 9))
-            for y in (2, 3)
+            for y in self.room_y
         )
         return '\n'.join(r)
-
-    def distance_home(self, pod: Pod):
-        return abs(pod.pos.x - self.room_x[pod.type]) + abs(pod.pos.y - 2.5)
 
     def distance(self, pods):
         sorted_pods = dict()
@@ -117,20 +115,31 @@ class PodBurrow(object):
         dist = 0
         for pod_type, ps in sorted_pods.items():
             tx = self.room_x[pod_type]
-            dist += self.COSTS[pod_type] * min([
-                ((abs(ps[0].x - tx) + abs(ps[0].y - 2) +
-                  (abs(ps[1].x - tx) + abs(ps[1].y - 3)))),
-                ((abs(ps[1].x - tx) + abs(ps[1].y - 2) +
-                  (abs(ps[0].x - tx) + abs(ps[0].y - 3))))
-            ]
+            diffs = {
+                pd: [abs(pd.x - tx) + (abs(pd.y - ty) if pd.x == tx else (pd.y - 1 + ty))
+                     for ty in self.room_y]
+                for pd in ps
+            }
+            sums = tuple(
+                sum(
+                    diffs[pd][i]
+                    for i, pd in enumerate(pod_list)
+                )
+                for pod_list in itertools.permutations(ps)
             )
+            cost = min(sums)
+            # cost = sum(pd.x == tx for pd in ps)
+            dist += self.COSTS[pod_type] * cost
         return dist
 
     def organize(self):
         to_visit = [((self.distance(self.pods), 0), self.pods)]
-        cache = set()
+        cache = dict()
         while to_visit:
             (_, cost), pods = heappop(to_visit)
+            if pods in cache and cache[pods] < cost:
+                continue
+            cache[pods] = cost
             if self.all_home(pods):
                 return cost
 
@@ -142,11 +151,34 @@ class PodBurrow(object):
                 for step_cost, pos in moves:
                     new_pods = pods[:i] + (Pod(pos=pos, type=pod.type),) + pods[i + 1:]
                     new_cost = cost + step_cost
-                    if new_pods not in cache:
-                        cache.add(new_pods)
-                        distance = self.distance(new_pods)
-                        new_state = ((distance + new_cost, new_cost), new_pods)
-                        heappush(to_visit, new_state)
+                    if new_pods in cache and cache[new_pods] < new_cost:
+                        continue
+                    cache[new_pods] = new_cost
+                    distance = self.distance(new_pods)
+                    new_state = ((distance + new_cost, new_cost), new_pods)
+                    heappush(to_visit, new_state)
+        print("derp")
+        return 0
+
+    def reorganize(self):
+        to_visit = {self.pods: (0, [])}
+        while to_visit:
+            next_visit = dict()
+            for pods, cost in to_visit.items():
+                if self.all_home(pods):
+                    return cost
+                grid = {**self.burrow}
+                for pod in pods:
+                    grid[pod.pos] = pod.type
+                for i, pod in enumerate(pods):
+                    moves = self.possible_moves(grid, pod)
+                    for step_cost, pos in moves:
+                        new_pods = pods[:i] + (Pod(pos=pos, type=pod.type),) + pods[i + 1:]
+                        new_cost = cost[0] + step_cost
+                        if new_pods in next_visit and next_visit[new_pods][0] <= new_cost:
+                            continue
+                        next_visit[new_pods] = (new_cost, cost[1] + [(pod.type, pod.pos, pos)])
+            to_visit = next_visit
         return 0
 
 
@@ -154,7 +186,7 @@ class Dec23(Day):
 
     def __init__(self, instructions=None, filename=None):
         super().__init__(2021, 23, instructions, filename)
-        self.grid, self.pods, self.targets = self.instructions
+        self.grid, self.pods, self.targets, self.original = self.instructions
 
     @staticmethod
     def parse_instructions(instructions):
@@ -174,18 +206,26 @@ class Dec23(Day):
                 assignment = chr(ord(assignment) + 1)
             rooms[(y, x)] = assignment
             prev_x = x
-        return grid, pods, rooms
+        return grid, pods, rooms, instructions
 
     @timer(part=1)
     def part_1(self):
         burrow = PodBurrow(pods=self.pods,
                            grid=self.grid,
                            rooms=self.targets)
-        return burrow.organize()
+        return burrow.reorganize()
 
     @timer(part=2)
     def part_2(self):
-        return 2
+        new_instructions = self.original[:3] + [
+            "  #D#C#B#A#  ",
+            "  #D#B#A#C#  "
+        ] + self.original[3:]
+        self.grid, self.pods, self.targets, _ = self.parse_instructions(new_instructions)
+        burrow = PodBurrow(pods=self.pods,
+                           grid=self.grid,
+                           rooms=self.targets)
+        return burrow.organize()
 
 
 if __name__ == '__main__':
