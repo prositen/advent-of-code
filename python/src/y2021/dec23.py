@@ -18,11 +18,14 @@ class PodBurrow(object):
     def __init__(self, grid, pods, rooms):
         self.max_x = max(grid, key=lambda c: c[1])[1]
         self.room_x = dict()
+        self.burrow = {
+            Point(y=1, x=x): '.' for x in range(1, self.max_x)
+        }
         for pos, pod_type in rooms.items():
+            self.burrow[Point(y=pos[0], x=pos[1])] = '.'
             self.room_x[pod_type] = pos[1]
         self.pods = tuple(Pod(pos=Point(x=pos[1], y=pos[0]), type=pod_type)
                           for pos, pod_type in pods.items())
-        self.corridor = {Point(y=1, x=x): '.' for x in range(1, self.max_x)}
 
     def cost_distance(self, pod_type, pos1: Point, pos2: Point):
         return self.COSTS[pod_type] * (abs(pos1.x - pos2.x) + abs(pos1.y - pos2.y))
@@ -38,13 +41,13 @@ class PodBurrow(object):
 
     def can_move_in(self, grid, pod: Pod):
         tx = self.room_x[pod.type]
-        return ((grid.get(Point(y=2, x=tx), '.') == '.') and
-                grid.get(Point(y=3, x=tx), '.') in (pod.type, '.'))
+        return ((grid[Point(y=2, x=tx)] == '.') and
+                grid[Point(y=3, x=tx)] in (pod.type, '.'))
 
     def can_move_out(self, grid, pod: Pod):
         if pod.pos.y == 2 and (
                 (not pod.pos.x == self.room_x[pod.type])
-                or grid.get(Point(y=3, x=self.room_x[pod.type]), '.') != pod.type):
+                or grid[Point(y=3, x=self.room_x[pod.type])] != pod.type):
             return True
         elif (pod.pos.y == 3
               and not pod.pos.x == self.room_x[pod.type]
@@ -131,7 +134,7 @@ class PodBurrow(object):
             if self.all_home(pods):
                 return cost
 
-            grid = self.corridor.copy()
+            grid = {**self.burrow}
             for pod in pods:
                 grid[pod.pos] = pod.type
             for i, pod in enumerate(pods):
