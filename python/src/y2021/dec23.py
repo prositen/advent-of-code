@@ -36,12 +36,6 @@ class PodBurrow(object):
 
         return pod.pos[1] != pod.type * 2 + 3
 
-    def move_in(self, grid, pod: Pod):
-        for ty in sorted(self.room_y, reverse=True):
-            if grid[(ty, pod.pos[1])] == '.':
-                return ty - 1, (ty, pod.pos[1])
-        return None
-
     def try_move_home(self, grid, pod: Pod):
         py, px = pod.pos
         cost = 0
@@ -58,7 +52,7 @@ class PodBurrow(object):
                 return None
 
         cost += sgn * (room - px)
-        for ty in sorted(self.room_y, reverse=True):
+        for ty in reversed(self.room_y):
             if grid[(ty, room)] == '.':
                 cost += ty - 1
                 return (10 ** pod.type) * cost, (ty, room)
@@ -71,7 +65,6 @@ class PodBurrow(object):
         if pod.pos[0] == 1:
             return []
 
-        # return self.move_to_corridor(pod, grid)
         moves = list()
         for r in (range(pod.pos[1] - 1, 0, -1), range(pod.pos[1] + 1, self.max_x)):
             for x in r:
@@ -79,11 +72,12 @@ class PodBurrow(object):
                     break
                 if x not in (3, 5, 7, 9):
                     moves.append((
-                        (10 ** pod.type) * (abs(pod.pos[0] - 1) + abs(pod.pos[1] - x)),
+                        (10 ** pod.type) * (pod.pos[0] - 1 + abs(pod.pos[1] - x)),
                         (1, x)))
         return moves
 
-    def all_home(self, pods):
+    @staticmethod
+    def all_home(pods):
         return not any(pod.pos[0] == 1 or pod.pos[1] != (pod.type * 2) + 3
                        for pod in pods)
 
