@@ -8,15 +8,19 @@ class Dec01(Day):
 
     @staticmethod
     def parse_instructions(instructions):
-        return instructions
+        return [
+          [int(r) for r in g]
+          for g in Day.parse_groups(instructions=instructions)
+        ]
 
     @timer(part=1)
     def part_1(self):
-        return 0
+        return max(sum(g) for g in self.instructions)
 
     @timer(part=2)
     def part_2(self):
-        return 0
+        elves = [sum(g) for g in self.instructions]
+        return sum(sorted(elves, reverse=True)[:3])
 
 
 if __name__ == '__main__':
