@@ -1,4 +1,4 @@
 language: python
 python: 
-   - "3.9"
+   - "3.11"
 script: nosetests
