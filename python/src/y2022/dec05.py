@@ -1,5 +1,3 @@
-from collections import deque
-
 from python.src.common import Day, timer, Timer
 
 
@@ -23,7 +21,7 @@ class Dec05(Day):
                 if stack := row[index:index + 4].strip():
                     crate_index = index // 4
                     if crate_index <= len(stacks):
-                        stacks.append(deque())
+                        stacks.append(list())
                     stacks[crate_index].append(stack[1])
         return stacks, moves
 
