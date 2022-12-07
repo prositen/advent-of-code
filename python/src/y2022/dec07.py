@@ -1,14 +1,6 @@
 from python.src.common import Day, timer, Timer
 
 
-class Directory(object):
-    def __init(self, name, size, files=None, sub_directories=None):
-        self.files = files or list()
-        self.sub_directories = sub_directories or list()
-        self.name = name
-        self.size = size
-
-
 class Dec07(Day):
 
     def __init__(self, instructions=None, filename=None):
