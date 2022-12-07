@@ -21,8 +21,7 @@ class Dec07(Day):
 
     def add_file(self, file_name, size):
         self.fs['/'.join(self.location)]['files'].append((file_name, size))
-        self.fs['/'.join(self.location)]['size'] += size
-        for i in range(len(self.location)):
+        for i in range(len(self.location)+1):
             self.fs['/'.join(self.location[:i])]['size'] += size
 
     def build_file_system(self):
