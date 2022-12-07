@@ -14,22 +14,23 @@ class Dec07(Day):
         return instructions
 
     def add_dir(self, sub_dir):
-        self.fs['/'.join(self.location + [sub_dir])] = {
+        self.fs[tuple(self.location + [sub_dir])] = {
             'files': list(),
             'size': 0
         }
 
     def add_file(self, file_name, size):
-        self.fs['/'.join(self.location)]['files'].append((file_name, size))
-        for i in range(len(self.location)+1):
-            self.fs['/'.join(self.location[:i])]['size'] += size
+        self.fs[tuple(self.location)]['files'].append((file_name, size))
+        for i in range(len(self.location)):
+            path = tuple(self.location[:i+1])
+            self.fs[path]['size'] += size
 
     def build_file_system(self):
-        self.add_dir('')
+        self.add_dir('/')
         for line in self.instructions:
             match line.split():
                 case ['$', 'cd', '/']:
-                    self.location = []
+                    self.location = ['/']
                 case ['$', 'cd', '..']:
                     self.location.pop()
                 case ['$', 'cd', sub_dir]:
@@ -49,7 +50,7 @@ class Dec07(Day):
     def part_2(self):
         needed_space = 30_000_000
         total_space = 70_000_000
-        to_delete = needed_space - (total_space - self.fs['']['size'])
+        to_delete = needed_space - (total_space - self.fs[('/', )]['size'])
         return min(subdir['size'] for subdir in self.fs.values()
                    if subdir['size'] >= to_delete)
 
