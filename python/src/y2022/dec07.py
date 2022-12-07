@@ -6,12 +6,7 @@ class Dec07(Day):
     def __init__(self, instructions=None, filename=None):
         super().__init__(2022, 7, instructions, filename)
         self.location = []
-        self.fs = {
-            '': {
-                'files': list(),
-                'size': 0
-            }
-        }
+        self.fs = dict()
         self.build_file_system()
 
     @staticmethod
@@ -31,6 +26,7 @@ class Dec07(Day):
             self.fs['/'.join(self.location[:i])]['size'] += size
 
     def build_file_system(self):
+        self.add_dir('')
         for line in self.instructions:
             match line.split():
                 case ['$', 'cd', '/']:
