@@ -1,6 +1,5 @@
-import copy
 from collections import defaultdict
-from itertools import takewhile, dropwhile
+from itertools import dropwhile
 
 from python.src.common import Day, timer, Timer
 
