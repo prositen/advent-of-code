@@ -29,16 +29,16 @@ class Dec08(Day):
                 if (height := self.forest[row][col]) > height_left:
                     self.visible[(row, col)] = True
                     height_left = height
-                if (height := self.instructions[row][self.max_x - col - 1]) > height_right:
+                if (height := self.forest[row][self.max_x - col - 1]) > height_right:
                     self.visible[(row, self.max_x - col - 1)] = True
                     height_right = height
         for col in range(self.max_x):
             height_top = height_bottom = -1
             for row in range(self.max_y):
-                if (height := self.instructions[row][col]) > height_top:
+                if (height := self.forest[row][col]) > height_top:
                     self.visible[(row, col)] = True
                     height_top = height
-                if (height := self.instructions[self.max_y - row - 1][col]) > height_bottom:
+                if (height := self.forest[self.max_y - row - 1][col]) > height_bottom:
                     self.visible[(self.max_y - row - 1, col)] = True
                     height_bottom = height
 
@@ -48,10 +48,10 @@ class Dec08(Day):
 
     @staticmethod
     def scan_treeline(height, trees):
-        l = list(dropwhile(lambda c: c < height,
-                           trees))
-        score = len(trees) - len(l)
-        if l:
+        blocking_trees = list(dropwhile(lambda c: c < height,
+                                        trees))
+        score = len(trees) - len(blocking_trees)
+        if blocking_trees:
             score += 1
         return score
 
