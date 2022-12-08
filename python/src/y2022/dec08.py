@@ -1,5 +1,5 @@
 from collections import defaultdict
-from itertools import dropwhile
+from itertools import takewhile
 
 from python.src.common import Day, timer, Timer
 
@@ -47,10 +47,10 @@ class Dec08(Day):
 
     @staticmethod
     def treeline(height, trees):
-        blocking_trees = list(dropwhile(lambda c: c < height,
-                                        trees))
-        score = len(trees) - len(blocking_trees)
-        if blocking_trees:
+        visible_trees = list(takewhile(lambda c: c < height,
+                                       trees))
+        score = len(visible_trees)
+        if trees != visible_trees:
             score += 1
         return score
 
