@@ -11,8 +11,6 @@ class Dec08(Day):
         self.forest = self.instructions
         self.max_x = len(self.forest[0])
         self.max_y = len(self.forest)
-        self.visible = defaultdict(bool)
-        self.view_trees()
 
     @staticmethod
     def parse_instructions(instructions):
@@ -22,31 +20,33 @@ class Dec08(Day):
         ]
 
     def view_trees(self):
+        visible = defaultdict(bool)
         for row in range(self.max_y):
             height_left = height_right = -1
             for col in range(self.max_x):
                 if (height := self.forest[row][col]) > height_left:
-                    self.visible[(row, col)] = True
+                    visible[(row, col)] = True
                     height_left = height
                 if (height := self.forest[row][self.max_x - col - 1]) > height_right:
-                    self.visible[(row, self.max_x - col - 1)] = True
+                    visible[(row, self.max_x - col - 1)] = True
                     height_right = height
         for col in range(self.max_x):
             height_top = height_bottom = -1
             for row in range(self.max_y):
                 if (height := self.forest[row][col]) > height_top:
-                    self.visible[(row, col)] = True
+                    visible[(row, col)] = True
                     height_top = height
                 if (height := self.forest[self.max_y - row - 1][col]) > height_bottom:
-                    self.visible[(self.max_y - row - 1, col)] = True
+                    visible[(self.max_y - row - 1, col)] = True
                     height_bottom = height
+        return visible
 
     @timer(part=1, title='Visible trees')
     def part_1(self):
-        return sum(self.visible.values())
+        return sum(self.view_trees().values())
 
     @staticmethod
-    def scan_treeline(height, trees):
+    def treeline(height, trees):
         blocking_trees = list(dropwhile(lambda c: c < height,
                                         trees))
         score = len(trees) - len(blocking_trees)
@@ -57,11 +57,10 @@ class Dec08(Day):
     def scenic_score(self, row, col):
         height = self.forest[row][col]
         return (
-                self.scan_treeline(height, self.forest[row][:col][::-1]) *
-                self.scan_treeline(height, self.forest[row][col + 1:]) *
-                self.scan_treeline(height, [self.forest[r][col] for r in range(row - 1, -1, -1)]) *
-                self.scan_treeline(height,
-                                   [self.forest[r][col] for r in range(row + 1, self.max_y)])
+                self.treeline(height, self.forest[row][:col][::-1]) *
+                self.treeline(height, self.forest[row][col + 1:]) *
+                self.treeline(height, [self.forest[r][col] for r in range(row - 1, -1, -1)]) *
+                self.treeline(height, [self.forest[r][col] for r in range(row + 1, self.max_y)])
         )
 
     @timer(part=2, title='Scenic score')
