@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from python.src.common import Day, timer, Timer, sgn
 
 
@@ -35,8 +33,7 @@ class Dec09(Day):
             self.rope[part] = (self.rope[part][0] + sgn(dy), self.rope[part][1] + sgn(dx))
 
     def run(self, parts=2):
-        touched = defaultdict(bool)
-        touched[(0, 0)] = True
+        touched = {(0, 0): True}
         self.rope = [(0, 0) for _ in range(parts + 1)]
         for (direction, steps) in self.instructions:
             for _ in range(steps):
