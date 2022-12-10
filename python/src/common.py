@@ -115,3 +115,12 @@ class Day(object):
 
 def stringify(int_list, separator=','):
     return separator.join(str(c) for c in int_list)
+
+
+def sgn(number):
+    if number > 0:
+        return 1
+    elif number < 0:
+        return -1
+    else:
+        return 0
