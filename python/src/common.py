@@ -124,3 +124,7 @@ def sgn(number):
         return -1
     else:
         return 0
+
+
+def get_int_at(line, pos=-1):
+    return int(line.split()[pos])
