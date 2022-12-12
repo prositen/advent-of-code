@@ -25,33 +25,19 @@ class HeightMap(Grid):
         self.grid[self.pos] = 0
         self.grid[self.end] = 25
 
-    def __str__(self):
-        return '\n'.join(
-            ''.join(chr(self.grid[(r, c)] + ord('a'))
-                    for c in range(self.max_coord[1]))
-            for r in range(self.max_coord[0])
-        )
-
-    def find_paths(self, from_pos, to_positions):
+    def find_paths(self, from_positions, to_position):
         to_visit = deque()
-        to_visit.append((from_pos, 0, tuple()))
+        to_visit.extend([(f, 0, tuple()) for f in from_positions])
         visited = set()
-        do_reverse = len(to_positions) > 1
-
-        def height_check(me, other):
-            if do_reverse:
-                return self.at(me) - self.at(other) < 2
-            else:
-                return self.at(other) - self.at(me) < 2
 
         while to_visit:
             position, length, path = to_visit.popleft()
-            if position in to_positions:
+            if position == to_position:
                 return length
             elif position not in visited:
                 visited.add(position)
                 for neighbour in self.neighbours(position):
-                    if (neighbour not in visited) and height_check(position, neighbour):
+                    if (neighbour not in visited) and self.at(neighbour) - self.at(position) < 2:
                         to_visit.append((neighbour, length + 1, tuple([*path, position])))
         return 0
 
@@ -72,13 +58,13 @@ class Dec12(Day):
 
     @timer(part=1)
     def part_1(self):
-        return self.heights.find_paths(from_pos=self.heights.pos,
-                                       to_positions=[self.heights.end])
+        return self.heights.find_paths(from_positions=[self.heights.pos],
+                                       to_position=self.heights.end)
 
     @timer(part=2)
     def part_2(self):
-        return self.heights.find_paths(from_pos=self.heights.end,
-                                       to_positions=self.heights.lowest)
+        return self.heights.find_paths(from_positions=self.heights.lowest,
+                                       to_position=self.heights.end)
 
 
 if __name__ == '__main__':
