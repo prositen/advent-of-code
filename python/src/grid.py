@@ -22,7 +22,13 @@ class Grid(object):
 
     def neighbours(self, pos):
         for delta in self.delta:
-            yield tuple(map(operator.add, pos, delta))
+            next_position = tuple(map(operator.add, pos, delta))
+            if next_position in self.grid or not self.stay_in_bounds:
+                yield next_position
+
+    @staticmethod
+    def distance(from_pos, to_pos):
+        return sum(abs(f - t) for f, t in zip(from_pos, to_pos))
 
     def update_pos(self, pos):
         return self.grid[pos]
@@ -44,6 +50,6 @@ class Grid(object):
         for p in itertools.product(*ranges):
             state[tuple(p)] = data_type(0)
         return state
-    
+
     def count(self):
         return sum(self.grid.values())
