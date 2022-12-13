@@ -1,16 +1,14 @@
 import functools
 import itertools
 import json
-from collections import deque
 
 from python.src.common import Day, timer, Timer
 
 
 def compare_lists(left, right):
-    to_visit = deque()
-    to_visit.extend([(*pair, '  ') for pair in itertools.zip_longest(left, right)])
+    to_visit = [pair for pair in itertools.zip_longest(left, right)]
     while to_visit:
-        left, right, indent = to_visit.popleft()
+        left, right = to_visit.pop(0)
         if left is None:
             return 1
         elif right is None:
@@ -21,17 +19,16 @@ def compare_lists(left, right):
                     return 1
                 elif left > right:
                     return -1
-                else:
-                    continue
             else:
-                to_visit.appendleft(([left], right, indent))
+                to_visit = [([left], right)] + to_visit
         else:
             if isinstance(right, int):
-                to_visit.appendleft((left, [right], indent))
+                to_visit = [(left, [right])] + to_visit
             else:
-                to_visit.extendleft([(l, r, indent + '  ') for l, r in
-                                     itertools.zip_longest(left, right)][::-1])
+                to_visit = [pair for pair in itertools.zip_longest(left, right)] + to_visit
+
     return 0
+
 
 class Dec13(Day, year=2022, day=13):
 
@@ -46,10 +43,9 @@ class Dec13(Day, year=2022, day=13):
     @timer(part=1)
     def part_1(self):
         in_order = 0
-        for i, pairs in enumerate(self.instructions):
-            if compare_lists(pairs[0], pairs[1]) == 1:
+        for i, pair in enumerate(self.instructions):
+            if compare_lists(*pair) == 1:
                 in_order += i + 1
-
         return in_order
 
     @timer(part=2)
