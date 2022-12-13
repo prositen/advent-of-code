@@ -49,14 +49,33 @@ class Dec13(Day, year=2022, day=13):
         return in_order
 
     @timer(part=2)
-    def part_2(self):
-        all_packets = [[[2]], [[6]]]
+    def sort_all_part_2(self):
+        """ I kind of prefer this one because I liked using the comparator function in sort. But
+        it is slower and dumber. """
+        all_packets = list()
         for left, right in self.instructions:
             all_packets.extend((left, right))
+
         sorted_packets = sorted(all_packets,
                                 key=functools.cmp_to_key(compare_lists),
                                 reverse=True)
         return (sorted_packets.index([[2]]) + 1) * (sorted_packets.index([[6]]) + 1)
+
+    @timer(part=2)
+    def part_2(self):
+        """ Don't compare unnecessary stuff == faster code. wow.
+        """
+        index_2 = 1
+        index_6 = 2
+        for pair in self.instructions:
+            for packet in pair:
+                if compare_lists([[2]], packet) == -1:
+                    index_2 += 1
+                    index_6 += 1
+                elif compare_lists([[6]], packet) == -1:
+                    index_6 += 1
+
+        return index_2 * index_6
 
 
 if __name__ == '__main__':
