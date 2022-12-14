@@ -71,8 +71,8 @@ class Cave(Grid):
                     break
             if sand_pos == old_pos:
                 self.grid[sand_pos] = 1
-                break
-        return not(self.out_of_bounds(sand_pos) or sand_pos == (500,0))
+                return sand_pos != (500, 0)
+        return False
 
     def run(self):
         sand_count = 0
