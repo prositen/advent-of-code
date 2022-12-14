@@ -72,17 +72,13 @@ class Cave(Grid):
             if sand_pos == old_pos:
                 self.grid[sand_pos] = 1
                 break
+        return not(self.out_of_bounds(sand_pos) or sand_pos == (500,0))
 
     def run(self):
-        old_state = 0
-        state = self.count()
         sand_count = 0
-        while old_state != state:
-            old_state = state
-            self.step()
-            state = self.count()
+        while self.step():
             sand_count += 1
-        return sand_count - 1
+        return sand_count
 
 
 class Dec14(Day, year=2022, day=14):
