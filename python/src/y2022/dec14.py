@@ -31,7 +31,7 @@ class Cave(Grid):
             (x1, y1) = (x2, y2)
 
     def pr(self, pos):
-        if pos == (500, 0):
+        if pos == self.source:
             return 'v'
         match self.at(pos):
             case 1:
@@ -51,18 +51,16 @@ class Cave(Grid):
         )
 
     def out_of_bounds(self, pos):
-        if self.with_floor:
-            return False
-        return not (self.min_x <= pos[0] <= self.max_x and self.min_y <= pos[1] <= self.max_y)
+        return not (self.with_floor or (
+                    self.min_x <= pos[0] <= self.max_x and self.min_y <= pos[1] <= self.max_y))
 
     def at(self, pos):
-        if self.with_floor:
-            if pos[1] == self.max_y:
-                return 2
-        return super().at(pos)
+        if self.with_floor and pos[1] == self.max_y:
+            return 2
+        return self.grid[pos]
 
     def step(self, steps=0):
-        sand_pos = tuple(self.source)
+        sand_pos = self.source
         while not self.out_of_bounds(sand_pos):
             old_pos = sand_pos
             for n in self.neighbours(sand_pos):
@@ -71,7 +69,7 @@ class Cave(Grid):
                     break
             if sand_pos == old_pos:
                 self.grid[sand_pos] = 1
-                return sand_pos != (500, 0)
+                return sand_pos != self.source
         return False
 
     def run(self):
