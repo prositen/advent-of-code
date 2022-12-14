@@ -82,8 +82,6 @@ class Cave(Grid):
             self.step()
             state = self.count()
             sand_count += 1
-        with open('out.txt', 'w') as fh:
-            print(str(self), file=fh)
         return sand_count - 1
 
 
