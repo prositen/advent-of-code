@@ -24,3 +24,12 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3""".split('\n')
 
     def test_part_2(self):
         self.assertEqual(56000011, Dec15(instructions=self.data).part_2(max_x=20, max_y=20))
+
+    def test_points_on_radius(self):
+        expected = {
+            (0, -4), (1, -3), (2, -2), (3, -1),
+            (4, 0), (3, 1), (2, 2), (1, 3),
+            (0, 4), (-1, 3), (-2, 2), (-3, 1),
+            (-4, 0), (-3, -1), (-2, -2), (-1, -3)
+        }
+        self.assertEqual(expected, set(p for p in get_points_on_radius((0, 0), 4)))

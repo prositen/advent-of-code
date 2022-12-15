@@ -5,12 +5,36 @@ from python.src.common import Day, timer, Timer, distance
 
 def get_points_on_radius(point, radius):
     x, y = point
-
     for i in range(1, radius + 1):
+        # BR
         yield x + i, y + radius - i
-        yield x + radius - i, -(y + i)
-        yield -(x+i), y + radius - i
-        yield -(x+i), -(y+radius-i)
+    for i in range(0, radius):
+        # TR
+        yield x + i, y - radius + i
+    for i in range(0, radius):
+        # BL
+        yield x - i, y + radius - i
+    for i in range(1, radius + 1):
+        # TL
+        yield x - i, y - radius + i
+
+
+def line_intersection(line1, line2):
+    # Stolen from stack overflow
+    xdiff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
+    ydiff = (line1[0][1] - line1[1][1], line2[0][1] - line2[1][1])
+
+    def det(a, b):
+        return a[0] * b[1] - a[1] * b[0]
+
+    div = det(xdiff, ydiff)
+    if div == 0:
+        return None
+
+    d = (det(*line1), det(*line2))
+    x = det(d, xdiff) / div
+    y = det(d, ydiff) / div
+    return round(x), round(y)
 
 
 def combine_ranges(ranges):
@@ -40,26 +64,22 @@ class SensorMap(object):
             self.sensors.append(((my_x, my_y), dist))
             self.beacons.add((beacon_x, beacon_y))
 
-    def scan_row(self, row, max_x=None):
+    def scan_row(self, row):
         ranges = list()
         for (sx, sy), dist in self.sensors:
             distance_to_row = abs(sy - row)
             if distance_to_row <= dist:
                 ranges.append((sx - abs(dist - distance_to_row),
                                sx + abs(dist - distance_to_row) + 1))
-        if max_x:
-            ranges = [
-                (max(0, r[0]), min(r[1], max_x))
-                for r in ranges
-            ]
-
         return combine_ranges(sorted(ranges))
 
     def in_sensor_range(self, point):
-        return any(distance(point, sensor) <= dist
-                   for (sensor, dist) in self.sensors)
+        for (sensor, dist) in self.sensors:
+            if distance(point, sensor) <= dist:
+                return True
+        return False
 
-    def find_beacon(self, max_x, max_y):
+    def find_beacon_1(self, max_x, max_y):
         for sensor, dist in sorted(self.sensors, key=lambda c: c[1]):
             for (px, py) in get_points_on_radius(sensor, dist + 1):
                 if 0 <= px <= max_x and 0 <= py <= max_y:
@@ -67,11 +87,34 @@ class SensorMap(object):
                         return px, py
         return 0, 0
 
-    def find_beacon_2(self, max_x, max_y):
-        for s1, d1 in self.sensors:
-            for s2, d2 in self.sensors[1:]:
-                if any(distance()):
-                    pass
+    def find_beacon(self):
+        candidates = list()
+        # If two sensor diamonds are adjacent but not touching, there might be
+        # something fishy going on between them. This means their manhattan distance == 2
+        # since we're using diagonals.
+        for sensor_1 in self.sensors:
+            for sensor_2 in self.sensors[1:]:
+                s1, d1 = sensor_1
+                s2, d2 = sensor_2
+                if distance(s1, s2) == d1 + d2 + 2:
+                    candidates.append(sorted([sensor_1, sensor_2], key=lambda c: c[0][0]))
+        for ((s1, d1), (s2, d2)) in candidates:
+            for ((s3, d3), (s4, d4)) in candidates[1:]:
+                # Suspicious border between s1 and s2
+                line_1 = (
+                    (s2[0] - d2 + 1, s2[1]),
+                    (s1[0] + d1 - 1, s1[1])
+                )
+                # Suspicious border between s3 and s4
+                line_2 = (
+                    (s4[0] - d4 - 1, s4[1]),
+                    (s3[0] + d3 + 1, s3[1])
+                )
+                if x := line_intersection(line_1, line_2):
+                    # If all these borders intersect, there are 4 sensors that quite can't
+                    # reach this position - that should be our beacon!
+                    return x
+
 
 class Dec15(Day, year=2022, day=15):
 
@@ -98,15 +141,8 @@ class Dec15(Day, year=2022, day=15):
 
     @timer(part=2)
     def part_2(self, max_x=4_000_000, max_y=4_000_000):
-        x, y = self.sensor_map.find_beacon(max_x=max_x,
-                                           max_y=max_y)
-        print("should be 12555527364986 for 3138881 3364986")
+        x, y = self.sensor_map.find_beacon()
         return x * 4_000_000 + y
-        # for row in range(0, max_y):
-        #    ranges = self.sensor_map.scan_row(row=row, max_x=max_x)
-        #    if len(ranges) > 1:
-        #        return (ranges[1][0]-1)*4000000 + row
-        # return 0
 
 
 if __name__ == '__main__':
