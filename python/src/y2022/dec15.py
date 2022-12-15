@@ -1,7 +1,16 @@
 import re
-from collections import deque
 
 from python.src.common import Day, timer, Timer, distance
+
+
+def get_points_on_radius(point, radius):
+    x, y = point
+
+    for i in range(1, radius + 1):
+        yield x + i, y + radius - i
+        yield x + radius - i, -(y + i)
+        yield -(x+i), y + radius - i
+        yield -(x+i), -(y+radius-i)
 
 
 def combine_ranges(ranges):
@@ -46,6 +55,23 @@ class SensorMap(object):
 
         return combine_ranges(sorted(ranges))
 
+    def in_sensor_range(self, point):
+        return any(distance(point, sensor) <= dist
+                   for (sensor, dist) in self.sensors)
+
+    def find_beacon(self, max_x, max_y):
+        for sensor, dist in sorted(self.sensors, key=lambda c: c[1]):
+            for (px, py) in get_points_on_radius(sensor, dist + 1):
+                if 0 <= px <= max_x and 0 <= py <= max_y:
+                    if not self.in_sensor_range((px, py)):
+                        return px, py
+        return 0, 0
+
+    def find_beacon_2(self, max_x, max_y):
+        for s1, d1 in self.sensors:
+            for s2, d2 in self.sensors[1:]:
+                if any(distance()):
+                    pass
 
 class Dec15(Day, year=2022, day=15):
 
@@ -64,7 +90,7 @@ class Dec15(Day, year=2022, day=15):
     @timer(part=1)
     def part_1(self, row=2_000_000):
         ranges = self.sensor_map.scan_row(row=row)
-        no_pos = sum(r[1]-r[0] for r in ranges)
+        no_pos = sum(r[1] - r[0] for r in ranges)
         for bx, by in self.sensor_map.beacons:
             if by == row:
                 no_pos -= 1
@@ -72,11 +98,15 @@ class Dec15(Day, year=2022, day=15):
 
     @timer(part=2)
     def part_2(self, max_x=4_000_000, max_y=4_000_000):
-        for row in range(0, max_y):
-            ranges = self.sensor_map.scan_row(row=row, max_x=max_x)
-            if len(ranges) > 1:
-                return (ranges[1][0]-1)*4000000 + row
-        return 0
+        x, y = self.sensor_map.find_beacon(max_x=max_x,
+                                           max_y=max_y)
+        print("should be 12555527364986 for 3138881 3364986")
+        return x * 4_000_000 + y
+        # for row in range(0, max_y):
+        #    ranges = self.sensor_map.scan_row(row=row, max_x=max_x)
+        #    if len(ranges) > 1:
+        #        return (ranges[1][0]-1)*4000000 + row
+        # return 0
 
 
 if __name__ == '__main__':

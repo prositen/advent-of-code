@@ -1,6 +1,6 @@
 import unittest
 
-from python.src.y2022.dec15 import Dec15
+from python.src.y2022.dec15 import Dec15, get_points_on_radius
 
 
 class TestDec15(unittest.TestCase):
