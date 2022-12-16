@@ -128,3 +128,7 @@ def sgn(number):
 
 def get_int_at(line, pos=-1):
     return int(line.split()[pos])
+
+
+def distance(point, other):
+    return sum(abs(p-o) for p, o in zip(point, other))
