@@ -2,8 +2,8 @@ from collections import deque, namedtuple
 
 from python.src.common import Day, timer, Timer
 
-CaveState = namedtuple('CaveState', ['pos', 'open'])
-State = namedtuple('State', ['cave', 'time', 'pressure'])
+CaveState = namedtuple('CaveState', ['pos', 'increase'])
+State = namedtuple('State', ['cave', 'time', 'pressure', 'open'])
 
 
 class Cave(object):
@@ -23,37 +23,39 @@ class Cave(object):
 
     def run(self, time=30):
         to_visit = deque()
-        to_visit.append((State(time=0, pressure=0, cave=CaveState(pos='AA',
-                                                                  open=frozenset())),
-                         ))
+        to_visit.append(State(time=0, pressure=0, open=set(),
+                              cave=CaveState(pos='AA', increase=0)
+                              )
+                        )
         best = dict()
         max_pressure = 0
         while to_visit:
-            state = to_visit.popleft()[0]
+            state: State = to_visit.popleft()
             cave: CaveState = state.cave
-            pressure = state.pressure + self.release_pressure(cave.open or set())
             if state.time == time:
                 continue
 
+            pressure = state.pressure + cave.increase
             max_pressure = max(max_pressure, pressure)
             if cave in best and best.get(cave) >= pressure:
                 continue
 
             best[cave] = pressure
 
-            if cave.pos not in cave.open and self.tunnels[cave.pos][0]:
+            if (i := self.tunnels[cave.pos][0]) and cave.pos not in state.open:
                 cv = CaveState(pos=cave.pos,
-                               open=frozenset(cave.open.union({cave.pos})))
-                to_visit.append((State(cave=cv,
-                                       time=state.time + 1,
-                                       pressure=pressure),
-                                 ))
+                               increase=cave.increase + i)
+                to_visit.append(State(cave=cv,
+                                      time=state.time + 1,
+                                      pressure=pressure,
+                                      open=state.open.union({cave.pos}))
+                                )
             for tunnel in self.tunnels[cave.pos][1]:
-                cv = CaveState(pos=tunnel, open=cave.open)
-                to_visit.append((State(cave=cv,
-                                       time=state.time + 1,
-                                       pressure=pressure),
-                                 ))
+                cv = CaveState(pos=tunnel, increase=cave.increase)
+                to_visit.append(State(cave=cv,
+                                      time=state.time + 1,
+                                      pressure=pressure, open=state.open),
+                                )
 
         return max_pressure
 
