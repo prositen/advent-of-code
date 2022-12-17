@@ -17,3 +17,6 @@ Valve JJ has flow rate=21; tunnel leads to valve II""".split('\n')
 
     def test_part_1(self):
         self.assertEqual(1651, Dec16(instructions=self.data).part_1())
+
+    def test_part_2(self):
+        self.assertEqual(1707, Dec16(instructions=self.data).part_2())
