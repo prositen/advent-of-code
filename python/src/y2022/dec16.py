@@ -7,45 +7,38 @@ from python.src.common import Day, timer, Timer
 
 class Cave(object):
 
-    def __init__(self, valves, with_elephant=False):
-        self.tunnels = {valve[0]: (valve[1], valve[2]) for valve in valves}
+    def __init__(self, valves):
+        self.tunnels = {valve[0]: {v: 1 for v in valve[2]} for valve in valves}
+        self.flow = {valve[0]: valve[1] for valve in valves}
 
     def run(self, max_time=30):
         to_visit = deque()
-        to_visit.append((0, 0, 0, ('AA', 0)))
+        to_visit.append((1, 0, 0, 'AA', 0))
 
         best = dict()
         final_paths = set()
-        valves = {v: 1 << i for i, v in enumerate(vv for vv, info in self.tunnels.items()
-                                                  if info[0])}
+        valves = {v: 1 << i for i, v in enumerate(vv for vv, flow in self.flow.items()
+                                                  if flow)}
 
         while to_visit:
-            (time, pressure, open_valves, cave) = to_visit.popleft()
-            (pos, increase) = cave
-            # state = (sum(valves[c] for c in open_valves), pos)
+            (time, pressure, open_valves, pos, increase) = to_visit.popleft()
             state = (open_valves, pos)
             pressure += increase
-
-            time = time + 1
-            if best.get(state, -1) >= pressure:
-                continue
-
-            best[state] = pressure
             if time == max_time:
                 final_paths.add((open_valves, pressure))
                 continue
-            else:
-                my_pos = cave[0]
-                if (i := self.tunnels[my_pos][0]) and not open_valves & valves[my_pos]:
-                    cv = (my_pos, increase + i)
-                    new_open = open_valves + valves[my_pos]
-                    to_visit.append(
-                        (time, pressure, new_open, cv))
+            elif best.get(state, -1) >= pressure:
+                continue
 
-                for tunnel in self.tunnels[my_pos][1]:
-                    cv = (tunnel, increase)
-                    to_visit.append(
-                        (time, pressure, open_valves, cv))
+            best[state] = pressure
+            if (i := self.flow[pos]) and not open_valves & valves[pos]:
+                new_open = open_valves | valves[pos]
+                to_visit.append(
+                    (time + 1, pressure, new_open, pos, increase + i))
+
+            for tunnel, cost in self.tunnels[pos].items():
+                to_visit.append(
+                    (time + cost, pressure, open_valves, tunnel, increase))
 
         return final_paths
 
@@ -72,11 +65,12 @@ class Dec16(Day, year=2022, day=16):
     def part_2(self):
         # 2675
         paths = list(Cave(self.instructions).run(max_time=26))
-        max_pressure = 0
-        for my_valves, my_pressure in paths:
-            for ele_valves, ele_pressure in paths:
-                if not my_valves & ele_valves:
-                    max_pressure = max(max_pressure, ele_pressure + my_pressure)
+        max_pressure = max(
+            p1 + p2
+            for v1, p1 in paths
+            for v2, p2 in paths
+            if not v1 & v2
+        )
         return max_pressure
 
 
