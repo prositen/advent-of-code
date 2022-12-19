@@ -9,104 +9,45 @@ class Cave(object):
 
     def __init__(self, valves, with_elephant=False):
         self.tunnels = {valve[0]: (valve[1], valve[2]) for valve in valves}
-        self.tunnels[None] = (0, [])
-        self.open_valves = set()
-        self.with_elephant = with_elephant
 
-    def release_pressure(self, open_valves=None):
-        return sum(self.tunnels[v][0] for v in open_valves)
+    def run(self, max_time=30):
+        to_visit = deque()
+        to_visit.append((0, 0, 0, ('AA', 0)))
 
-    MOVE = 0
-    OPEN = 1
-
-    def run(self, time=30):
-        if self.with_elephant:
-            to_visit = list()
-            to_visit.append(((0,0), (0, 0, set(), (('AA', 'AA'), 0))))
-        else:
-            to_visit = deque()
-            to_visit.append((0, 0, set(), (('AA', 'AA'), 0)))
-
-        to_open = {v for v in self.tunnels if self.tunnels[v][0]}
         best = dict()
-        max_pressure = 0
+        final_paths = set()
+        valves = {v: 1 << i for i, v in enumerate(vv for vv, info in self.tunnels.items()
+                                                  if info[0])}
+
         while to_visit:
-            if self.with_elephant:
-                _, state = heappop(to_visit)
+            (time, pressure, open_valves, cave) = to_visit.popleft()
+            (pos, increase) = cave
+            # state = (sum(valves[c] for c in open_valves), pos)
+            state = (open_valves, pos)
+            pressure += increase
+
+            time = time + 1
+            if best.get(state, -1) >= pressure:
+                continue
+
+            best[state] = pressure
+            if time == max_time:
+                final_paths.add((open_valves, pressure))
+                continue
             else:
-                state = to_visit.popleft()
-            cave = state[3]
-            if state[0] == time:
-                continue
-            pressure = state[1] + cave[1]
-            if cave in best and best.get(cave) >= pressure:
-                continue
-            if state[2] == to_open:
-                max_pressure = max(max_pressure,
-                                   state[1] + cave[1] * (time - state[0]))
-                continue
-            max_pressure = max(max_pressure, pressure)
-            best[cave] = pressure
-
-            if self.with_elephant:
-                for (my_action, elephant_action) in self.get_actions(cave[0]):
-                    increase = 0
-                    new_open = set(state[2])
-                    new_pos = cave[0]
-                    match my_action:
-                        case (self.OPEN, valve, inc):
-                            if valve not in new_open:
-                                new_open.add(valve)
-                                increase += inc
-                        case (self.MOVE, pos, _):
-                            new_pos = (pos, new_pos[1])
-                    match elephant_action:
-                        case (self.OPEN, valve, inc):
-                            if valve not in new_open:
-                                new_open.add(valve)
-                                increase += inc
-                        case (self.MOVE, pos, _):
-                            new_pos = (new_pos[0], pos)
-                    if new_pos != cave[0] or new_open != state[2]:
-                        cv = (new_pos, cave[1] + increase)
-                        heappush(to_visit, ((state[0], -pressure), (state[0] + 1, pressure, new_open, cv)))
-
-
-            else:
-                my_pos = cave[0][0]
-                ele_pos = cave[0][1]
-
-                if (i := self.tunnels[my_pos][0]) and my_pos not in state[2]:
-                    cv = ((my_pos, ele_pos), cave[1] + i)
-                    new_open = state[2].union({my_pos})
-                    to_visit.append((state[0] + 1, pressure, new_open, cv))
+                my_pos = cave[0]
+                if (i := self.tunnels[my_pos][0]) and not open_valves & valves[my_pos]:
+                    cv = (my_pos, increase + i)
+                    new_open = open_valves + valves[my_pos]
+                    to_visit.append(
+                        (time, pressure, new_open, cv))
 
                 for tunnel in self.tunnels[my_pos][1]:
-                    cv = ((tunnel, ele_pos), cave[1])
-                    to_visit.append((state[0] + 1, pressure, state[2], cv))
+                    cv = (tunnel, increase)
+                    to_visit.append(
+                        (time, pressure, open_valves, cv))
 
-        return max_pressure
-
-    def get_actions(self, pos):
-        if i := self.tunnels[pos[0]][0]:
-            my_action = (self.OPEN, pos[0], i)
-            if pos[0] != pos[1] and (j := self.tunnels[pos[1]][0]):
-                elephant_action = (self.OPEN, pos[1], j)
-                yield my_action, elephant_action
-
-            for e_tunnel in self.tunnels[pos[1]][1]:
-                elephant_action = (self.MOVE, e_tunnel, 0)
-                yield my_action, elephant_action
-
-        for tunnel in self.tunnels[pos[0]][1]:
-            my_action = (self.MOVE, tunnel, 0)
-            if j := self.tunnels[pos[1]][0]:
-                elephant_action = (self.OPEN, pos[1], j)
-                yield my_action, elephant_action
-
-            for e_tunnel in self.tunnels[pos[1]][1]:
-                elephant_action = (self.MOVE, e_tunnel, 0)
-                yield my_action, elephant_action
+        return final_paths
 
 
 class Dec16(Day, year=2022, day=16):
@@ -124,12 +65,19 @@ class Dec16(Day, year=2022, day=16):
 
     @timer(part=1)
     def part_1(self):
-        return Cave(self.instructions).run()
+        paths = Cave(self.instructions).run()
+        return max(v for (_, v) in paths)
 
     @timer(part=2)
     def part_2(self):
         # 2675
-        return Cave(self.instructions, with_elephant=True).run(time=26)
+        paths = list(Cave(self.instructions).run(max_time=26))
+        max_pressure = 0
+        for my_valves, my_pressure in paths:
+            for ele_valves, ele_pressure in paths:
+                if not my_valves & ele_valves:
+                    max_pressure = max(max_pressure, ele_pressure + my_pressure)
+        return max_pressure
 
 
 if __name__ == '__main__':
