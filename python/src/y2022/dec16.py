@@ -9,7 +9,7 @@ class Cave(object):
 
     def __init__(self, valves):
         self.tunnels = {valve[0]: {v: 1 for v in valve[2]} for valve in valves}
-        self.flow = {valve[0]: valve[1] for valve in valves}
+        self.flow = {valve[0]: valve[1] for valve in valves if valve[1]}
 
     def run(self, max_time=30):
         to_visit = deque()
@@ -17,21 +17,20 @@ class Cave(object):
 
         best = dict()
         final_paths = set()
-        valves = {v: 1 << i for i, v in enumerate(vv for vv, flow in self.flow.items()
-                                                  if flow)}
+        valves = {v: 1 << i for i, v in enumerate(vv for vv, flow in self.flow.items())}
 
         while to_visit:
             (time, pressure, open_valves, pos, increase) = to_visit.popleft()
             state = (open_valves, pos)
             pressure += increase
             if time == max_time:
-                final_paths.add((open_valves, pressure))
+                final_paths.add((open_valves, pressure, bin(open_valves).count('1')))
                 continue
             elif best.get(state, -1) >= pressure:
                 continue
 
             best[state] = pressure
-            if (i := self.flow[pos]) and not open_valves & valves[pos]:
+            if (i := self.flow.get(pos, 0)) and not open_valves & valves[pos]:
                 new_open = open_valves | valves[pos]
                 to_visit.append(
                     (time + 1, pressure, new_open, pos, increase + i))
@@ -59,16 +58,20 @@ class Dec16(Day, year=2022, day=16):
     @timer(part=1)
     def part_1(self):
         paths = Cave(self.instructions).run()
-        return max(v for (_, v) in paths)
+        return max(v for (_, v, _) in paths)
 
     @timer(part=2)
     def part_2(self):
         # 2675
-        paths = list(Cave(self.instructions).run(max_time=26))
+        c = Cave(self.instructions)
+        paths = list(c.run(max_time=26))
+        cl = len(c.flow)
+        my_paths = [(v1, p1) for (v1, p1, n1) in paths if cl > n1 >= (cl // 2) - 1]
+        ele_paths = [(v2, p2) for (v2, p2, n2) in paths if 0 < n2 <= (cl // 2) + 1]
         max_pressure = max(
             p1 + p2
-            for v1, p1 in paths
-            for v2, p2 in paths
+            for v1, p1 in my_paths
+            for v2, p2 in ele_paths
             if not v1 & v2
         )
         return max_pressure
