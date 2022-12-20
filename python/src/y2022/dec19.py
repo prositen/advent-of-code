@@ -1,6 +1,6 @@
 import multiprocessing
 import re
-from collections import Counter, deque, namedtuple
+from collections import Counter, namedtuple
 from enum import Enum
 from heapq import heappush, heappop
 
@@ -66,41 +66,39 @@ class Factory(object):
                     return False
                 return materials.ore >= self.recipes[Material.CLAY].ore
             case Material.ORE:
-                if enough_obsidian or enough_ore:
+                if enough_ore:
                     return False
                 return materials.ore >= self.recipes[Material.ORE].ore
 
     def collect(self, materials: State, robots: State):
-        return State(ore=min(materials.ore + robots.ore, 2 * self.max_ore),
-                     clay=min(materials.clay + robots.clay, 2 * self.max_clay),
-                     obsidian=min(materials.obsidian + robots.obsidian, 2 * self.max_obsidian),
+        # Collect ore from robots but cap at what we might need.
+        return State(ore=min(materials.ore + robots.ore,
+                             robots.ore + self.max_ore),
+                     clay=min(materials.clay + robots.clay,
+                              robots.clay + self.max_clay),
+                     obsidian=min(materials.obsidian + robots.obsidian,
+                                  robots.obsidian + self.max_obsidian),
                      geodes=materials.geodes + robots.geodes)
-        # return State(ore=materials.ore + robots.ore,
-        #             clay=materials.clay + robots.clay,
-        #             obsidian=materials.obsidian + robots.obsidian,
-        #             geodes=materials.geodes + robots.geodes)
 
     def build(self, robot, materials: State, robots: State):
-        needed_materials = self.recipes[robot]
+        needed = self.recipes[robot]
         match robot:
             case Material.ORE:
-                return (materials._replace(ore=materials.ore - needed_materials.ore)), \
-                       robots._replace(ore=robots.ore + 1),
+                return (materials._replace(ore=materials.ore - needed.ore),
+                        robots._replace(ore=robots.ore + 1))
 
             case Material.CLAY:
-                return (materials._replace(ore=materials.ore - needed_materials.ore),
-                        robots._replace(clay=robots.clay + 1),
-                        )
+                return (materials._replace(ore=materials.ore - needed.ore),
+                        robots._replace(clay=robots.clay + 1))
+
             case Material.OBSIDIAN:
-                return (materials._replace(ore=materials.ore - needed_materials.ore,
-                                           clay=materials.clay - needed_materials.clay),
-                        robots._replace(obsidian=robots.obsidian + 1),
-                        )
+                return (materials._replace(ore=materials.ore - needed.ore,
+                                           clay=materials.clay - needed.clay),
+                        robots._replace(obsidian=robots.obsidian + 1))
             case Material.GEODE:
-                return (materials._replace(ore=materials.ore - needed_materials.ore,
-                                           obsidian=materials.obsidian - needed_materials.obsidian),
-                        robots._replace(geodes=robots.geodes + 1),
-                        )
+                return (materials._replace(ore=materials.ore - needed.ore,
+                                           obsidian=materials.obsidian - needed.obsidian),
+                        robots._replace(geodes=robots.geodes + 1))
 
 
 class GeoCracker(object):
@@ -110,14 +108,13 @@ class GeoCracker(object):
 
     def run(self, max_time=24):
         to_visit = list()
-        to_visit.append((0,
+        to_visit.append((0,  # heappush sort; number of future geodes projected
                          State(ore=0, clay=0, geodes=0, obsidian=0),  # materials
                          State(ore=1, clay=0, geodes=0, obsidian=0),  # robots
                          0))  # time
         visited = set()
         max_geodes = 0
         while to_visit:
-            # materials, robots, time = to_visit.popleft()
             _, materials, robots, time = heappop(to_visit)
             state = (robots, materials)
             future_geodes = materials.geodes + (robots.geodes * (max_time - time))
@@ -125,38 +122,34 @@ class GeoCracker(object):
             if time == max_time or state in visited:
                 continue
 
+            # can we possibly get more than max geodes this route?
             m_geodes = (future_geodes
                         + ((max_time - time) * (max_time - time + 1) // 2))  # we might pick up
             if m_geodes < max_geodes:
                 continue
 
             visited.add(state)
-            if time < max_time:
+            if time + 1 < max_time:
                 for robot in sorted(Material, reverse=True):
                     if self.factory.should_build(robot=robot,
                                                  materials=materials,
                                                  robots=robots):
                         m, r = self.factory.build(robot, materials, robots)
                         m = self.factory.collect(m, robots)
-                        # to_visit.append((m, r, time + 1))
                         heappush(to_visit, (-future_geodes, m, r, time + 1))
 
                 m = self.factory.collect(materials, robots)
-                # to_visit.append((m, robots, time + 1))
                 heappush(to_visit, (-future_geodes, m, robots, time + 1))
         return max_geodes
 
 
 def quality_crack(bp):
     gc = GeoCracker(bp[1]).run(max_time=24)
-    print(bp[0] + 1, gc)
     return (bp[0] + 1) * gc
 
 
 def geode_crack(bp):
-    gc = GeoCracker(bp).run(max_time=32)
-    print(gc)
-    return gc
+    return GeoCracker(bp).run(max_time=32)
 
 
 class Dec19(Day, year=2022, day=19):
@@ -180,13 +173,6 @@ class Dec19(Day, year=2022, day=19):
             for result in pool.map(quality_crack, enumerate(self.blueprints)):
                 results += result
         return results
-
-        # for index, blueprint in self.blueprints.items():
-        #    g = GeoCracker(blueprint=blueprint)
-        #    geodes = g.run()
-        #    print(index + 1, geodes)
-        #    total += (index + 1) * geodes
-        # return total
 
     @timer(part=2)
     def part_2(self):
