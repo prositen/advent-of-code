@@ -111,60 +111,34 @@ class MonkeyCube(MonkeyMap):
     def warp(self, next_y, next_x):
         if next_y == -1:
             match self.current_face:
-                case 0:
-                    return next_x, 0, 5, Dir.RIGHT
-                case 1:
-                    return 49, next_x, 5, Dir.UP
-                case 2:
-                    return 49, next_x, 0, Dir.UP
-                case 3:
-                    return next_x, 0, 2, Dir.RIGHT
-                case 4:
-                    return 49, next_x, 2, Dir.UP
-                case 5:
-                    return 49, next_x, 3, Dir.UP
+                case 0 | 3:
+                    return next_x, 0, (self.current_face - 1) % 6, Dir.RIGHT
+                case 1 | 2 | 4 | 5:
+                    return 49, next_x, (self.current_face - 2) % 6, Dir.UP
+
         elif next_y == 50:
             match self.current_face:
-                case 0:
-                    return 0, next_x, 2, Dir.DOWN
-                case 1:
-                    return next_x, 49, 2, Dir.LEFT
-                case 2:
-                    return 0, next_x, 4, Dir.DOWN
-                case 3:
-                    return 0, next_x, 5, Dir.DOWN
-                case 4:
-                    return next_x, 49, 5, Dir.LEFT
-                case 5:
-                    return 0, next_x, 1, Dir.DOWN
+                case 0 | 2 | 3 | 5:
+                    return 0, next_x, (self.current_face + 2) % 6, Dir.DOWN
+                case 1 | 4:
+                    return next_x, 49, (self.current_face + 1), Dir.LEFT
         elif next_x == 50:
             match self.current_face:
-                case 0:
-                    return next_y, 0, 1, Dir.RIGHT
-                case 1:
-                    return 49 - next_y, 49, 4, Dir.LEFT
-                case 2:
-                    return 49, next_y, 1, Dir.UP
-                case 3:
-                    return next_y, 0, 4, Dir.RIGHT
-                case 4:
-                    return 49 - next_y, 49, 1, Dir.LEFT
-                case 5:
-                    return 49, next_y, 4, Dir.UP
+                case 0 | 3:
+                    return next_y, 0, (self.current_face + 1), Dir.RIGHT
+                case 1 | 4:
+                    return 49 - next_y, 49, (self.current_face + 3) % 6, Dir.LEFT
+                case 2 | 5:
+                    return 49, next_y, (self.current_face - 1), Dir.UP
+
         elif next_x == -1:
             match self.current_face:
-                case 0:
-                    return 49 - next_y, 0, 3, Dir.RIGHT
-                case 1:
-                    return next_y, 49, 0, Dir.LEFT
-                case 2:
-                    return 0, next_y, 3, Dir.DOWN
-                case 3:
-                    return 49 - next_y, 0, 0, Dir.RIGHT
-                case 4:
-                    return next_y, 49, 3, Dir.LEFT
-                case 5:
-                    return 0, next_y, 0, Dir.DOWN
+                case 0 | 3:
+                    return 49 - next_y, 0, (self.current_face + 3) % 6, Dir.RIGHT
+                case 1 | 4:
+                    return next_y, 49, self.current_face - 1, Dir.LEFT
+                case 2 | 5:
+                    return 0, next_y, (self.current_face + 1) % 6, Dir.DOWN
 
     def map_pos(self):
         match self.current_face:
@@ -201,7 +175,6 @@ class Dec22(Day, year=2022, day=22):
         mc = MonkeyCube(self.instructions[0])
         mc.follow(self.instructions[1][0])
         pos = mc.map_pos()
-        print(mc.current_face, mc.y, mc.x, pos)
         return 1000 * (pos[0] + 1) + 4 * (pos[1] + 1) + mc.facing
 
 
