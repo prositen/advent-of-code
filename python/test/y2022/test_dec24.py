@@ -13,3 +13,6 @@ class TestDec24(unittest.TestCase):
 
     def test_part_1(self):
         self.assertEqual(18, Dec24(instructions=self.data).part_1())
+
+    def test_part_2(self):
+        self.assertEqual(54, Dec24(instructions=self.data).part_2())

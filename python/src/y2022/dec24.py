@@ -4,30 +4,6 @@ from enum import Enum
 from python.src.common import Day, timer, Timer
 
 
-class Direction(Enum):
-    NORTH = (-1, 0)
-    EAST = (0, 1)
-    SOUTH = (1, 0)
-    WEST = (0, -1)
-    WAIT = (0, 0)
-
-    def __str__(self):
-        match self.name:
-            case 'NORTH':
-                return '^'
-            case 'EAST':
-                return '>'
-            case 'SOUTH':
-                return 'v'
-            case 'WEST':
-                return '<'
-            case 'WAIT':
-                return 'W'
-
-    def __add__(self, position):
-        return position[0] + self.value[0], position[1] + self.value[1]
-
-
 class Blizzard(object):
     def __init__(self, pos, direction, border):
         self.direction = direction
@@ -65,20 +41,16 @@ class Valley(object):
         self.height = height
         self.width = width
         self.pos = (0, 1)
-        self.goal = (height - 1, width - 2)
-        self.deltas = {
-            '^': (-1, 0),
-            '>': (0, 1),
-            'v': (1, 0),
-            '<': (0, -1)
-        }
+        self.goal = (height, width - 1)
+        self.deltas = ((-1, 0), (0, 1), (1, 0), (0, -1))
 
-    def solve(self):
+    def solve(self, here_and_back_again=False):
         to_visit = deque([(self.pos, 0)])
 
         visited = set()
-        blizzard_history = {-1: self.blizzards}
-        blizzard_pos_history = {-1: {b.pos for b in self.blizzards}}
+        blizzard_history = {0: self.blizzards}
+        blizzard_pos = {0: {b.pos for b in self.blizzards}}
+        part_times = []
         while to_visit:
             pos, time = to_visit.popleft()
 
@@ -86,26 +58,38 @@ class Valley(object):
                 continue
 
             visited.add((pos, time))
-            if time not in blizzard_history:
-                blizzard_history[time] = [
-                    blizzard.move() for blizzard in
-                    blizzard_history[time - 1]
+            if time + 1 not in blizzard_history:
+                blizzard_history[time + 1] = [
+                    blizzard.move() for blizzard in blizzard_history[time]
                 ]
-                blizzard_pos_history[time] = {blizzard.pos for blizzard in
-                                                        blizzard_history[time]}
+                blizzard_pos[time + 1] = {blizzard.pos
+                                          for blizzard in
+                                          blizzard_history[time + 1]}
 
-            for d, delta in self.deltas.items():
-                y, x = pos[0] + delta[0], pos[1] + delta[1]
-                if pos == self.goal:
-                    return time+1
+            for d in self.deltas:
+                y, x = pos[0] + d[0], pos[1] + d[1]
+                if (y,x) == self.goal:
+                    if not here_and_back_again or len(part_times) == 3:
+                        return time + 1
+                    else:
+                        part_times.append(time + 1)
+                        visited = set()
+                        self.goal, self.pos = self.pos, self.goal
+                        to_visit = deque([(pos, time + 1)])
+
                 if 0 < y < self.height and 0 < x < self.width:
-                    if (y, x) not in blizzard_pos_history[time]:
+                    if (y, x) not in blizzard_pos[time + 1]:
                         to_visit.append(((y, x), time + 1))
-            if pos not in blizzard_pos_history[time]:
+
+            if pos not in blizzard_pos[time + 1]:
                 to_visit.append((pos, time + 1))
 
 
 class Dec24(Day, year=2022, day=24):
+
+    def __init__(self, filename=None, instructions=None):
+        super().__init__(instructions=instructions, filename=filename)
+        self.blizzards, self.height, self.width = self.instructions
 
     @staticmethod
     def parse_instructions(instructions):
@@ -116,20 +100,19 @@ class Dec24(Day, year=2022, day=24):
             for x, c in enumerate(line):
                 match c:
                     case '>' | '<':
-                        blizzards.append(Blizzard(pos=(y, x), direction=c,
-                                                  border=width))
+                        blizzards.append(Blizzard(pos=(y, x), direction=c, border=width))
                     case '^' | 'v':
-                        blizzards.append(Blizzard(pos=(y, x), direction=c,
-                                                  border=height))
-        return Valley(blizzards=blizzards, height=height, width=width)
+                        blizzards.append(Blizzard(pos=(y, x), direction=c, border=height))
+        return blizzards, height, width
 
     @timer(part=1)
     def part_1(self):
-        return self.instructions.solve()
+        return Valley(self.blizzards, self.height, self.width).solve()
 
     @timer(part=2)
     def part_2(self):
         return 0
+        return Valley(self.blizzards, self.height, self.width).solve(here_and_back_again=True)
 
 
 if __name__ == '__main__':
