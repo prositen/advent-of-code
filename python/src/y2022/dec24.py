@@ -1,5 +1,4 @@
 from collections import deque
-from enum import Enum
 
 from python.src.common import Day, timer, Timer
 
@@ -53,7 +52,15 @@ class Valley(object):
         part_times = []
         while to_visit:
             pos, time = to_visit.popleft()
-
+            if pos == self.goal:
+                if not here_and_back_again or len(part_times) == 2:
+                    return time
+                else:
+                    part_times.append(time)
+                    visited = set()
+                    self.goal, self.pos = self.pos, self.goal
+                    to_visit = deque([(pos, time)])
+                    continue
             if (pos, time) in visited:
                 continue
 
@@ -68,16 +75,7 @@ class Valley(object):
 
             for d in self.deltas:
                 y, x = pos[0] + d[0], pos[1] + d[1]
-                if (y,x) == self.goal:
-                    if not here_and_back_again or len(part_times) == 3:
-                        return time + 1
-                    else:
-                        part_times.append(time + 1)
-                        visited = set()
-                        self.goal, self.pos = self.pos, self.goal
-                        to_visit = deque([(pos, time + 1)])
-
-                if 0 < y < self.height and 0 < x < self.width:
+                if (y,x) == self.goal or (0 < y < self.height and 0 < x < self.width):
                     if (y, x) not in blizzard_pos[time + 1]:
                         to_visit.append(((y, x), time + 1))
 
@@ -111,7 +109,6 @@ class Dec24(Day, year=2022, day=24):
 
     @timer(part=2)
     def part_2(self):
-        return 0
         return Valley(self.blizzards, self.height, self.width).solve(here_and_back_again=True)
 
 
