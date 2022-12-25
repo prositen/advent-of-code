@@ -8,7 +8,6 @@ class Dec25(Day, year=2022, day=25):
         number = sum(self.convert_from_snafu(i) for i in self.instructions)
         return self.convert_to_snafu(number)
 
-
     @staticmethod
     def convert_from_snafu(snafu):
         lookup = {
@@ -18,11 +17,9 @@ class Dec25(Day, year=2022, day=25):
             '-': -1,
             '=': -2
         }
-        digits = [lookup[c] for c in snafu]
-        t = 0
-        for i, d in enumerate(digits[::-1]):
-            t += d * 5**i
-        return t
+        return sum(lookup[d] * 5 ** i
+                   for i, d in enumerate(snafu[::-1]))
+
     @staticmethod
     def convert_to_snafu(number):
         digits = []
@@ -40,6 +37,7 @@ class Dec25(Day, year=2022, day=25):
                 number += 1
             digits.append(lookup[rest])
         return ''.join(digits[::-1])
+
 
 if __name__ == '__main__':
     with Timer('Total'):
