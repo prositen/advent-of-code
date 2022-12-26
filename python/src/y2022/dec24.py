@@ -39,26 +39,26 @@ class Valley(object):
         self.blizzards = blizzards
         self.height = height
         self.width = width
-        self.pos = (0, 1)
+        self.start = (0, 1)
         self.goal = (height, width - 1)
         self.deltas = ((-1, 0), (0, 1), (1, 0), (0, -1))
 
     def solve(self, here_and_back_again=False):
-        to_visit = deque([(self.pos, 0)])
+        to_visit = deque([(self.start, 0)])
 
         visited = set()
         blizzard_history = {0: self.blizzards}
         blizzard_pos = {0: {b.pos for b in self.blizzards}}
-        part_times = []
+        goal_found = 0
         while to_visit:
             pos, time = to_visit.popleft()
             if pos == self.goal:
-                if not here_and_back_again or len(part_times) == 2:
+                if not here_and_back_again or goal_found == 2:
                     return time
                 else:
-                    part_times.append(time)
+                    goal_found += 1
                     visited = set()
-                    self.goal, self.pos = self.pos, self.goal
+                    self.goal, self.start = self.start, self.goal
                     to_visit = deque([(pos, time)])
                     continue
             if (pos, time) in visited:
@@ -75,8 +75,8 @@ class Valley(object):
 
             for d in self.deltas:
                 y, x = pos[0] + d[0], pos[1] + d[1]
-                if (y,x) == self.goal or (0 < y < self.height and 0 < x < self.width):
-                    if (y, x) not in blizzard_pos[time + 1]:
+                if (y, x) not in blizzard_pos[time + 1]:
+                    if (y, x) == self.goal or (0 < y < self.height and 0 < x < self.width):
                         to_visit.append(((y, x), time + 1))
 
             if pos not in blizzard_pos[time + 1]:

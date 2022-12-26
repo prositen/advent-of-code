@@ -15,7 +15,6 @@ class MonkeyMap(object):
         self.data = data
         self.y, self.x = 0, self.data[0].index('.')
         self.facing = Dir.RIGHT
-        self.allowed_outside = True
         self.delta = {
             Dir.RIGHT: (0, 1),
             Dir.DOWN: (1, 0),
@@ -40,14 +39,9 @@ class MonkeyMap(object):
             next_x = next_x % len(row)
             col = row[next_x]
             match col:
-                case ' ':
-                    if self.allowed_outside:
-                        moved += 1
-                        self.y, self.x = next_y, next_x
                 case '.':
                     moved += 1
                     self.y, self.x = next_y, next_x
-                    self.allowed_outside = False
                 case '#':
                     return
 
