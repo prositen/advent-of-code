@@ -37,6 +37,7 @@ class Dec01(Day, year=2023, day=1):
                         tokens.append(dig)
                         break
             i += 1
+        return tokens
 
     @timer(part=2)
     def part_2(self):
