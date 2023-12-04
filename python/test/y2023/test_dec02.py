@@ -3,7 +3,7 @@ import unittest
 from python.src.y2023.dec02 import Dec02
 
 
-class TesteDec02(unittest.TestCase):
+class TestDec02(unittest.TestCase):
     data = [
         "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
         "Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue",
