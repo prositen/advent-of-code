@@ -50,7 +50,7 @@ class TestDec05(unittest.TestCase):
             (13, 13)
         ]
         for seed, soil in cases:
-            self.assertEqual(soil, almanac.lookup_in(seed, almanac.seed_to_soil))
+            self.assertEqual(soil, almanac.lookup_in(seed, almanac.seed_to_soil[0]))
 
     def test_part_1(self):
         self.assertEqual(35, Dec05(instructions=self.data).part_1())
