@@ -1,6 +1,5 @@
 from collections import Counter
 from enum import Enum
-from operator import itemgetter
 
 from python.src.common import Day, timer, Timer
 
@@ -13,29 +12,6 @@ class HandType(int, Enum):
     FULL_HOUSE = 5
     FOUR_OF_A_KIND = 6
     FIVE_OF_A_KIND = 7
-
-
-def _translate_cards(cards, j_is_joker=False):
-    result = list()
-    for c in cards:
-        match c:
-            case 'A':
-                r = 14
-            case 'K':
-                r = 13
-            case 'Q':
-                r = 12
-            case 'J':
-                if j_is_joker:
-                    r = 1
-                else:
-                    r = 11
-            case 'T':
-                r = 10
-            case _:
-                r = int(c)
-        result.append(r)
-    return result
 
 
 def translate_cards(cards, j_is_joker=False):
@@ -57,7 +33,7 @@ def translate_cards(cards, j_is_joker=False):
 class Hand(object):
 
     def __init__(self, cards, j_is_joker=False):
-        self.cards = cards # Keep the original values too, for easier debugging
+        self.cards = cards  # Keep the original values too, for easier debugging
         self.card_values = translate_cards(cards, j_is_joker=j_is_joker)
         self.hand_type = None
         self.j_is_joker = j_is_joker
