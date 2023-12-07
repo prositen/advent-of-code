@@ -1,5 +1,6 @@
 from collections import Counter
 from enum import Enum
+from operator import itemgetter
 
 from python.src.common import Day, timer, Timer
 
@@ -14,7 +15,7 @@ class HandType(int, Enum):
     FIVE_OF_A_KIND = 7
 
 
-def translate_cards(cards, j_is_joker=False):
+def _translate_cards(cards, j_is_joker=False):
     result = list()
     for c in cards:
         match c:
@@ -37,18 +38,34 @@ def translate_cards(cards, j_is_joker=False):
     return result
 
 
+def translate_cards(cards, j_is_joker=False):
+    """
+    Replace the non-numeric card values with
+    A-E (part 1) / 1A-D  (part 2) so they sort properly using
+    normal string comparison
+    :param cards:
+    :param j_is_joker:
+    :return:
+    """
+    if j_is_joker:
+        tr = str.maketrans('AKQJT', 'DCB1A')
+    else:
+        tr = str.maketrans('AKQJT', 'EDCBA')
+    return cards.translate(tr)
+
+
 class Hand(object):
 
     def __init__(self, cards, j_is_joker=False):
-        self.cards = cards
+        self.cards = cards # Keep the original values too, for easier debugging
         self.card_values = translate_cards(cards, j_is_joker=j_is_joker)
         self.hand_type = None
         self.j_is_joker = j_is_joker
         self.classify_hand()
 
     def classify_hand(self):
-        card_count = Counter(self.cards)
-        joker_count = 0 if not self.j_is_joker else card_count['J']
+        card_count = Counter(self.card_values)
+        joker_count = card_count['1']
         match len(card_count):
             case 1:
                 self.hand_type = HandType.FIVE_OF_A_KIND
@@ -77,11 +94,13 @@ class Hand(object):
                         case _:
                             self.hand_type = HandType.TWO_PAIRS
             case 4:
+                # 2 + 1 + 1 + 1
                 if joker_count:
                     self.hand_type = HandType.THREE_OF_A_KIND
                 else:
                     self.hand_type = HandType.ONE_PAIR
             case 5 | _:
+                # 1 + 1 + 1 + 1 +1
                 if joker_count:
                     self.hand_type = HandType.ONE_PAIR
                 else:
@@ -90,15 +109,9 @@ class Hand(object):
     def __repr__(self):
         return self.cards
 
-    def __gt__(self, other):
-        if self.hand_type == other.hand_type:
-            for c1, c2 in zip(self.card_values, other.card_values):
-                if c1 > c2:
-                    return True
-                elif c2 > c1:
-                    return False
-        else:
-            return self.hand_type > other.hand_type
+    def __lt__(self, other):
+        return (self.hand_type < other.hand_type or
+                (self.hand_type == other.hand_type and self.card_values < other.card_values))
 
 
 class Dec07(Day, year=2023, day=7):
