@@ -3,7 +3,7 @@ import unittest
 from python.src.y2023.dec06 import Dec06
 
 
-class TestDec04(unittest.TestCase):
+class TestDec06(unittest.TestCase):
     data = [
         "Time:      7  15   30",
         "Distance:  9  40  200"

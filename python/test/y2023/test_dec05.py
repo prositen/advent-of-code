@@ -42,7 +42,7 @@ class TestDec05(unittest.TestCase):
 
     def test_lookup_seed(self):
         day = Dec05(instructions=self.data)
-        almanac = SeedAlmanac(*day.instructions)
+        almanac = day.instructions
         cases = [
             (79, 81),
             (14, 14),
