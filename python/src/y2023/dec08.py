@@ -7,6 +7,7 @@ from python.src.common import Day, timer, Timer
 def steps_to_exit(instructions, network):
     steps = 0
     current = 'AAA'
+    instructions = deque(instructions)
     while current != 'ZZZ':
         steps += 1
         next_instruction = instructions[0]
@@ -16,23 +17,40 @@ def steps_to_exit(instructions, network):
     return steps
 
 
-def steps_to_all_exists(instructions, network):
+def find_loop(start, instructions, network):
+    visited = set()
+    goals = dict()
     steps = 0
+    instructions = deque(instructions)
+    n = len(instructions)
+    current = start
+    cycle_detected = False
+    while True:
+        steps += 1
+        current = network[current][instructions[0]]
+        instructions.rotate(-1)
+        if (current, steps % n) in visited:
+            if not cycle_detected:
+                visited = set()
+                cycle_detected = True
+            else:
+                break
+        if current.endswith('Z'):
+            if current in goals:
+                assert steps % goals[current] == 0
+            else:
+                goals[current] = steps
+
+        visited.add((current, steps % n))
+    assert len(goals) == 1
+    return min(goals.values())
+
+
+def steps_to_all_exists(instructions, network):
     nodes = [c for c in network if c.endswith('A')]
     steps_per_start = dict()
-    while nodes:
-        steps += 1
-        next_instruction = instructions[0]
-        instructions.rotate(-1)
-        next_nodes = list()
-        for node in nodes:
-            node = network[node][next_instruction]
-            if node.endswith('Z'):
-                steps_per_start[node] = steps
-            else:
-                next_nodes.append(node)
-        nodes = next_nodes
-
+    for node in nodes:
+        steps_per_start[node] = find_loop(node, instructions, network)
     return math.lcm(*steps_per_start.values())
 
 
@@ -47,7 +65,7 @@ class Dec08(Day, year=2023, day=8):
                 'L': split[2][1:-1],
                 'R': split[3][:-1]
             }
-        return deque(instructions[0]), nodes
+        return instructions[0], nodes
 
     @timer(part=1)
     def part_1(self):
