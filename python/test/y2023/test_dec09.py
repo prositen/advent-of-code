@@ -3,7 +3,7 @@ import unittest
 from python.src.y2023.dec09 import Dec09
 
 
-class TestDec01(unittest.TestCase):
+class TestDec09(unittest.TestCase):
     data = [
         "0 3 6 9 12 15",
         "1 3 6 10 15 21",
