@@ -1,10 +1,11 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 
 from python.src.common import Day, timer, Timer
 
 
 class Pipes(object):
     def __init__(self, surface_pipes: list):
+
         self.max_x = len(surface_pipes[0])
         self.max_y = len(surface_pipes)
 
@@ -36,6 +37,8 @@ class Pipes(object):
         assert (len(possible_pipes) == 1)
 
         self.pipes[self.start] = possible_pipes.pop()
+        self.part_of_the_loop = {self.start}
+        self.loop_in_order = list()
 
     def run_loop(self):
         pos = self.start
@@ -48,35 +51,78 @@ class Pipes(object):
             case 'J' | _:
                 direction = (1, 0)
 
-        visited = set()
         while True:
             steps += 1
             pos = pos[0] + direction[0], pos[1] + direction[1]
+            self.part_of_the_loop.add(pos)
             if pos == self.start:
                 return steps // 2
-            visited.add(pos)
+            self.loop_in_order.append((pos, direction))
             match self.pipes[pos]:
                 case '|' | '-':
                     continue
                 case 'L' | '7':
                     direction = direction[1], direction[0]
+                    self.loop_in_order.append((pos, direction))
                 case 'J' | 'F':
                     direction = -direction[1], -direction[0]
+                    self.loop_in_order.append((pos, direction))
                 case _:
                     print('Ended up outside maze, something is wrong')
                     return None
+
+    def find_enclosed_tiles(self):
+
+        def flood_fill(fill_from, color):
+            fill = {fill_from}
+            while fill:
+                p = fill.pop()
+                if p not in self.pipes:
+                    continue
+                if (p in colors) or (p in self.part_of_the_loop):
+                    continue
+                colors[p] = color
+                for nb in ((p[0] + d[0], p[1] + d[1]) for d in delta):
+                    fill.add(nb)
+
+        self.run_loop()
+        colors = dict()
+
+        delta = ((-1, 0), (0, 1), (1, 0), (0, -1))
+        left_hand = 'a'
+        right_hand = 'b'
+        for pos, direction in self.loop_in_order:
+            left_start = pos[0] - direction[1], pos[1] + direction[0]
+            right_start = pos[0] + direction[1], pos[1] - direction[0]
+
+            flood_fill(left_start, left_hand)
+            flood_fill(right_start, right_hand)
+        outside = {colors.get((0, x)) for x in range(self.max_x)}
+        if 'a' in outside:
+            return sum(v == 'b' for v in colors.values())
+        else:
+            return sum(v == 'a' for v in colors.values())
+
+    def print(self, investigated):
+        with open('pipes.txt', 'a') as fh:
+            for y in range(self.max_y):
+                line = list()
+                for x in range(self.max_x):
+                    line.append(investigated.get((y, x),
+                                                 self.pipes[(y, x)]))
+                fh.writelines(f'{"".join(line)}   {y}\n')
+            fh.writelines('\n\n\n')
 
 
 class Dec10(Day, year=2023, day=10):
 
     @timer(part=1)
     def part_1(self):
-        pipes = Pipes(self.instructions)
-        return pipes.run_loop()
+        return Pipes(self.instructions).run_loop()
 
     @timer(part=2)
     def part_2(self):
-        return 0
+        return Pipes(self.instructions).find_enclosed_tiles()
 
 
 if __name__ == '__main__':
