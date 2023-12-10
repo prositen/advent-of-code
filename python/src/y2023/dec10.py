@@ -12,12 +12,11 @@ class Pipes(object):
         index = ''.join(surface_pipes).find('S')
         self.start = divmod(index, self.max_x)
 
-        self.pipes = defaultdict(lambda: '.')
-        self.pipes.update({
+        self.pipes = {
             (y, x): surface_pipes[y][x]
             for y in range(0, self.max_y)
             for x in range(0, self.max_x)
-        })
+        }
 
         possible_pipes = {'|', '-', 'L', 'J', '7', 'F'}
         if self.pipes[self.start[0] - 1, self.start[1]] in {'|', '7', 'F'}:
@@ -85,7 +84,8 @@ class Pipes(object):
                 for nb in ((p[0] + d[0], p[1] + d[1]) for d in delta):
                     fill.add(nb)
 
-        self.run_loop()
+        if not self.loop_in_order:
+            self.run_loop()
         colors = dict()
 
         delta = ((-1, 0), (0, 1), (1, 0), (0, -1))
@@ -116,13 +116,17 @@ class Pipes(object):
 
 class Dec10(Day, year=2023, day=10):
 
+    @staticmethod
+    def parse_instructions(instructions):
+        return Pipes(instructions)
+
     @timer(part=1)
     def part_1(self):
-        return Pipes(self.instructions).run_loop()
+        return self.instructions.run_loop()
 
     @timer(part=2)
     def part_2(self):
-        return Pipes(self.instructions).find_enclosed_tiles()
+        return self.instructions.find_enclosed_tiles()
 
 
 if __name__ == '__main__':
