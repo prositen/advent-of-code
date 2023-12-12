@@ -4,12 +4,12 @@ from functools import lru_cache
 from python.src.common import Day, timer, Timer
 
 
-@lru_cache(maxsize=None)
+@lru_cache()
 def can_replace(springs, expected):
     return all(ch in {ex, '?'} for ch, ex in zip(springs, expected + '.'))
 
 
-@lru_cache(maxsize=None)
+@lru_cache()
 def replace_unknown(springs, damaged):
     if not damaged:
         return int('#' not in springs)
@@ -30,9 +30,6 @@ def replace_unknown(springs, damaged):
 
     return (replace_unknown(damaged=damaged, springs='.' + springs[1:])
             + replace_unknown(damaged=damaged, springs='#' + springs[1:]))
-
-
-cached_count = dict()
 
 
 def verify_count(springs, expected):
