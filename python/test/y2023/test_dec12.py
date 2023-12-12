@@ -1,6 +1,6 @@
 import unittest
 
-from python.src.y2023.dec12 import Dec12, SpringRow
+from python.src.y2023.dec12 import Dec12
 
 
 class TestDec12(unittest.TestCase):
@@ -16,8 +16,8 @@ class TestDec12(unittest.TestCase):
     def test_part_1(self):
         self.assertEqual(21, Dec12(instructions=self.data).part_1())
 
-    #def test_part_2(self):
-    #    self.assertEqual(525152, Dec12(instructions=self.data).part_2())
+    def test_part_2(self):
+        self.assertEqual(525152, Dec12(instructions=self.data).part_2())
 
 
 if __name__ == '__main__':
