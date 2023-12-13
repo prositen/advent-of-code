@@ -12,11 +12,11 @@ class MirrorValley(object):
         return sum(l != r for l, r in zip(left, right))
 
     def pattern_mirror(self, pattern):
-        for i in range(len(pattern) - 1):
-            compare_lists = tuple(zip(pattern[:i + 1][::-1], pattern[i + 1:]))
+        for i in range(1, len(pattern)):
+            compare_lists = tuple(zip(pattern[:i][::-1], pattern[i:]))
             if self.smudge == sum(self.compare_mirrors(left, right)
                                   for left, right in compare_lists):
-                return i + 1
+                return i
         return 0
 
     def find_mirrors(self):
