@@ -28,7 +28,7 @@ def replace_unknown(springs, damaged):
         else:
             return 0
     else:
-        return (replace_unknown(damaged=damaged, springs='.' + springs[1:])
+        return (replace_unknown(damaged=damaged, springs=springs[1:])
                 + replace_unknown(damaged=damaged, springs='#' + springs[1:]))
 
 
