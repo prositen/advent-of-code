@@ -11,14 +11,14 @@ def can_replace(springs, expected):
 
 @lru_cache()
 def replace_unknown(springs, damaged):
-    if not damaged:
-        return int('#' not in springs)
-    if sum(damaged) + len(damaged) - 1 > len(springs):
-        return 0
-
     if (stripped := springs.strip('.')) != springs:
         return replace_unknown(damaged=damaged,
                                springs=stripped)
+    if not damaged:
+        return int('#' not in springs)
+
+    if sum(damaged) + len(damaged) - 1 > len(springs):
+        return 0
 
     if springs[0] == '#':
         lf = damaged[0]
@@ -27,9 +27,9 @@ def replace_unknown(springs, damaged):
                                    springs=springs[lf + 1:])
         else:
             return 0
-
-    return (replace_unknown(damaged=damaged, springs='.' + springs[1:])
-            + replace_unknown(damaged=damaged, springs='#' + springs[1:]))
+    else:
+        return (replace_unknown(damaged=damaged, springs='.' + springs[1:])
+                + replace_unknown(damaged=damaged, springs='#' + springs[1:]))
 
 
 def verify_count(springs, expected):
