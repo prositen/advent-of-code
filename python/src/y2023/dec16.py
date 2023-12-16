@@ -10,8 +10,8 @@ class Contraption(object):
         self.max_y = len(layout)
         self.max_x = len(layout[0])
 
-        self.beams = [((0, 0), (0, 1))]
-        self.visited = set(self.beams)
+        self.beams = [((0, -1), (0, 1))]
+        self.visited = set()
 
     def step(self):
         new_beams = list()
@@ -45,7 +45,11 @@ class Contraption(object):
     def energized(self):
         cells = set(c[0] for c in self.visited)
         return len(cells)
-    def run(self):
+
+    def run(self, start=None):
+        self.visited = set()
+        if start:
+            self.beams = [start]
         while self.beams:
             self.step()
 
@@ -60,7 +64,19 @@ class Dec16(Day, year=2023, day=16):
 
     @timer(part=2)
     def part_2(self):
-        return 0
+        c = Contraption(self.instructions)
+        cell_count = 0
+        for x in range(c.max_x):
+            c.run(start=((-1, x), (1, 0)))
+            cell_count = max(cell_count, c.energized())
+            c.run(start=((c.max_y, x), (-1, 0)))
+            cell_count = max(cell_count, c.energized())
+        for y in range(c.max_y):
+            c.run(start=((y, -1), (0, 1)))
+            cell_count = max(cell_count, c.energized())
+            c.run(start=((y, c.max_x), (0, -1)))
+            cell_count = max(cell_count, c.energized())
+        return cell_count
 
 
 if __name__ == '__main__':
