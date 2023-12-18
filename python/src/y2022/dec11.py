@@ -64,10 +64,10 @@ class Monkey(object):
         return lambda c: throw_true if (c % divisible_by == 0) else throw_false
 
 
-class Dec11(Day):
+class Dec11(Day, year=2022, day=11):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2022, 11, instructions, filename)
+        super().__init__(instructions, filename)
         self.monkeys = None
 
     def reset_monkeys(self, relief=3):

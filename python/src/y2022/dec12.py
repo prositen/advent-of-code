@@ -42,10 +42,10 @@ class HeightMap(Grid):
         return 0
 
 
-class Dec12(Day):
+class Dec12(Day, year=2022, day=12):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2022, 12, instructions=instructions, filename=filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.heights = HeightMap(self.instructions)
 
     @staticmethod

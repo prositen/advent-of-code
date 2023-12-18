@@ -1,10 +1,10 @@
 from python.src.common import Day, timer, Timer, sgn
 
 
-class Dec09(Day):
+class Dec09(Day, year=2022, day=9):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2022, 9, instructions=instructions, filename=filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.rope = [(0, 0), (0, 0)]
 
     @staticmethod

@@ -1,10 +1,9 @@
 import string
-from collections import Counter
 
 from python.src.common import Day, timer, Timer
 
 
-class Dec03(Day):
+class Dec03(Day, year=2022, day=3):
 
     def __init__(self, instructions=None, filename=None):
         super().__init__(2022, 3, instructions, filename)

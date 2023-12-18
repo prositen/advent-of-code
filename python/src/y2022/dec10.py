@@ -47,10 +47,7 @@ class VideoSystem(object):
         ]
 
 
-class Dec10(Day):
-
-    def __init__(self, instructions=None, filename=None):
-        super().__init__(2022, 10, instructions, filename)
+class Dec10(Day, year=2022, day=10):
 
     @timer(part=1)
     def part_1(self):

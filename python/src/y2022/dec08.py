@@ -4,10 +4,10 @@ from itertools import takewhile
 from python.src.common import Day, timer, Timer
 
 
-class Dec08(Day):
+class Dec08(Day, year=2022, day=8):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2022, 8, instructions=instructions, filename=filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.forest = self.instructions
         self.max_x = len(self.forest[0])
         self.max_y = len(self.forest)

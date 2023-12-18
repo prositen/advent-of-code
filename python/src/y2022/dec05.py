@@ -1,10 +1,10 @@
 from python.src.common import Day, timer, Timer
 
 
-class Dec05(Day):
+class Dec05(Day, year=2022, day=5):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2022, 5, instructions=instructions, filename=filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.stacks, self.moves = self.instructions
 
     @staticmethod

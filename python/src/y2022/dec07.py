@@ -1,10 +1,10 @@
 from python.src.common import Day, timer, Timer
 
 
-class Dec07(Day):
+class Dec07(Day, year=2022, day=7):
 
     def __init__(self, instructions=None, filename=None):
-        super().__init__(2022, 7, instructions, filename)
+        super().__init__(instructions=instructions, filename=filename)
         self.location = []
         self.fs = dict()
         self.build_file_system()
