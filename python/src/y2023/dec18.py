@@ -81,7 +81,6 @@ class MathLagoon(object):
         return area + self.boundary // 2 + 1
 
 
-
 class Dec18(Day, year=2023, day=18):
 
     @staticmethod
