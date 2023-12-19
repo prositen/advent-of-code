@@ -85,7 +85,7 @@ class System(object):
                 accepted += math.prod(len(v) for v in ratings.values())
             else:
                 wf = self.workflows[next_step]
-                for i, rule in enumerate(wf.rules):
+                for rule in wf.rules:
                     rating_range = ratings[rule.category]
                     rr = rule.rating
                     if rr in rating_range:
