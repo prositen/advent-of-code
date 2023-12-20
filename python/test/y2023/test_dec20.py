@@ -21,13 +21,11 @@ class TestDec20(unittest.TestCase):
     ]
 
     def test_part_1(self):
-        #self.assertEqual(32000000,
-        #                 Dec20(instructions=self.example_1).part_1())
+        self.assertEqual(32000000,
+                         Dec20(instructions=self.example_1).part_1())
         self.assertEqual(11687500,
                          Dec20(instructions=self.example_2).part_1())
 
-    def test_part_2(self):
-        self.assertEqual(0, Dec20(instructions=self.example_1).part_2())
 
 
 if __name__ == '__main__':
