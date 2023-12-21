@@ -4,7 +4,7 @@ from python.src.common import Day, timer, Timer
 class Farm(object):
     def __init__(self, farm_map):
         self.max_dim = len(farm_map)
-        assert(self.max_dim == len(farm_map[0]))
+        assert (self.max_dim == len(farm_map[0]))
         self.start = (0, 0)
         for y, row in enumerate(farm_map):
             if 'S' in row:
@@ -25,53 +25,38 @@ class Farm(object):
                 for (dy, dx) in delta
                 for (ny, nx) in ((y + dy, x + dx),)
                 if
-                (ny, nx) not in self.visited and (ny % self.max_dim, nx % self.max_dim) in self.tiles
+                (ny, nx) not in self.visited and (
+                    ny % self.max_dim, nx % self.max_dim) in self.tiles
             }
             self.count[step + 1] = len(self.next_step) + self.count[step - 1]
 
         return self.count[max_steps]
 
     def calculate(self, max_steps):
+        # I barely understand this myself...
+        # We know that the input contains a corridor to the edges from the starting point
+        # so with 'm' steps we can move to the edge of the first farm
+        #
         d, m = divmod(max_steps, self.max_dim)
+        assert m == self.start[0]
 
-        x0 = m
-        y0 = self.move(max_steps=x0)
+        # With three known datapoints we can use the Lagrange Interpolation formula to calculate
+        # the result (given that the growth is quadratic)
+        #
+        # f(x) = the number of spaces we can reach after getting to the edge of farm no x
+        #
+        xs = (0, 1, 2)
+        ys = tuple(self.move(max_steps=m + x * self.max_dim) for x in xs)
 
-        x1 = m + self.max_dim
-        y1 = self.move(max_steps=x1)
+        #              (x-x1)(x-x2)           (x-x0)(x-x2)          (x-x0)(x-x1)
+        # f(x) =  y0 * -------------  + y1 * --------------  + y2 * ------------
+        #             (x0-x1)(x0-x2)         (x1-x0)(x1-x2)        (x2-x0)(x2-x1)
+        #
+        f_x = ys[0] * (d - xs[1]) * (d - xs[2]) // ((xs[0] - xs[1]) * (xs[0] - xs[2]))
+        f_x += ys[1] * (d - xs[0]) * (d - xs[2]) // ((xs[1] - xs[0]) * (xs[1] - xs[2]))
+        f_x += ys[2] * (d - xs[0]) * (d - xs[1]) // ((xs[2] - xs[0]) * (xs[2] - xs[1]))
 
-        x2 = m + 2 * self.max_dim
-        y2 = self.move(max_steps=x2)
-
-        """
-        Lagrange Interpolation formula for  ax^2 + bx + c:     
-        
-        
-(x−x1)(x−x2)(x0−x1)(x0−x2)f0+(x−x0)(x−x2)(x1−x0)(x1−x2)f1+(x−x0)(x−x1)(x2−x0)(x2−x1)f2        
-        
-                     (x-x1)(x-x2)           
-        f(x) =  y0 * -------------  + y1 * 
-                    (x0-x1)(x0-x2)                                      2
-               
-       a = 
-         
-          ax^2 + bx + c with x=[0,1,2] and y=[y0,y1,y2] we have
- *   f(x) = (x^2-3x+2) * y0/2 - (x^2-2x)*y1 + (x^2-x) * y2/2
- * so the coefficients are:
- * a = y0/2 - y1 + y2/2
- * b = -3*y0/2 + 2*y1 - y2/2
- * c = y0
- */
-const simplifiedLagrange = (values) => {
-  return {
-    a: values[0] / 2 - values[1] + values[2] / 2,
-    b: -3 * (values[0] / 2) + 2 * values[1] - values[2] / 2,
-    c: values[0],
-  };
-};
-        
-        """
-        # print(a, b, c)
+        return f_x
 
 
 class Dec21(Day, year=2023, day=21):
