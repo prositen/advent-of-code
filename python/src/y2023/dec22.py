@@ -11,7 +11,7 @@ class Node(object):
         self.index = index
         self.above = set()
         self.below = set()
-        
+
     def __repr__(self):
         return f'<Node {self.index}>'
 
@@ -86,8 +86,11 @@ class BrickTower(object):
             self.grid[z - 1][(x, y)] = brick
         self.bricks[brick] = new_pos
 
+    def state(self):
+        return [list(c.values()) for c in self.grid]
+
     def settle_bricks(self):
-        state = str(self.grid)
+        state = self.state()
         prev_state = ''
         while prev_state != state:
             moved = set()
@@ -95,10 +98,9 @@ class BrickTower(object):
                 for block in set(plane.values()).difference({0}).difference(moved):
                     if all(self.empty_below(block, *pos) for pos in self.bricks[block]):
                         moved.add(block)
-                        # print("can fall", chr(block - 1 + ord('A')))
                         self.drop(block)
 
-            prev_state, state = state, str(self.grid)
+            prev_state, state = state, self.state()
 
     def find_disintegrate_options(self):
         nodes = {
