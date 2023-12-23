@@ -20,35 +20,6 @@ class HikingTrails(object):
 
         self.target = len(trail_map) - 1, len(trail_map[0]) - 2
 
-    def move(self, ignore_slopes=False):
-        to_visit = deque()
-        if ignore_slopes:
-            to_visit.append((self.target, set()))
-            self.target = (0, 1)
-        else:
-            to_visit.append(((0, 1), set()))
-
-        longest = 0
-        while to_visit:
-            (y, x), visited = to_visit.popleft()
-            if (y, x) == self.target:
-                longest = max(longest, len(visited))
-                continue
-
-            visited = visited.union({(y, x)})
-            if not ignore_slopes and self.map[y][x] in self.delta:
-                dy, dx = self.delta[(self.map[y][x])]
-                ny, nx = dy + y, dx + x
-                if (ny, nx) not in visited:
-                    to_visit.append(((ny, nx), set(visited)))
-            else:
-                for dy, dx in self.delta.values():
-                    ny, nx = y + dy, x + dx
-                    if 0 <= ny < len(self.map) and (ny, nx) not in visited and self.map[ny][
-                        nx] != '#':
-                        to_visit.append(((ny, nx), set(visited)))
-        return longest
-
     def find_straight_path(self, pos, came_from, with_slopes=False):
         to_visit = deque()
         to_visit.append((pos, set(came_from), 0))
@@ -97,7 +68,7 @@ class HikingTrails(object):
 
                 to_visit.extend(((nb, {end_pos}) for nb in nbs))
 
-        to_visit = [(0, (0, 1), list())]
+        to_visit = [(0, (0, 1), set())]
         longest = 0
 
         while to_visit:
@@ -111,7 +82,7 @@ class HikingTrails(object):
             elif end_pos in visited:
                 continue
 
-            new_visited = visited + [end_pos]
+            new_visited = visited.union((end_pos,))
             for nb in nbs:
                 if nb not in visited:
                     heappush(to_visit, (length, nb, new_visited))
