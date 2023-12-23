@@ -93,11 +93,7 @@ class HikingTrails(object):
                 end_pos, length, nbs = self.find_straight_path(pos=start_pos,
                                                                came_from=came_from,
                                                                with_slopes=with_slopes)
-                nodes[start_pos] = {
-                    'length': length,
-                    'end': end_pos,
-                    'nbs': nbs
-                }
+                nodes[start_pos] = (length, end_pos, nbs)
 
                 to_visit.extend(((nb, {end_pos}) for nb in nbs))
 
@@ -106,17 +102,17 @@ class HikingTrails(object):
 
         while to_visit:
             length, start_pos, visited = heappop(to_visit)
-            node = nodes[start_pos]
-            length -= node['length']
-            if node['end'] == self.target:
+            n_length, end_pos, nbs = nodes[start_pos]
+            length -= n_length
+            if end_pos == self.target:
                 longest = min(length, longest)
                 continue
 
-            elif start_pos in visited or node['end'] in visited:
+            elif end_pos in visited:
                 continue
 
-            new_visited = visited + [node['end']]
-            for nb in node['nbs']:
+            new_visited = visited + [end_pos]
+            for nb in nbs:
                 if nb not in visited:
                     heappush(to_visit, (length, nb, new_visited))
 
@@ -131,6 +127,7 @@ class Dec23(Day, year=2023, day=23):
 
     @timer(part=2)
     def part_2(self):
+        # 6442
         return HikingTrails(self.instructions).make_graph(with_slopes=False)
 
 
