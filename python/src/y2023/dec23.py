@@ -101,7 +101,7 @@ class HikingTrails(object):
 
                 to_visit.extend(((nb, {end_pos}) for nb in nbs))
 
-        to_visit = [(0, (0, 1), tuple())]
+        to_visit = [(0, (0, 1), list())]
         longest = 0
 
         while to_visit:
@@ -112,10 +112,10 @@ class HikingTrails(object):
                 longest = min(length, longest)
                 continue
 
-            elif node['end'] in visited:
+            elif start_pos in visited or node['end'] in visited:
                 continue
 
-            new_visited = visited + tuple(node['end'], )
+            new_visited = visited + [node['end']]
             for nb in node['nbs']:
                 if nb not in visited:
                     heappush(to_visit, (length, nb, new_visited))
