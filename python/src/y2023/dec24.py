@@ -38,6 +38,42 @@ class Hailstorm(object):
                    for i, me in enumerate(self.hailstones)
                    for other in self.hailstones[i + 1:])
 
+    def same_trajectory_in_one_dimension(self):
+        for i, me in enumerate(self.hailstones):
+            for j, other in enumerate(self.hailstones[i + 1:]):
+                for n in (0, 1, 2):
+                    if me.pos[n] == other.pos[n] and me.velocity[n] == other.velocity[n]:
+                        return n, me.pos[n], me.velocity[n]
+        return 0, 0, 0
+
+    def throw_stone(self):
+        """
+        /u/Mahregell2
+        There is a special property again in all inputs completely trivializing the problem,
+        but barely anyone found it, that's why we see all those Z3 solutions.
+
+        There are always 2 rocks with a common start coordinate and velocity in one
+        dimension. So you know the starting coordinate and velocity of your rock in
+        that dimension. Now intersect with any 2 other rocks in that dimension -> 2 points
+        in time -> you know everything
+
+        """
+        dim, pos, vel = self.same_trajectory_in_one_dimension()
+        points = list()
+        print(dim, pos, vel)
+        for stone in self.hailstones:
+            if stone.pos[dim] == pos and stone.velocity[dim] == vel:
+                continue
+
+            t = (stone.pos[dim] - pos) / stone.velocity[dim]
+
+            points.append((*stone.pos, t))
+            if len(points) == 2:
+                break
+
+        print(points)
+
+
 
 class Dec24(Day, year=2023, day=24):
 
@@ -58,7 +94,8 @@ class Dec24(Day, year=2023, day=24):
 
     @timer(part=2)
     def part_2(self):
-        return 0
+        hs = Hailstorm(self.instructions)
+        return hs.throw_stone()
 
 
 if __name__ == '__main__':
