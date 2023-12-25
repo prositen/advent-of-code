@@ -4,12 +4,12 @@ from python.src.common import Day, timer, Timer
 class Hailstone(object):
     def __init__(self, pos, velocity):
         self.pos = pos
-        self.velocity = velocity
-        self.slope = self.velocity[1] / self.velocity[0]
+        self.vel = velocity
+        self.slope = self.vel[1] / self.vel[0]
         self.c = (-self.slope * self.pos[0] + self.pos[1])
 
     def __repr__(self):
-        return f'{str(self.pos)} @ {str(self.velocity)}'
+        return f'{str(self.pos)} @ {str(self.vel)}'
 
     def crosses2d(self, other: 'Hailstone', min_pos, max_pos):
         if self.slope == other.slope:
@@ -18,9 +18,9 @@ class Hailstone(object):
         y = self.slope * x + self.c
         if min_pos <= x <= max_pos and min_pos <= y <= max_pos:
             if (
-                    ((x - self.pos[0]) / self.velocity[0]) < 1
+                    ((x - self.pos[0]) / self.vel[0]) < 1
                     or
-                    ((x - other.pos[0]) / other.velocity[0]) < 1
+                    ((x - other.pos[0]) / other.vel[0]) < 1
             ):
                 return False
             return True
@@ -38,41 +38,59 @@ class Hailstorm(object):
                    for i, me in enumerate(self.hailstones)
                    for other in self.hailstones[i + 1:])
 
-    def same_trajectory_in_one_dimension(self):
-        for i, me in enumerate(self.hailstones):
-            for j, other in enumerate(self.hailstones[i + 1:]):
-                for n in (0, 1, 2):
-                    if me.pos[n] == other.pos[n] and me.velocity[n] == other.velocity[n]:
-                        return n, me.pos[n], me.velocity[n]
-        return 0, 0, 0
+    def group_velocities(self):
+        vels = {
+            0: dict(),
+            1: dict(),
+            2: dict()
+        }
+
+        for hs in self.hailstones:
+            for dim in 0, 1, 2:
+                if hs.vel[dim] not in vels[dim]:
+                    vels[dim][hs.vel[dim]] = list()
+                vels[dim][hs.vel[dim]].append(hs.pos[dim])
+
+        return vels
 
     def throw_stone(self):
-        """
-        /u/Mahregell2
-        There is a special property again in all inputs completely trivializing the problem,
-        but barely anyone found it, that's why we see all those Z3 solutions.
+        groups = self.group_velocities()
+        rock_vx, rock_vy, rock_vz = self.find_velocity(groups[0]), self.find_velocity(
+            groups[1]), self.find_velocity(groups[2])
 
-        There are always 2 rocks with a common start coordinate and velocity in one
-        dimension. So you know the starting coordinate and velocity of your rock in
-        that dimension. Now intersect with any 2 other rocks in that dimension -> 2 points
-        in time -> you know everything
+        (ax, ay, az), (avx, avy, avz) = self.hailstones[0].pos, self.hailstones[0].vel
+        (bx, by, bz), (bvx, bvy, bvz) = self.hailstones[1].pos, self.hailstones[1].vel
 
-        """
-        dim, pos, vel = self.same_trajectory_in_one_dimension()
-        points = list()
-        print(dim, pos, vel)
-        for stone in self.hailstones:
-            if stone.pos[dim] == pos and stone.velocity[dim] == vel:
+        slope_a = (avy - rock_vy) / (avx - rock_vx)
+        slope_b = (bvy - rock_vy) / (bvx - rock_vx)
+        ca = ay - (slope_a * ax)
+        cb = by - (slope_b * bx)
+        x = ((cb - ca) / (slope_a - slope_b))
+        y = (slope_a * x + ca)
+        time = (x - ax) / (avx - rock_vx)
+        z = az + (avz - rock_vz) * time
+        print(x, y, z)
+        return x + y + z
+
+    @staticmethod
+    def find_velocity(group):
+        possible_v = set()
+        for velocity, distances in group.items():
+            if len(distances) < 2:
                 continue
-
-            t = (stone.pos[dim] - pos) / stone.velocity[dim]
-
-            points.append((*stone.pos, t))
-            if len(points) == 2:
-                break
-
-        print(points)
-
+            this_v = set()
+            for i, d1 in enumerate(distances):
+                for j, d2 in enumerate(distances[i + 1:]):
+                    diff = abs(d1 - d2)
+                    for pv in range(-500, 500):
+                        if pv != velocity and diff % (pv - velocity) == 0:
+                            this_v.add(pv)
+            if not possible_v:
+                possible_v = this_v
+            else:
+                possible_v.intersection_update(this_v)
+        assert (len(possible_v) == 1)
+        return possible_v.pop()
 
 
 class Dec24(Day, year=2023, day=24):
