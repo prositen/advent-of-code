@@ -54,10 +54,18 @@ class Hailstorm(object):
         return vels
 
     def throw_stone(self):
+        # Find rocks that are moving in the same velocity in one dimension.
         groups = self.group_velocities()
-        rock_vx, rock_vy, rock_vz = self.find_velocity(groups[0]), self.find_velocity(
-            groups[1]), self.find_velocity(groups[2])
 
+        # Using the above, brute-force through possible velocities until we find one
+        # that would make it possible to hit all rocks with the same velocity
+        # On my input, there's only one possible velocity per dimension
+        rock_vx, rock_vy, rock_vz = (self.find_velocity(groups[0]),
+                                     self.find_velocity(groups[1]),
+                                     self.find_velocity(groups[2]))
+
+        # Now pick any two hailstones and figure out where we need to start to hit both
+        # of them with the  given velocities.
         (ax, ay, az), (avx, avy, avz) = self.hailstones[0].pos, self.hailstones[0].vel
         (bx, by, bz), (bvx, bvy, bvz) = self.hailstones[1].pos, self.hailstones[1].vel
 
@@ -70,7 +78,7 @@ class Hailstorm(object):
         time = (x - ax) / (avx - rock_vx)
         z = az + (avz - rock_vz) * time
         print(x, y, z)
-        return x + y + z
+        return int(x + y + z)
 
     @staticmethod
     def find_velocity(group):
