@@ -68,24 +68,21 @@ class HikingTrails(object):
 
                 to_visit.extend(((nb, {end_pos}) for nb in nbs))
 
-        to_visit = [(0, (0, 1), set())]
+
+        to_visit = [(-nodes[(0,1)][0], (0, 1), set())]
         longest = 0
 
         while to_visit:
             length, start_pos, visited = heappop(to_visit)
-            n_length, end_pos, nbs = nodes[start_pos]
-            length -= n_length
-            if end_pos == self.target:
-                longest = min(length, longest)
-                continue
-
-            elif end_pos in visited:
-                continue
-
+            _, end_pos, nbs = nodes[start_pos]
             new_visited = visited.union((end_pos,))
             for nb in nbs:
-                if nb not in visited:
-                    heappush(to_visit, (length, nb, new_visited))
+                n_length, n_end, _ = nodes[nb]
+                n_length = length - n_length
+                if n_end == self.target:
+                    longest = min(n_length, longest)
+                elif n_end not in visited:
+                    heappush(to_visit, (n_length, nb, new_visited))
 
         return -longest - 1
 
