@@ -1,9 +1,8 @@
 import itertools
 import random
-from heapq import heappop, heappush
+from collections import Counter, deque, defaultdict
 
 from python.src.common import Day, timer, Timer
-from collections import Counter, deque, defaultdict
 
 
 class Diagram(object):
@@ -12,12 +11,6 @@ class Diagram(object):
         self.parts = defaultdict(set)
         self.cut = set()
         self.shortest_paths = dict()
-
-    def add_cut(self, part, other):
-        if part < other:
-            self.cut.add((part, other))
-        else:
-            self.cut.add((other, part))
 
     def add_part(self, part, connections):
         self.parts[part].update(connections)
@@ -29,9 +22,9 @@ class Diagram(object):
             return
 
         visited = set()
-        to_visit = [(0, from_node, [])]
+        to_visit = deque([(0, from_node, [])])
         while to_visit:
-            d, name, path = heappop(to_visit)
+            d, name, path = to_visit.popleft()
             if name == to_node:
                 self.shortest_paths[(from_node, to_node)] = path
                 return 0
@@ -42,7 +35,7 @@ class Diagram(object):
             for nb in connections:
                 edge = min(nb, name), max(nb, name)
                 if nb not in visited and edge not in self.cut:
-                    heappush(to_visit, (d + 1, nb, path + [edge]))
+                    to_visit.append((d + 1, nb, path + [edge]))
 
         if len(visited) != len(self.parts):
             return len(visited) * (len(self.parts) - len(visited))
@@ -50,7 +43,7 @@ class Diagram(object):
     def visit_all(self):
         edge_count = Counter()
         nodes = list(self.parts.keys())
-        for _ in range(500):
+        for _ in range(200):
             from_node, to_node = random.choices(nodes, k=2)
             self.bfs(from_node=from_node, to_node=to_node)
             for edge in self.shortest_paths[(from_node, to_node)]:
@@ -58,10 +51,7 @@ class Diagram(object):
         most_common = [e for e, _ in edge_count.most_common(5)]
         for (e1, e2, e3) in itertools.combinations(most_common, 3):
             self.shortest_paths = dict()
-            self.cut = set()
-            self.add_cut(*e1)
-            self.add_cut(*e2)
-            self.add_cut(*e3)
+            self.cut = {e1, e2, e3}
             if r := self.bfs(from_node=nodes[0]):
                 return r
 
