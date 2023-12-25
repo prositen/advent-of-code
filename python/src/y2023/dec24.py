@@ -69,15 +69,17 @@ class Hailstorm(object):
         (ax, ay, az), (avx, avy, avz) = self.hailstones[0].pos, self.hailstones[0].vel
         (bx, by, bz), (bvx, bvy, bvz) = self.hailstones[1].pos, self.hailstones[1].vel
 
-        slope_a = (avy - rock_vy) / (avx - rock_vx)
-        slope_b = (bvy - rock_vy) / (bvx - rock_vx)
-        ca = ay - (slope_a * ax)
-        cb = by - (slope_b * bx)
-        x = ((cb - ca) / (slope_a - slope_b))
-        y = (slope_a * x + ca)
+        ka = (avy - rock_vy) / (avx - rock_vx)
+        ma = ay - (ka * ax)
+
+        kb = (bvy - rock_vy) / (bvx - rock_vx)
+        mb = by - (kb * bx)
+
+        x = ((mb - ma) / (ka - kb))
+        y = (ka * x + ma)
+
         time = (x - ax) / (avx - rock_vx)
         z = az + (avz - rock_vz) * time
-        print(x, y, z)
         return int(x + y + z)
 
     @staticmethod
