@@ -16,8 +16,7 @@ class Diagram(object):
             self.parts[c].add(part)
 
     def bfs(self, from_node, to_node=None, cut=None):
-        if cut is None:
-            cut = set()
+        cut = cut or set()
         visited = set()
         to_visit = deque([(from_node, [])])
         while to_visit:
@@ -36,8 +35,12 @@ class Diagram(object):
         if len(visited) != len(self.parts):
             return len(visited) * (len(self.parts) - len(visited))
 
-    def visit_all(self):
-
+    def partition(self):
+        """
+        We don't actually need to find the three specific connections to cut,
+        only the sizes of the partition
+        :return:
+        """
         nodes = list(self.parts.keys())
         from_node = nodes[0]
         for to_node in set(nodes[1:]).difference(self.parts[from_node]):
@@ -64,7 +67,7 @@ class Dec25(Day, year=2023, day=25):
         dm = Diagram()
         for name, conns in self.instructions.items():
             dm.add_part(name, conns)
-        return dm.visit_all()
+        return dm.partition()
 
 
 if __name__ == '__main__':
