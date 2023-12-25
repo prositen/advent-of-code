@@ -26,9 +26,9 @@ class HikingTrails(object):
         y, x = pos
         while to_visit:
             (y, x), visited, length = to_visit.popleft()
-            length += 1
             if (y, x) == self.target:
                 return (y, x), length, set()
+            length += 1
 
             valid_nbs = set()
             if with_slopes and self.map[y][x] in self.delta:
@@ -53,38 +53,36 @@ class HikingTrails(object):
         return (y, x), 0, set()
 
     def make_graph(self, with_slopes=False):
-        nodes = dict()
+        nodes = defaultdict(dict)
 
         to_visit = deque()
-        to_visit.append(((0, 1), set()))
+        to_visit.append(((0, 1), (0, 1), set()))
 
         while to_visit:
-            start_pos, came_from = to_visit.popleft()
-            if start_pos not in nodes:
-                end_pos, length, nbs = self.find_straight_path(pos=start_pos,
-                                                               came_from=came_from,
-                                                               with_slopes=with_slopes)
-                nodes[start_pos] = (length, end_pos, nbs)
+            start_pos, node_pos, came_from = to_visit.popleft()
+            end_pos, length, nbs = self.find_straight_path(pos=start_pos,
+                                                           came_from=came_from,
+                                                           with_slopes=with_slopes)
+            if not length:
+                continue
+            if end_pos not in nodes[node_pos]:
+                nodes[node_pos][end_pos] = length
+                if not with_slopes:
+                    nodes[end_pos][node_pos] = length
+                to_visit.extend(((nb, end_pos, {end_pos}) for nb in nbs))
 
-                to_visit.extend(((nb, {end_pos}) for nb in nbs))
-
-
-        to_visit = [(-nodes[(0,1)][0], (0, 1), set())]
+        to_visit = [(0, (0, 1), set())]
         longest = 0
 
         while to_visit:
-            length, start_pos, visited = heappop(to_visit)
-            _, end_pos, nbs = nodes[start_pos]
-            new_visited = visited.union((end_pos,))
-            for nb in nbs:
-                n_length, n_end, _ = nodes[nb]
-                n_length = length - n_length
-                if n_end == self.target:
-                    longest = min(n_length, longest)
-                elif n_end not in visited:
-                    heappush(to_visit, (n_length, nb, new_visited))
+            length, start_pos, visited = to_visit.pop()
+            if start_pos == self.target:
+                longest = max(length, longest)
+            for nb, nb_length in nodes[start_pos].items():
+                if nb not in visited:
+                    to_visit.append((length + nb_length, nb, visited | {start_pos}))
 
-        return -longest - 1
+        return longest
 
 
 class Dec23(Day, year=2023, day=23):
@@ -95,7 +93,6 @@ class Dec23(Day, year=2023, day=23):
 
     @timer(part=2)
     def part_2(self):
-        # 6442
         return HikingTrails(self.instructions).make_graph(with_slopes=False)
 
 
