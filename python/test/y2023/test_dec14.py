@@ -21,18 +21,18 @@ class TestDec14(unittest.TestCase):
         self.assertEqual(136, Dec14(instructions=self.data).part_1())
 
     def test_cycle(self):
-        expected = [
-            [c for c in ".....#...."],
-            [c for c in "....#...O#"],
-            [c for c in "...OO##..."],
-            [c for c in ".OO#......"],
-            [c for c in ".....OOO#."],
-            [c for c in ".O#...O#.#"],
-            [c for c in "....O#...."],
-            [c for c in "......OOOO"],
-            [c for c in "#...O###.."],
-            [c for c in "#..OO#...."]
-        ]
+        expected = (
+            ".....#....",
+            "....#...O#",
+            "...OO##...",
+            ".OO#......",
+            ".....OOO#.",
+            ".O#...O#.#",
+            "....O#....",
+            "......OOOO",
+            "#...O###..",
+            "#..OO#...."
+        )
         mp = MetalPlatform(self.data)
         mp.cycle()
         self.assertEqual(expected,
