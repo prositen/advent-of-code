@@ -15,7 +15,7 @@ class Trench(object):
             new_east = set()
             new_south = set()
             for c in self.eastward:
-                new_c = (c[0], (c[1]+1)%self.max_x)
+                new_c = (c[0], (c[1] + 1) % self.max_x)
                 if new_c in self.eastward or new_c in self.southward:
                     new_east.add(c)
                 else:
@@ -23,7 +23,7 @@ class Trench(object):
                     new_east.add(new_c)
 
             for c in self.southward:
-                new_c = ((c[0]+1) % self.max_y, c[1])
+                new_c = ((c[0] + 1) % self.max_y, c[1])
                 if new_c in new_east or new_c in self.southward:
                     new_south.add(c)
                 else:

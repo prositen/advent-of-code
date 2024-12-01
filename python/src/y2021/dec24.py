@@ -123,13 +123,13 @@ class Dec24(Day):
     @timer(part=1)
     def part_1(self):
         n = self.solve_for_ranges(largest=True)
-        assert(brute_force(n))
+        assert (brute_force(n))
         return n
 
     @timer(part=2)
     def part_2(self):
         n = self.solve_for_ranges(largest=False)
-        assert(brute_force(n))
+        assert (brute_force(n))
         return n
 
 

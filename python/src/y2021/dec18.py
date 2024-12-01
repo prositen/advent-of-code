@@ -48,19 +48,19 @@ class SnailFish(object):
 
     def magnitude(self):
         def mag(items, level):
-            for i, (depth, number) in enumerate(items):
-                if depth == level:
+            for i, (_depth, _number) in enumerate(items):
+                if _depth == level:
                     items[i] = (level - 1, 3 * items[i][1] + 2 * items[i + 1][1])
                     items.pop(i + 1)
                     return items
             return items
 
-        l = list(self.numbers)
+        numbers = list(self.numbers)
         for depth in (4, 3, 2):
-            while len(l) != len(mag(l, depth)):
+            while len(numbers) != len(mag(numbers, depth)):
                 pass
 
-        return 3 * l[0][1] + 2 * l[1][1]
+        return 3 * numbers[0][1] + 2 * numbers[1][1]
 
     def __eq__(self, other):
         e = [(d1, n1) == (d2, n2)

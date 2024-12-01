@@ -31,7 +31,7 @@ class Cube(object):
 
     @staticmethod
     def get_overlap(m, n):
-        return max(m[0], n[0]), min(m[1],n[1])
+        return max(m[0], n[0]), min(m[1], n[1])
 
     def intersects(self, other):
         return (self.line_intersects(self.x, other.x) and

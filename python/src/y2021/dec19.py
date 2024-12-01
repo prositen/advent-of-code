@@ -157,7 +157,7 @@ class Dec19(Day):
                             reoriented.append((i, rs))
                             found = True
                             break
-                    tested[i] = tested.get(i, list()) +[j]
+                    tested[i] = tested.get(i, list()) + [j]
                     if found:
                         break
                 else:
@@ -181,7 +181,7 @@ class Dec19(Day):
         sc = Scanner(beacons=[
             Beacon((sc.x, sc.y, sc.z)) for sc in self.scanners
         ])
-        return max((abs(d[0])+abs(d[1])+abs(d[2])) for d in sc.distances.keys())
+        return max((abs(d[0]) + abs(d[1]) + abs(d[2])) for d in sc.distances.keys())
 
 
 if __name__ == '__main__':
