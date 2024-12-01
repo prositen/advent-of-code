@@ -3,12 +3,11 @@ from python.src.common import Day, timer, Timer
 
 class Dec01(Day, year=2022, day=1):
 
-
     @staticmethod
     def parse_instructions(instructions):
         return [
-          [int(r) for r in g]
-          for g in Day.parse_groups(instructions=instructions)
+            [int(r) for r in g]
+            for g in Day.parse_groups(instructions=instructions)
         ]
 
     @timer(part=1, title='Most calories carried by one elf')
