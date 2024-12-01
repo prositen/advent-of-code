@@ -28,7 +28,8 @@ class TestDec09(unittest.TestCase):
     ]
 
     def test_find_invalid_number(self):
-        self.assertEqual(127, Dec09(instructions=self.instructions).find_invalid_number(preamble=5))
+        self.assertEqual(127,
+                         Dec09(instructions=self.instructions).find_invalid_number(preamble=5))
 
     def test_find_weakness(self):
         self.assertEqual((15, 47),
