@@ -43,5 +43,6 @@ class TestDec16(unittest.TestCase):
             d = Dec16(instructions=signal)
             self.assertEqual(expected, d.part_2())
 
+
 if __name__ == '__main__':
     unittest.main()
