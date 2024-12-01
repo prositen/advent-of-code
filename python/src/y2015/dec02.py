@@ -1,19 +1,19 @@
 __author__ = 'anna'
 
 
-def wrap(l, w, h):
-    lw = l * w
-    lh = l * h
-    wh = w * h
+def wrap(length, width, height):
+    lw = length * width
+    lh = length * height
+    wh = width * height
     slack = min(lw, lh, wh)
     return 2 * lw + 2 * lh + 2 * wh + slack
 
 
-def ribbon(l, w, h):
-    lw = 2 * l + 2 * w
-    lh = 2 * l + 2 * h
-    wh = 2 * w + 2 * h
-    bow = l * w * h
+def ribbon(length, width, height):
+    lw = 2 * length + 2 * width
+    lh = 2 * length + 2 * height
+    wh = 2 * width + 2 * height
+    bow = length * width * height
     return bow + min(lw, lh, wh)
 
 

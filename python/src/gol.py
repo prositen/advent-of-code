@@ -1,5 +1,3 @@
-import itertools
-
 from python.src.grid import Grid
 
 
@@ -25,5 +23,3 @@ class GameOfLife(Grid):
             return True
         else:
             return alive
-
-

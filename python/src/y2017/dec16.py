@@ -29,7 +29,7 @@ def parse_line(line):
 
 class Dance(object):
     def __init__(self, puzzle_input):
-        self.puzzle_input = [parse_line(l) for l in puzzle_input]
+        self.puzzle_input = [parse_line(line) for line in puzzle_input]
 
     def dance(self, programs):
         programs = [c for c in programs]

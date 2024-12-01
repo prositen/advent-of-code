@@ -1,4 +1,5 @@
 __author__ = 'anna'
+
 import re
 
 from python.src.common import input_for, Timer
@@ -157,7 +158,7 @@ class Program(object):
 
 
 def main():
-    with open(input_for(2015,23), 'r') as fh:
+    with open(input_for(2015, 23), 'r') as fh:
         program = Program(fh.readlines())
 
     with Timer():

@@ -77,8 +77,8 @@ class Day(object):
     @staticmethod
     def parse_multiple_ints_per_line(instructions, separator=','):
         return [
-            [int(c) for c in re.split(separator, l)]
-            for l in instructions
+            [int(c) for c in re.split(separator, line)]
+            for line in instructions
         ]
 
     @staticmethod
