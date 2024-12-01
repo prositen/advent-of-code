@@ -46,7 +46,6 @@ class Dec22(Day):
     def find_card_at(self, size):
         offset = 0
         multiplier = 1
-        a, b = 0, 0
         for tech, n in self.instructions:
             if tech == 'cut':
                 offset += n * multiplier

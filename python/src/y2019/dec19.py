@@ -64,23 +64,23 @@ class Dec19(Day):
         """
         At which distance from the emitter do we have a width large enough
         to fit the ship? Start scanning here!
-        
+
         In part 1 we calculated the slopes of the emitter beam. Now find
         the y where the distance between the lines is at least 100.
-        
+
         (y-m1)/k1 - (y-m2)/k2 = 100
-        
+
         k1*k2*100 = k2(y-m1) - k1(y-m2)
         k1*k2*100 = y*k2 - m1*k2 - y*k1 + k1*m2
         y(k2-k1) - m1*k2 + k1*m2 = k1*k2*100
         y(k2-k1) = k1*k2*100 - m1*k2 + k1*m2
-        y = (k1*k2*100 - m1*k2 + k1*m2)/(k2 - k1)                
+        y = (k1*k2*100 - m1*k2 + k1*m2)/(k2 - k1)
         x = (y-m)/k
         """
         k_2, m_2 = self.line_equations[1]
         k_1, m_1 = self.line_equations[0]
-        y = int((k_2*k_1*110 - k_1*m_2 + k_2*m_1)/(k_1-k_2))
-        x = int((y-m_1)/k_1)
+        y = int((k_2 * k_1 * 110 - k_1 * m_2 + k_2 * m_1) / (k_1 - k_2))
+        x = int((y - m_1) / k_1)
 
         while True:
             bottom_left, top_right = self.fits_ship(y=y, x=x)
