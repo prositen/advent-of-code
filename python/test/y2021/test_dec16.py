@@ -31,7 +31,7 @@ class TestDec16(unittest.TestCase):
                              Dec16(instructions=[hexstring]).part_1())
 
     """
-    
+
     C200B40A82 finds the sum of 1 and 2, resulting in the value 3.
     04005AC33890 finds the product of 6 and 9, resulting in the value 54.
     880086C3E88112 finds the minimum of 7, 8, and 9, resulting in the value 7.

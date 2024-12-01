@@ -1,7 +1,6 @@
 import unittest
 
-from python.src.y2021.dec19 import Dec19, Scanner, Beacon
-from src.common import Day
+from python.src.y2021.dec19 import Dec19, Beacon
 
 
 class TestDec19(unittest.TestCase):
