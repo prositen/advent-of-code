@@ -43,5 +43,6 @@ class TestDec25(unittest.TestCase):
     def test_convert_to_snafu(self):
         for snafu, expected in self.snafu:
             self.assertEqual(expected, Dec25.convert_to_snafu(snafu))
+
     def test_part_1(self):
         self.assertEqual('2=-1=0', Dec25(instructions=self.data).part_1())
