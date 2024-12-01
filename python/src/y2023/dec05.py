@@ -1,6 +1,3 @@
-import itertools
-from functools import lru_cache
-
 from python.src.common import Day, timer, Timer
 
 

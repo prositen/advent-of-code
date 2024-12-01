@@ -6,7 +6,7 @@ class Dec09(Day, year=2023, day=9):
     @staticmethod
     def parse_instructions(instructions):
         return [
-            list(map(int, l.split())) for l in instructions
+            list(map(int, line.split())) for line in instructions
         ]
 
     @staticmethod

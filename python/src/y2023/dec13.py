@@ -9,7 +9,7 @@ class MirrorValley(object):
 
     @classmethod
     def compare_mirrors(cls, left, right):
-        return sum(l != r for l, r in zip(left, right))
+        return sum(ll != rr for ll, rr in zip(left, right))
 
     def pattern_mirror(self, pattern):
         for i in range(1, len(pattern)):
