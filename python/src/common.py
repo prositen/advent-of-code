@@ -1,4 +1,5 @@
 import os
+import re
 import time
 from functools import wraps
 
@@ -47,10 +48,11 @@ class Day(object):
     def get_all_days(year):
         return _registry.get(year, dict())
 
-    def __init_subclass__(cls, year=None, day=None, **kwargs):
+    def __init_subclass__(cls, year=None, day=None, title=None, **kwargs):
         super().__init_subclass__(**kwargs)
         cls.year = year
-        cls.day = day
+        cls.day = day or 0
+        cls.title = title or f'{cls.year}-12-{cls.day:02}'
         if year not in _registry:
             _registry[year] = dict()
         _registry[year][day] = cls
@@ -71,6 +73,13 @@ class Day(object):
     @staticmethod
     def parse_int_line(instructions, separator=','):
         return [int(c) for c in instructions[0].split(separator)]
+
+    @staticmethod
+    def parse_multiple_ints_per_line(instructions, separator=','):
+        return [
+            [int(c) for c in re.split(separator, l)]
+            for l in instructions
+        ]
 
     @staticmethod
     def parse_digits(instructions):
@@ -95,7 +104,7 @@ class Day(object):
         return result
 
     def read_input(self, filename=None):
-        """ If filename is given, use that. Otherwise default to data/<year>/input.<day>.txt """
+        """ If filename is given, use that. Otherwise,  default to data/<year>/input.<day>.txt """
         if filename is None:
             filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..',
                                     'data', str(self.year), 'input.{}.txt'.format(self.day))
@@ -109,6 +118,7 @@ class Day(object):
         return 0
 
     def run_day(self):
+        print(self.title)
         self.part_1()
         self.part_2()
 
@@ -131,4 +141,4 @@ def get_int_at(line, pos=-1):
 
 
 def distance(point, other):
-    return sum(abs(p-o) for p, o in zip(point, other))
+    return sum(abs(p - o) for p, o in zip(point, other))
