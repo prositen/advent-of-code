@@ -39,7 +39,7 @@ class CrabCups(object):
     def get(self, n):
         a = 1
         return [
-            a := self.cups[a]
+            a := self.cups[a] # noqa 841
             for _ in range(n)
         ]
 
