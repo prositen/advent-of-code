@@ -26,5 +26,6 @@ class TestDec01(unittest.TestCase):
         ]
         self.assertEqual(281, Dec01(instructions=data).part_2())
 
+
 if __name__ == '__main__':
     unittest.main()

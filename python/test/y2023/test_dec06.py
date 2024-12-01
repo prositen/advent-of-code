@@ -11,6 +11,7 @@ class TestDec06(unittest.TestCase):
 
     def test_number_of_ways(self):
         self.assertEqual(4, Dec06.brute_wins(time=7, distance=9))
+
     def test_part_1(self):
         self.assertEqual(288, Dec06(instructions=self.data).part_1())
 

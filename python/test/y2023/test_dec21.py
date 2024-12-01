@@ -1,6 +1,6 @@
 import unittest
 
-from python.src.y2023.dec21 import Dec21, Farm
+from python.src.y2023.dec21 import Farm
 
 
 class TestDec21(unittest.TestCase):

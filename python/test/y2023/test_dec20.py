@@ -27,6 +27,5 @@ class TestDec20(unittest.TestCase):
                          Dec20(instructions=self.example_2).part_1())
 
 
-
 if __name__ == '__main__':
     unittest.main()

@@ -1,6 +1,6 @@
 import unittest
 
-from python.src.y2023.dec05 import Dec05, SeedAlmanac
+from python.src.y2023.dec05 import Dec05
 
 
 class TestDec05(unittest.TestCase):
