@@ -1,5 +1,3 @@
-from pprint import pprint
-
 from python.src.common import Day, timer, Timer
 
 

@@ -39,7 +39,7 @@ class TestDec14(unittest.TestCase):
                          mp.platform)
 
     def test_part_2(self):
-       self.assertEqual(64, Dec14(instructions=self.data).part_2())
+        self.assertEqual(64, Dec14(instructions=self.data).part_2())
 
 
 if __name__ == '__main__':

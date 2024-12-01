@@ -1,7 +1,6 @@
 import unittest
 
 from python.src.y2019 import dec10
-from python.src.y2019.intcode import IntCode
 
 
 class TestDec10(unittest.TestCase):

@@ -1,4 +1,4 @@
-from collections import deque, defaultdict
+from collections import deque
 from heapq import heappop, heappush
 
 from python.src.common import Day, timer, Timer

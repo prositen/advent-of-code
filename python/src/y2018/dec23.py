@@ -27,7 +27,7 @@ class Dec23(Day):
         x_range = [nb[0][0] for nb in self.nanobots]
         y_range = [nb[0][1] for nb in self.nanobots]
         z_range = [nb[0][2] for nb in self.nanobots]
-        x_range, y_range, z_range = ((max(l), min(l)) for l in (x_range, y_range, z_range))
+        x_range, y_range, z_range = ((max(p), min(p)) for p in (x_range, y_range, z_range))
 
         skip = 1
         while skip < max(x_range) - min(x_range):

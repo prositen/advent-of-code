@@ -1,5 +1,3 @@
-import itertools
-
 from python.src.common import Day, timer, Timer
 
 
@@ -49,7 +47,6 @@ class Dec24(Day):
         self.grids[0] = new_layout
 
     def count_recursive_neighbours(self, row, col, level):
-        c = 0
         neighbours = []
         # Look up
         if row == 0:

@@ -1,6 +1,6 @@
 import unittest
 
-from python.src.y2022.dec23 import Dec23, Grove
+from python.src.y2022.dec23 import Dec23
 
 
 class TestDec23(unittest.TestCase):

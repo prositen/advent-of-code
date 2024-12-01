@@ -1,5 +1,4 @@
-import itertools
-from collections import defaultdict, namedtuple
+from collections import namedtuple
 from functools import lru_cache
 from heapq import heappush, heappop
 

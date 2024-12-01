@@ -1,4 +1,4 @@
-from python.src.common import Day, timer, Timer, sgn
+from python.src.common import Day, timer, Timer
 from python.src.grid import Grid
 
 

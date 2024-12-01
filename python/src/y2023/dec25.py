@@ -1,6 +1,4 @@
-import itertools
-import random
-from collections import Counter, deque, defaultdict
+from collections import deque, defaultdict
 
 from python.src.common import Day, timer, Timer
 

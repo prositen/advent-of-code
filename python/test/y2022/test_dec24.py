@@ -2,8 +2,8 @@ import unittest
 
 from python.src.y2022.dec24 import Dec24
 
-class TestDec24(unittest.TestCase):
 
+class TestDec24(unittest.TestCase):
     data = """#.######
 #>>.<^<#
 #.<..<<#

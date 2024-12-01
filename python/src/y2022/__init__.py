@@ -1,3 +1,4 @@
+# flake8: noqa 401
 from python.src.y2022.dec01 import Dec01
 from python.src.y2022.dec02 import Dec02
 from python.src.y2022.dec03 import Dec03

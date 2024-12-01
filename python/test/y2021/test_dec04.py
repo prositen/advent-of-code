@@ -31,4 +31,3 @@ class TestDec04(unittest.TestCase):
 
     def score_of_losing_card(self):
         self.assertEqual(1924, Dec04(instructions=self.data).part_2())
-

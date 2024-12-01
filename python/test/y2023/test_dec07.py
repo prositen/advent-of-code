@@ -33,6 +33,7 @@ class TestDec07(unittest.TestCase):
         )
         for (cards, hand_type) in cases:
             self.assertEqual(hand_type, Hand(cards, j_is_joker=True).hand_type, msg=cards)
+
     def test_sorting(self):
         cards = [Hand('32T3K'), Hand('T55J5'), Hand('KK677'),
                  Hand('KTJJT'), Hand('QQQJA')]
@@ -47,6 +48,7 @@ class TestDec07(unittest.TestCase):
         expected = ['32T3K', 'KK677', 'T55J5', 'QQQJA', 'KTJJT']
         ranked_cards = sorted(cards)
         self.assertEqual(expected, [str(c) for c in ranked_cards])
+
     def test_part_1(self):
         self.assertEqual(6440, Dec07(instructions=self.data).part_1())
 

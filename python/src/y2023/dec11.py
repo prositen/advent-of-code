@@ -16,26 +16,26 @@ class StarMap(object):
         ]
         empty_columns = [n for n, row in enumerate(columns) if '#' not in row]
 
-
         y = 0
         for row in image:
             x = 0
             if '#' not in row:
-                y += (expansion-1)
+                y += (expansion - 1)
             else:
                 for x_index, ch in enumerate(row):
                     if ch == '#':
                         self.galaxies.add((y, x))
                     elif x_index in empty_columns:
-                        x += (expansion-1)
+                        x += (expansion - 1)
                     x += 1
             y += 1
 
     def sum_shortest_pairs(self):
         path_sum = 0
         for g1, g2 in itertools.combinations(self.galaxies, 2):
-            path_sum += abs(g1[0]-g2[0]) + abs(g1[1]-g2[1])
+            path_sum += abs(g1[0] - g2[0]) + abs(g1[1] - g2[1])
         return path_sum
+
 
 class Dec11(Day, year=2023, day=11):
 

@@ -26,8 +26,8 @@ class KnotHash(object):
                         list_length=256)
 
     def round(self):
-        for l in self.lengths:
-            end = self.pos + l
+        for line in self.lengths:
+            end = self.pos + line
             if end > self.list_length:
                 end2 = end % self.list_length
                 sub_list = self.values[self.pos:self.list_length] + self.values[:end2]
@@ -36,7 +36,7 @@ class KnotHash(object):
             sub_list = sub_list[::-1]
             for i, p in enumerate(range(self.pos, end)):
                 self.values[p % self.list_length] = sub_list[i]
-            self.pos += l + self.skip_size
+            self.pos += line + self.skip_size
             self.pos %= self.list_length
             self.skip_size += 1
 

@@ -31,6 +31,5 @@ class TestDec13(unittest.TestCase):
     def test_part_1(self):
         self.assertEqual(13, Dec13(instructions=self.data).part_1())
 
-
     def test_part_2(self):
         self.assertEqual(140, Dec13(instructions=self.data).part_2())

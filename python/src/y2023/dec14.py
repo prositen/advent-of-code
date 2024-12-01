@@ -59,7 +59,7 @@ class MetalPlatform(object):
         for y in range(move['start_y'], move['stop_y'], move['step_y']):
             for x in range(move['start_x'], move['stop_x'], move['step_x']):
                 if self.platform[y][x] == 'O':
-                    move_y, move_x  = y, x
+                    move_y, move_x = y, x
                     test_y, test_x = move_y + dy, move_x + dx
                     while (0 <= test_y < self.max_y and
                            0 <= test_x < self.max_x
