@@ -3,8 +3,8 @@ source ../common.bash
 
 
 function reconcile_lists() {
-  declare -a left_list
-  declare -a right_list
+  local -a left_list
+  local -a right_list
   for i1 in "${!dec01_input[@]}"; do
     local line
     read -r -a line <<< "${dec01_input[i1]}"
@@ -21,8 +21,24 @@ function reconcile_lists() {
     local right=${sorted_right[$i1]}
     local diff=0
     ((diff=(right-left)))
-    diff=$(abs ${diff})
-    ((sum+=diff))
+    ((sum+=$(abs ${diff})))
+  done
+  echo "${sum}"
+}
+
+
+function similarity_score() {
+  local -a left_list
+  local -A count
+  for i1 in "${!dec01_input[@]}"; do
+    local line
+    read -r -a line <<< "${dec01_input[i1]}"
+    left_list+=("${line[0]}")
+    ((count["${line[1]}"]+=1))
+  done
+  local sum=0
+  for n in "${left_list[@]}"; do
+    ((sum+=n*count[$n]))
   done
   echo "${sum}"
 }
@@ -31,6 +47,10 @@ function dec01_test() {
     # Part 1
     dec01_input=("3   4" "4   3" "2   5" "1   3" "3   9" "3   3")
     (( $(reconcile_lists) == 11)) || return 1
+
+    # Part 2
+    (( $(similarity_score) == 31)) || return 1
+    return 0
 }
 
 function dec01_main() {
@@ -38,7 +58,7 @@ function dec01_main() {
     read_file_to_arr 2024 1 dec01_input
 
     echo "Part 1: $(reconcile_lists)"
-    # echo "Part 2: $(even_divisible_checksum)"
+    echo "Part 2: $(similarity_score)"
 }
 
 if [ "$1" == "test" ]; then
