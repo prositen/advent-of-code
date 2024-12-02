@@ -1,4 +1,33 @@
-from python.src.common import Day, timer, Timer, sgn
+from typing import List
+
+from python.src.common import Day, timer, Timer
+
+
+class ReportChecker(object):
+
+    def __init__(self, values: List[int]):
+        self.values = values
+        self.deltas = [x - y for x, y in zip(values, values[1:])]
+
+    def all_increasing(self):
+        return all(d < 0 for d in self.deltas)
+
+    def all_decreasing(self):
+        return all(d > 0 for d in self.deltas)
+
+    def gradual_slope(self):
+        slopes = [abs(v) for v in self.deltas]
+        return max(slopes) < 4 and min(slopes) > 0
+
+    def is_safe(self):
+        return (self.all_increasing() or self.all_decreasing()) and self.gradual_slope()
+
+    def can_be_made_safe(self):
+        for i in range(len(self.values)):
+            levels = self.values[:i] + self.values[i+1:]
+            if ReportChecker(levels).is_safe():
+                return True
+        return False
 
 
 class Dec02(Day, year=2024, day=2, title='Red-Nosed Reports'):
@@ -7,29 +36,19 @@ class Dec02(Day, year=2024, day=2, title='Red-Nosed Reports'):
     def parse_instructions(instructions):
         return Day.parse_multiple_ints_per_line(instructions, separator=r'\s+')
 
-    @staticmethod
-    def is_safe(report, part=1):
-        d1 = [x - y for x, y in zip(report, report[1:])]
-        tolerated_errors = 0 if part==1 else 1
-
-        not_increasing = sum(d <= 0 for d in d1)
-
-        not_decreasing = sum(d >= 0 for d in d1)
-        if min(not_increasing, not_decreasing) > tolerated_errors:
-            return False
-        d3 = [abs(x) for x in d1]
-        return max(d3) < 4 and min(d3) > 0
-
     @timer(part=1)
     def part_1(self):
-        return sum(self.is_safe(report)
-                for report in self.instructions)
-
+        return sum(ReportChecker(report).is_safe()
+                   for report in self.instructions)
 
     @timer(part=2)
     def part_2(self):
-        return sum(self.is_safe(report, part=2)
-                   for report in self.instructions)
+        safe_reports = 0
+        for report in self.instructions:
+            rc = ReportChecker(report)
+            if rc.is_safe() or rc.can_be_made_safe():
+                safe_reports += 1
+        return safe_reports
 
 
 if __name__ == '__main__':
