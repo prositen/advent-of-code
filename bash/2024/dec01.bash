@@ -15,11 +15,9 @@ function reconcile_lists() {
   sort_arr sorted_left "${left_list[*]}"
   local sorted_right
   sort_arr sorted_right "${right_list[*]}"
-  local sum=0
   for i1 in "${!sorted_left[@]}"; do
     local left=${sorted_left[$i1]}
     local right=${sorted_right[$i1]}
-    local diff=0
     ((diff=(right-left)))
     ((sum+=$(abs ${diff})))
   done

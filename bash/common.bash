@@ -30,7 +30,7 @@ function sort_arr() {
     local sort_arr_OUT
     IFS=$'\n' sort_arr_OUT=($(sort -n <<< "${sort_arr_IN[*]}"))
     unset IFS
-    read -r -a "$output" <<< "${sort_arr_OUT[*]}"
+    read -r -a "${output?}" <<< "${sort_arr_OUT[*]}"
 }
 
 function uniq_arr() {
@@ -41,7 +41,7 @@ function uniq_arr() {
     local uniq_arr_OUT
     IFS=$'\n' uniq_arr_OUT=($(sort -n <<< "${uniq_arr_IN[*]}" | uniq))
     unset IFS
-    read -r -a "$output" <<< "${uniq_arr_OUT[*]}"
+    read -r -a "${output?}" <<< "${uniq_arr_OUT[*]}"
 
 }
 
@@ -50,10 +50,12 @@ function sort_letters() {
 }
 
 function abs() {
-    local input=$1
-    if [ ${input} -lt 0 ]; then
-        ((input = -input))
-    fi
-    echo "${input}"
+    # Replace - with nothing
+    echo "${1//-/}"
+}
 
+function sgn() {
+    # Replace all digits with nothing
+    local input=${1//[0-9]}
+    echo "${input:-+}"
 }
