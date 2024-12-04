@@ -9,32 +9,35 @@ class WordSearch(object):
         self.rows = data
 
     def count(self):
+        """
+        String search in all rows, columns, diagonals and backwards diagonals
+        :return: Number of words found
+        """
         word = 'XMAS'
 
-        rows = ','.join(self.rows)
+        rows = str(self.rows)
         h_count = (rows.count(word) + rows.count(word[::-1]))
 
         columns = list(zip(*self.rows))
-        columns = ','.join(''.join(chars) for chars in columns)
+        columns = str([''.join(chars) for chars in columns])
         v_count = (columns.count(word) + columns.count(word[::-1]))
 
         diag = defaultdict(list)
         bdiag = defaultdict(list)
-        bmin = 1 - len(self.rows)
         for y, line in enumerate(self.rows):
             for x, char in enumerate(line):
                 diag[x + y].append(char)
-                bdiag[x - y - bmin].append(char)
-        d_count = 0
-        for line in diag.values():
-            line = ''.join(line)
-            d_count += line.count(word) + line.count(word[::-1])
+                bdiag[x - y].append(char)
 
-        bd_count = 0
-        for line in bdiag.values():
-            line = ''.join(line)
-            bd_count += line.count(word) + line.count(word[::-1])
+        d_count = sum(
+            ((lstr := ''.join(line)).count(word) + lstr.count(word[::-1]))
+            for line in diag.values()
+        )
 
+        bd_count = sum(
+            ((lstr := ''.join(line)).count(word) + lstr.count(word[::-1]))
+            for line in bdiag.values()
+        )
         return h_count + v_count + d_count + bd_count
 
     def find_x(self):
