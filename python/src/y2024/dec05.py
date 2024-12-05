@@ -14,7 +14,6 @@ class Dec05(Day, year=2024, day=5, title='Print queue'):
     @staticmethod
     def parse_instructions(instructions):
         groups = Day.parse_groups(instructions)
-
         rules = defaultdict(set)
         for rule in Day.parse_multiple_ints_per_line(groups[0], separator=r'\|'):
             rules[rule[1]].add(rule[0])
