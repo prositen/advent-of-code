@@ -52,7 +52,7 @@ class Day(object):
         super().__init_subclass__(**kwargs)
         cls.year = year
         cls.day = day or 0
-        cls.title = title or f'{cls.year}-12-{cls.day:02}'
+        cls.title = title
         if year not in _registry:
             _registry[year] = dict()
         _registry[year][day] = cls
@@ -63,9 +63,6 @@ class Day(object):
         if year and not self.year:
             self.year = year
             self.title = f'{self.year}-12-{self.day:02}'
-            if year not in _registry:
-                _registry[year] = dict()
-                _registry[year][day] = self.__class__
         if not instructions:
             instructions = self.read_input(filename)
         self.instructions = self.parse_instructions(instructions)
@@ -122,7 +119,7 @@ class Day(object):
         return 0
 
     def run_day(self):
-        print(self.title)
+        print(f'{self.year}-12-{self.day:02}{" - " if self.title else ""}{self.title}')
         self.part_1()
         self.part_2()
 
