@@ -1,5 +1,5 @@
 from python.src.common import Day, timer, Timer
-from src.grid import Grid
+from python.src.grid import Grid
 
 
 class ImageEnhancer(Grid):

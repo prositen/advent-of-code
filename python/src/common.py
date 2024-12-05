@@ -58,10 +58,14 @@ class Day(object):
         _registry[year][day] = cls
 
     def __init__(self, year=None, day=None, instructions=None, filename=None):
-        if year:
-            self.year = year
         if day:
             self.day = day
+        if year and not self.year:
+            self.year = year
+            self.title = f'{self.year}-12-{self.day:02}'
+            if year not in _registry:
+                _registry[year] = dict()
+                _registry[year][day] = self.__class__
         if not instructions:
             instructions = self.read_input(filename)
         self.instructions = self.parse_instructions(instructions)
