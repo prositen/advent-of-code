@@ -119,7 +119,11 @@ class Day(object):
         return 0
 
     def run_day(self):
-        print(f'{self.year}-12-{self.day:02}{" - " if self.title else ""}{self.title}')
+        if self.title:
+            print_title = f' - {self.title}'
+        else:
+            print_title = ''
+        print(f'{self.year}-12-{self.day:02}{print_title}')
         self.part_1()
         self.part_2()
 
