@@ -1,5 +1,6 @@
 import functools
 import itertools
+import math
 import operator
 from collections import deque
 
@@ -7,7 +8,7 @@ from python.src.common import Day, timer, Timer
 
 
 class Calibrator(object):
-    operators = {operator.add, operator.mul}
+    operators = (operator.mul, operator.add)
 
     def __init__(self, result, operands):
         self.result = result
@@ -47,7 +48,9 @@ class Calibrator(object):
 
 
 class Concatenator(Calibrator):
-    operators = {lambda x, y: int(f'{x}{y}'), operator.add, operator.mul}
+    operators = (lambda x, y: y + x * 10 ** int(math.log10(y) + 1),
+                 operator.mul,
+                 operator.add)
 
 
 class Dec07(Day, year=2024, day=7, title='Bridge Repair'):
@@ -66,7 +69,8 @@ class Dec07(Day, year=2024, day=7, title='Bridge Repair'):
 
     @timer(part=2)
     def part_2(self):
-        return sum(Concatenator(*i).get_value() for i in self.instructions)
+        return sum((Calibrator(*i).get_value() or Concatenator(*i).get_value()) for i in
+                   self.instructions)
 
 
 if __name__ == '__main__':
