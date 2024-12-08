@@ -158,7 +158,7 @@ class Dec06(Day, year=2024, day=6, title='Guard Gallivant'):
         gp.visited.pop(gp.start_pos)
         for pos in list(gp.visited):
             gp.reset_and_set_pos(add_pos=pos, remove_pos=remove_pos)
-            if gp.patrol2():  # gp.is_loop():
+            if gp.is_loop():
                 num_obstacles += 1
             remove_pos = pos
         return num_obstacles
