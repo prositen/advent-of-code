@@ -7,39 +7,42 @@ from python.src.common import Day, timer, Timer
 class Defragger(object):
     def __init__(self, disk_map):
         self.blocks = [0 for _ in range(sum(disk_map))]
-        self.files = deque()
+        self.files = list()
         self.free_space = deque()
-        self.file_size = 0
         pos = 0
         for n, size in enumerate(disk_map):
             index, is_space = divmod(n, 2)
-            end_pos = pos + size
             if is_space:
-                self.blocks[pos:end_pos] = (-1,) * size
+                index = -1
                 if size > 0:
                     self.free_space.append((pos, size))
             else:
-                self.blocks[pos:end_pos] = (index,) * size
-                self.file_size += size
                 self.files.append((index, pos, size))
-            pos = end_pos
+            self.blocks[pos:pos + size] = (index,) * size
+            pos += size
 
     def deallocate(self, pos, size):
         self.blocks[pos:pos + size] = (-1,) * size
-        if len(self.free_space) and self.free_space[-1][0] > pos:
-            _, right_size = self.free_space.pop()
-            size += right_size
+        spaces = list()
+        left, right = None, None
+        while self.free_space:
+            free = self.free_space.pop()
+            right, left = left, free
+            spaces.append(free)
+            if free[0] < pos:
+                break
 
-        while pos > 0 and self.blocks[pos - 1] == -1:
-            pos -= 1
-            size += 1
-        if len(self.free_space):
-            space_pos, space_size = self.free_space.pop()
-            while self.free_space and space_pos > pos:
-                space_pos, space_size = self.free_space.pop()
-            if space_pos != pos:
-                self.free_space.append((space_pos, space_size))
+        if left and left[0] < pos:
+            if left[0] + left[1] == pos:
+                pos = left[0]
+                size += left[1]
+            else:
+                self.free_space.append(left)
+        if right and (right[0] == pos + size):
+            size += right[1]
+            spaces = spaces[1:]
         self.free_space.append((pos, size))
+        self.free_space.extend(spaces[1:])
 
     def defrag_by_block(self):
         while len(self.free_space) > 1:
@@ -51,7 +54,7 @@ class Defragger(object):
                 space_pos, space_size = self.free_space.popleft()
                 if left_to_place > space_size:
                     place_size = space_size
-                else:  # left_to_place <= space_size:
+                else:
                     place_size = left_to_place
                     if (space_size := (space_size - left_to_place)) > 0:
                         self.free_space.appendleft((space_pos + place_size, space_size))
