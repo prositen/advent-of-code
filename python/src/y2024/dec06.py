@@ -2,7 +2,7 @@ from collections import defaultdict
 from enum import StrEnum
 from typing import List
 
-from python.src.common import Day, timer, Timer
+from python.src.common import Day, timer, Timer, sgn
 
 
 class Facing(StrEnum):
@@ -41,8 +41,8 @@ class GuardPatrol(object):
         self.facing = Facing.North
         max_y = len(self.map)
         max_x = len(self.map[0])
-        self.obstacles_by_row = defaultdict(lambda: {-1, max_y + 1})
-        self.obstacles_by_col = defaultdict(lambda: {-1, max_x + 1})
+        self.obstacles_by_row = defaultdict(lambda: {-2, max_y + 1})
+        self.obstacles_by_col = defaultdict(lambda: {-2, max_x + 1})
         for y, row in enumerate(lab_map):
             for x, col in enumerate(row):
                 if col == '^':
@@ -54,49 +54,28 @@ class GuardPatrol(object):
                     self.obstacles_by_row[y].add(x)
                     self.obstacles_by_col[x].add(y)
 
-    def patrol(self, add_obstacles=False, detect_loops=False):
-        next_pos = self.pos
-        obstacles = 0
-        while 0 <= next_pos[0] < len(self.map) and 0 <= next_pos[1] < len(self.map[0]):
-            if '.' != self.map[next_pos[0]][next_pos[1]]:
-                self.facing = self.facing.turn_right()
-            else:
-                if detect_loops and self.facing in self.visited.get(next_pos, set()):
-                    return next_pos != self.start_pos
-                self.pos = next_pos
-                if add_obstacles and self.scan_ahead():
-                    obstacles += 1
-                self.visited[next_pos].add(self.facing)
-            next_pos = self.facing.position_ahead(self.pos)
-
-        if add_obstacles:
-            return obstacles
-        elif detect_loops:
-            return False
-        else:
-            return len(self.visited)
-
-    def patrol2(self):
+    def patrol(self):
         next_pos = self.pos
         while 0 <= next_pos[0] < len(self.map) and 0 <= next_pos[1] < len(self.map[0]):
             if '.' != self.map[next_pos[0]][next_pos[1]]:
                 self.facing = self.facing.turn_right()
             else:
-                if self.facing in self.visited.get(next_pos, set()):
-                    return True
                 self.pos = next_pos
                 self.visited[next_pos].add(self.facing)
             next_pos = self.facing.position_ahead(self.pos)
-        return False
+
+        return len(self.visited)
 
     def is_loop(self):
-        next_pos = self.pos
-        while 0 <= next_pos[0] < len(self.map) and 0 <= next_pos[1] < len(self.map[0]):
-            next_pos = self.teleport(next_pos, self.facing)
+        pos = self.pos
+        while 0 <= pos[0] < len(self.map) and 0 <= pos[1] < len(self.map[0]):
+            next_pos = self.teleport(pos, self.facing)
             if self.facing in self.visited.get(next_pos, set()):
                 return next_pos != self.start_pos
             self.visited[next_pos].add(self.facing)
+
             self.facing = self.facing.turn_right()
+            pos = next_pos
 
     def teleport(self, pos, facing):
         obs_y, obs_x = pos
@@ -115,11 +94,6 @@ class GuardPatrol(object):
                             if x < pos[1]) + 1
         return obs_y, obs_x
 
-    def scan_ahead(self):
-        next_facing = self.facing.turn_right()
-        next_pos = self.teleport(self.pos, next_facing)
-        return next_facing in self.visited.get(next_pos, set())
-
     def reset_and_set_pos(self, add_pos, remove_pos=None):
         self.visited = defaultdict(set)
         self.facing = Facing.North
@@ -127,11 +101,9 @@ class GuardPatrol(object):
         if remove_pos:
             self.obstacles_by_row[remove_pos[0]].discard(remove_pos[1])
             self.obstacles_by_col[remove_pos[1]].discard(remove_pos[0])
-            self.map[remove_pos[0]][remove_pos[1]] = '.'
 
         self.obstacles_by_row[add_pos[0]].add(add_pos[1])
         self.obstacles_by_col[add_pos[1]].add(add_pos[0])
-        self.map[add_pos[0]][add_pos[1]] = '#'
 
 
 class Dec06(Day, year=2024, day=6, title='Guard Gallivant'):
@@ -142,15 +114,7 @@ class Dec06(Day, year=2024, day=6, title='Guard Gallivant'):
         return gp.patrol()
 
     @timer(part=2)
-    def part_2_breezy(self):
-        gp = GuardPatrol(self.instructions)
-        return gp.patrol(add_obstacles=True)
-
     def part_2(self):
-        return self.part_2_brute()
-
-    @timer(part=2)
-    def part_2_brute(self):
         gp = GuardPatrol(self.instructions)
         gp.patrol()
         remove_pos = None
