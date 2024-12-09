@@ -2,7 +2,7 @@ from collections import defaultdict
 from enum import StrEnum
 from typing import List
 
-from python.src.common import Day, timer, Timer
+from python.src.common import Day, timer, Timer, get_points_between
 
 
 class Facing(StrEnum):
@@ -36,67 +36,45 @@ class Facing(StrEnum):
 
 class GuardPatrol(object):
     def __init__(self, lab_map: List[str]):
-        self.map = [[c for c in row] for row in lab_map]
         self.visited = defaultdict(set)
         self.facing = Facing.North
-        max_y = len(self.map)
-        max_x = len(self.map[0])
-        self.obstacles_by_row = defaultdict(lambda: {-1, max_y + 1})
-        self.obstacles_by_col = defaultdict(lambda: {-1, max_x + 1})
+        self.max_y = len(lab_map)
+        self.max_x = len(lab_map[0])
+        self.obstacles_by_row = defaultdict(lambda: {-2, self.max_y + 1})
+        self.obstacles_by_col = defaultdict(lambda: {-2, self.max_x + 1})
+        self.added_obstacle = None
         for y, row in enumerate(lab_map):
             for x, col in enumerate(row):
                 if col == '^':
-                    self.pos = (y, x)
-                    self.start_pos = (y, x)
-                    self.map[y][x] = '.'
+                    self.start_pos = self.pos = (y, x)
                     self.visited[self.pos].add(self.facing)
                 elif col == '#':
                     self.obstacles_by_row[y].add(x)
                     self.obstacles_by_col[x].add(y)
 
-    def patrol(self, add_obstacles=False, detect_loops=False):
-        next_pos = self.pos
-        obstacles = 0
-        while 0 <= next_pos[0] < len(self.map) and 0 <= next_pos[1] < len(self.map[0]):
-            if '.' != self.map[next_pos[0]][next_pos[1]]:
-                self.facing = self.facing.turn_right()
-            else:
-                if detect_loops and self.facing in self.visited.get(next_pos, set()):
-                    return next_pos != self.start_pos
-                self.pos = next_pos
-                if add_obstacles and self.scan_ahead():
-                    obstacles += 1
-                self.visited[next_pos].add(self.facing)
-            next_pos = self.facing.position_ahead(self.pos)
+    def in_bounds(self, pos):
+        return 0 <= pos[0] < self.max_y and 0 <= pos[1] < self.max_x
 
-        if add_obstacles:
-            return obstacles
-        elif detect_loops:
-            return False
-        else:
-            return len(self.visited)
-
-    def patrol2(self):
-        next_pos = self.pos
-        while 0 <= next_pos[0] < len(self.map) and 0 <= next_pos[1] < len(self.map[0]):
-            if '.' != self.map[next_pos[0]][next_pos[1]]:
-                self.facing = self.facing.turn_right()
-            else:
-                if self.facing in self.visited.get(next_pos, set()):
-                    return True
-                self.pos = next_pos
-                self.visited[next_pos].add(self.facing)
-            next_pos = self.facing.position_ahead(self.pos)
-        return False
-
-    def is_loop(self):
-        next_pos = self.pos
-        while 0 <= next_pos[0] < len(self.map) and 0 <= next_pos[1] < len(self.map[0]):
-            next_pos = self.teleport(next_pos, self.facing)
-            if self.facing in self.visited.get(next_pos, set()):
-                return next_pos != self.start_pos
-            self.visited[next_pos].add(self.facing)
+    def patrol(self):
+        while self.in_bounds(pos := self.teleport(self.pos, self.facing)):
+            for p in get_points_between(pos, self.pos):
+                self.visited[p].add(self.facing)
             self.facing = self.facing.turn_right()
+            self.pos = pos
+        for p in get_points_between(pos, self.pos):
+            if self.in_bounds(p):
+                self.visited[p].add(self.facing)
+        return len(self.visited)
+
+    def is_loop(self, add_pos):
+        self.reset_and_set_pos(add_pos=add_pos)
+        while self.in_bounds(pos := self.teleport(self.pos, self.facing)):
+            if self.facing in self.visited.get(pos, set()):
+                return pos != self.start_pos
+            self.visited[pos].add(self.facing)
+            self.facing = self.facing.turn_right()
+            self.pos = pos
+        return 0
 
     def teleport(self, pos, facing):
         obs_y, obs_x = pos
@@ -115,23 +93,17 @@ class GuardPatrol(object):
                             if x < pos[1]) + 1
         return obs_y, obs_x
 
-    def scan_ahead(self):
-        next_facing = self.facing.turn_right()
-        next_pos = self.teleport(self.pos, next_facing)
-        return next_facing in self.visited.get(next_pos, set())
-
-    def reset_and_set_pos(self, add_pos, remove_pos=None):
+    def reset_and_set_pos(self, add_pos):
         self.visited = defaultdict(set)
         self.facing = Facing.North
         self.pos = self.start_pos
-        if remove_pos:
-            self.obstacles_by_row[remove_pos[0]].discard(remove_pos[1])
-            self.obstacles_by_col[remove_pos[1]].discard(remove_pos[0])
-            self.map[remove_pos[0]][remove_pos[1]] = '.'
+        if self.added_obstacle:
+            self.obstacles_by_row[self.added_obstacle[0]].discard(self.added_obstacle[1])
+            self.obstacles_by_col[self.added_obstacle[1]].discard(self.added_obstacle[0])
 
         self.obstacles_by_row[add_pos[0]].add(add_pos[1])
         self.obstacles_by_col[add_pos[1]].add(add_pos[0])
-        self.map[add_pos[0]][add_pos[1]] = '#'
+        self.added_obstacle = add_pos
 
 
 class Dec06(Day, year=2024, day=6, title='Guard Gallivant'):
@@ -142,26 +114,11 @@ class Dec06(Day, year=2024, day=6, title='Guard Gallivant'):
         return gp.patrol()
 
     @timer(part=2)
-    def part_2_breezy(self):
-        gp = GuardPatrol(self.instructions)
-        return gp.patrol(add_obstacles=True)
-
     def part_2(self):
-        return self.part_2_brute()
-
-    @timer(part=2)
-    def part_2_brute(self):
         gp = GuardPatrol(self.instructions)
         gp.patrol()
-        remove_pos = None
-        num_obstacles = 0
         gp.visited.pop(gp.start_pos)
-        for pos in list(gp.visited):
-            gp.reset_and_set_pos(add_pos=pos, remove_pos=remove_pos)
-            if gp.patrol2():  # gp.is_loop():
-                num_obstacles += 1
-            remove_pos = pos
-        return num_obstacles
+        return sum(gp.is_loop(add_pos=pos) for pos in gp.visited)
 
 
 if __name__ == '__main__':

@@ -147,3 +147,19 @@ def get_int_at(line, pos=-1):
 
 def distance(point, other):
     return sum(abs(p - o) for p, o in zip(point, other))
+
+
+def get_points_between(p1, p2):
+    if p1[0] <= p2[0]:
+        y1, y2 = p1[0], p2[0]
+    else:
+        y1, y2 = p2[0], p1[0]
+
+    if p1[1] <= p2[1]:
+        x1, x2 = p1[1], p2[1]
+    else:
+        x1, x2 = p2[1], p1[1]
+
+    for y in range(y1, y2 + 1):
+        for x in range(x1, x2 + 1):
+            yield y, x
