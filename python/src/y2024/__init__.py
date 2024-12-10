@@ -7,3 +7,5 @@ from python.src.y2024.dec05 import Dec05
 from python.src.y2024.dec06 import Dec06
 from python.src.y2024.dec07 import Dec07
 from python.src.y2024.dec08 import Dec08
+from python.src.y2024.dec09 import Dec09
+from python.src.y2024.dec10 import Dec10
