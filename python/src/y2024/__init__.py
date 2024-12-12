@@ -10,3 +10,4 @@ from python.src.y2024.dec08 import Dec08
 from python.src.y2024.dec09 import Dec09
 from python.src.y2024.dec10 import Dec10
 from python.src.y2024.dec11 import Dec11
+from python.src.y2024.dec12 import Dec12
