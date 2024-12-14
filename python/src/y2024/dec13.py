@@ -1,7 +1,6 @@
 import re
 
 from python.src.common import Day, timer, Timer
-from python.src.math import line_intersection
 
 
 class ClawMachine(object):
@@ -21,6 +20,7 @@ class ClawMachine(object):
             M * ay + N * by = ty
 
             M = (tx * by - bx*ty) / (ax * by - bx*ay)
+            N = (tx - M*ax) / bx
 
         """
         self.tx += delta
@@ -34,13 +34,6 @@ class ClawMachine(object):
                               self.bx)
         if m:
             return 0
-
-        a0_vec = ((0, 0), (self.ax, self.ay))
-        bp_vec = (
-            (self.tx, self.ty),
-            (self.tx + self.bx, self.ty + self.by)
-        )
-        ix, iy = line_intersection(a0_vec, bp_vec)
 
         return 3 * a_presses + b_presses
 
