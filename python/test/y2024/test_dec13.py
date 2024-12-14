@@ -3,7 +3,7 @@ import unittest
 from python.src.y2024.dec13 import Dec13
 
 
-class TestDec14(unittest.TestCase):
+class TestDec13(unittest.TestCase):
     data = """Button A: X+94, Y+34
 Button B: X+22, Y+67
 Prize: X=8400, Y=5400
