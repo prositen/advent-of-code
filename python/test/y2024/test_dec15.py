@@ -26,8 +26,21 @@ vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v
 ^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>
 v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^""".split('\n')
 
-    def test_part_1(self):
-        self.assertEqual(0, Dec15(instructions=self.data).part_1())
+    def test_part_1a(self):
+        small_example = """########
+#..O.O.#
+##@.O..#
+#...O..#
+#.#.O..#
+#...O..#
+#......#
+########
+
+<^^>>>vv<v>>v<<""".split('\n')
+        self.assertEqual(2028, Dec15(instructions=small_example).part_1())
+
+    def test_part_1b(self):
+        self.assertEqual(10092, Dec15(instructions=self.data).part_1())
 
     def test_part_2(self):
         self.assertEqual(0, Dec15(instructions=self.data).part_2())
