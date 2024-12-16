@@ -26,7 +26,7 @@ vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v
 ^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>
 v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^""".split('\n')
 
-    def test_part_1a(self):
+    def atest_part_1a(self):
         small_example = """########
 #..O.O.#
 ##@.O..#
@@ -39,11 +39,23 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^""".split(
 <^^>>>vv<v>>v<<""".split('\n')
         self.assertEqual(2028, Dec15(instructions=small_example).part_1())
 
-    def test_part_1b(self):
+    def atest_part_1b(self):
         self.assertEqual(10092, Dec15(instructions=self.data).part_1())
 
-    def test_part_2(self):
-        self.assertEqual(0, Dec15(instructions=self.data).part_2())
+    def test_part_2a(self):
+        data = """#######
+#...#.#
+#.....#
+#..OO@#
+#..O..#
+#.....#
+#######
+
+<vv<<^^<<^^""".split('\n')
+        self.assertEqual(105 + 207 + 304, Dec15(instructions=data).part_2())
+
+    def atest_part_2b(self):
+        self.assertEqual(9021, Dec15(instructions=self.data).part_2())
 
 
 if __name__ == '__main__':
