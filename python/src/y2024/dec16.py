@@ -55,12 +55,8 @@ class ReindeerMaze(object):
                 heappush(to_visit, (cost + 1, n_pos, d, path + [n_pos]))
 
             for n_d in ((d + 1) % 4, (d - 1) % 4):
-                n_pos = (pos[0] + delta[n_d][0], pos[1] + delta[n_d][1])
-                if n_pos not in self.walls:
-                    heappush(to_visit, (cost + 1000, pos, n_d, path))
-
-        return None
-
+                if (n_pos := (pos[0] + delta[n_d][0], pos[1] + delta[n_d][1])) not in self.walls:
+                    heappush(to_visit, (cost + 1001, n_pos, n_d, path + [n_pos]))
 
 class Dec16(Day, year=2024, day=16):
 
