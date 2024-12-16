@@ -1,3 +1,6 @@
+from collections import defaultdict
+from email.policy import default
+from enum import unique
 from heapq import heappop, heappush
 
 from python.src.common import Day, timer, Timer
@@ -33,30 +36,40 @@ class ReindeerMaze(object):
         delta = (
             (1, 0), (0, 1), (-1, 0), (0, -1)
         )
-        heappush(to_visit, (0, self.start, 1, [self.start]))
+        path = defaultdict(set)
+
+        heappush(to_visit, (0, (self.start, 1), None))
         self.best_paths.add(self.end)
         while to_visit:
-            cost, pos, d, path = heappop(to_visit)
+            cost, current, prev = heappop(to_visit)
             if cost > self.best_score:
                 continue
-            if pos == self.end:
-                if cost < self.best_score:
-                    self.best_score = cost
-                    self.best_paths = {p for p in path}
-                else:
-                    self.best_paths.update(path)
+            if current[0] == self.end:
+                self.best_score = cost
 
-            if (pos, d) in visited:
-                if visited[(pos, d)] < cost:
-                    continue
-            visited[(pos, d)] = cost
+            if current in visited:
+                if visited[current] == cost:
+                    path[current].add(prev)
+                continue
+            visited[current] = cost
+            if prev:
+                path[current].add(prev)
 
+            pos, d = current
             if (n_pos := (pos[0] + delta[d][0], pos[1] + delta[d][1])) not in self.walls:
-                heappush(to_visit, (cost + 1, n_pos, d, path + [n_pos]))
+                heappush(to_visit, (cost + 1, (n_pos, d), current))
 
             for n_d in ((d + 1) % 4, (d - 1) % 4):
                 if (n_pos := (pos[0] + delta[n_d][0], pos[1] + delta[n_d][1])) not in self.walls:
-                    heappush(to_visit, (cost + 1001, n_pos, n_d, path + [n_pos]))
+                    heappush(to_visit, (cost + 1001, (n_pos, n_d), current))
+
+        lookup_path = {p for p in path if p[0] == self.end}
+
+        while lookup_path:
+            node = lookup_path.pop()
+            self.best_paths.add(node[0])
+            lookup_path.update(path[node])
+
 
 class Dec16(Day, year=2024, day=16):
 
