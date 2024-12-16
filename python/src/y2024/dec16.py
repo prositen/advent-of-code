@@ -29,7 +29,6 @@ class ReindeerMaze(object):
 
     def find_cheapest_path(self):
         visited = dict()
-
         to_visit = list()
         delta = (
             (1, 0), (0, 1), (-1, 0), (0, -1)
@@ -71,20 +70,17 @@ class ReindeerMaze(object):
 
 class Dec16(Day, year=2024, day=16):
 
-    def __init__(self, year=2024, day=16, instructions=None, filename=None):
-        super().__init__(year, day, instructions, filename)
-        self.rm = ReindeerMaze(self.instructions)
-
     @timer(part=1)
     def part_1(self):
-        self.rm.find_cheapest_path()
-        return self.rm.best_score
+        rm = ReindeerMaze(self.instructions)
+        rm.find_cheapest_path()
+        return rm.best_score
 
     @timer(part=2)
     def part_2(self):
-        if not self.rm.best_paths:
-            self.rm.find_cheapest_path()
-        return len(self.rm.best_paths)
+        rm = ReindeerMaze(self.instructions)
+        rm.find_cheapest_path()
+        return len(rm.best_paths)
 
 
 if __name__ == '__main__':
