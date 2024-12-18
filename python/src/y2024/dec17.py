@@ -1,4 +1,5 @@
 import re
+from collections import deque
 from enum import IntEnum
 
 from python.src.common import Day, timer, Timer
@@ -23,26 +24,17 @@ class Computer(object):
         self.ip = 0
         self.output = []
 
+    def reset(self, a_register):
+        self.registers = [a_register, 0, 0]
+        self.ip = 0
+        self.output = []
+
     def print(self):
         return ','.join(str(c) for c in self.output)
 
     def run(self):
         while self.ip < len(self.instructions):
             self.step()
-
-    def find_quine(self):
-        output_length = 0
-        while self.ip < len(self.instructions):
-            check_output = (self.instructions[self.ip] == OpCode.OUT)
-            self.step()
-            if check_output:
-                if output_length > len(self.instructions):
-                    return False
-                if self.output[output_length] != self.instructions[output_length]:
-                    return False
-                output_length += 1
-
-        return self.output == self.instructions
 
     def step(self):
         opcode = self.instructions[self.ip]
@@ -97,14 +89,30 @@ class Dec17(Day, year=2024, day=17, title='Cronospatial Computer'):
 
     @timer(part=2)
     def part_2(self):
-        a = 0
-        c = Computer(instructions=self.instructions[1], register_values=[0, 0, 0])
-        while not (c.find_quine()):
-            a += 1
-            c.registers = [a, 0, 0]
-            c.ip = 0
-            c.output = []
-        return a
+        """
+        Output depends only on register A, which is // 8 in each step. A % 8 with some
+        bits shifted is then output.
+
+        Find the correct digits one at a time from the back
+        """
+        computer = Computer(register_values=self.instructions[0],
+                            instructions=self.instructions[1])
+
+        to_visit = deque()
+        to_visit.append((0, 1))
+
+        max_len = len(self.instructions[1])
+        while to_visit:
+            a, digit = to_visit.pop()
+            looking_for = self.instructions[1][-digit]
+            for i in range(0, 8):
+                computer.reset(a_register=a + i)
+                computer.run()
+                if computer.output[0] == looking_for:
+                    if digit == max_len:
+                        return a + i
+                    elif digit < max_len:
+                        to_visit.appendleft(((a + i) * 8, digit + 1))
 
 
 if __name__ == '__main__':
