@@ -38,7 +38,7 @@ class ClawMachine(object):
         return 3 * a_presses + b_presses
 
 
-class Dec13(Day, year=2024, day=13):
+class Dec13(Day, year=2024, day=13, title='Claw Contraption'):
 
     @staticmethod
     def parse_instructions(instructions):
