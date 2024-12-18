@@ -75,7 +75,7 @@ class Garden(object):
         return sum(r.perimeter * r.area for r in self.regions)
 
 
-class Dec12(Day, year=2024, day=12):
+class Dec12(Day, year=2024, day=12, title='Garden Groups'):
 
     @timer(part=1)
     def part_1(self):

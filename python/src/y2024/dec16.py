@@ -68,7 +68,7 @@ class ReindeerMaze(object):
             lookup_path.update(path[node])
 
 
-class Dec16(Day, year=2024, day=16):
+class Dec16(Day, year=2024, day=16, title='Reindeer Maze'):
 
     @timer(part=1)
     def part_1(self):

@@ -68,7 +68,7 @@ class Warehouse(object):
                          for y in range(0, max_y))
 
 
-class Dec15(Day, year=2024, day=15):
+class Dec15(Day, year=2024, day=15, title='Warehouse Woes'):
 
     @staticmethod
     def parse_instructions(instructions):
