@@ -70,7 +70,7 @@ class Bathroom(object):
         return self.unique_positions.most_common(1)[0][1] == 1
 
 
-class Dec14(Day, year=2024, day=14):
+class Dec14(Day, year=2024, day=14, title='Restroom Redoubt'):
 
     @staticmethod
     def parse_instructions(instructions):
