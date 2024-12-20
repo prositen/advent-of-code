@@ -18,3 +18,4 @@ from python.src.y2024.dec16 import Dec16
 from python.src.y2024.dec17 import Dec17
 from python.src.y2024.dec18 import Dec18
 from python.src.y2024.dec19 import Dec19
+from python.src.y2024.dec20 import Dec20
