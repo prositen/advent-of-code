@@ -63,7 +63,6 @@ class Dec22(Day, year=2024, day=22):
         return prices.most_common(1)[0][1]
 
 
-
 if __name__ == '__main__':
     with Timer('Total'):
         Dec22().run_day()
