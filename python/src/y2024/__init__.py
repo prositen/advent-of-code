@@ -23,3 +23,4 @@ from python.src.y2024.dec21 import Dec21
 from python.src.y2024.dec22 import Dec22
 from python.src.y2024.dec23 import Dec23
 from python.src.y2024.dec24 import Dec24
+from python.src.y2024.dec25 import Dec25
