@@ -79,7 +79,7 @@ class Analyzer(object):
         return self.lookup('OR', and_1, xor_2)
 
 
-class Dec24(Day, year=2024, day=24):
+class Dec24(Day, year=2024, day=24, title='Crossed Wires'):
 
     @staticmethod
     def parse_instructions(instructions):

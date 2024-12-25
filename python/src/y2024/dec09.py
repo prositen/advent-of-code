@@ -91,7 +91,7 @@ class Defragger(object):
               file=file)
 
 
-class Dec09(Day, year=2024, day=9):
+class Dec09(Day, year=2024, day=9, title='Disk Fragmenter'):
 
     @staticmethod
     def parse_instructions(instructions):

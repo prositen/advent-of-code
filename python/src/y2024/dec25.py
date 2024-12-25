@@ -17,7 +17,7 @@ class Lock(Key):
         return f'<Lock schematic={self.schematic}>'
 
 
-class Dec25(Day, year=2024, day=25):
+class Dec25(Day, year=2024, day=25, title='Code Chronicle'):
 
     @staticmethod
     def parse_instructions(instructions):

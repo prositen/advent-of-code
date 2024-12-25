@@ -31,7 +31,7 @@ class LANParty(object):
         return sets_of_three
 
 
-class Dec23(Day, year=2024, day=23):
+class Dec23(Day, year=2024, day=23, title='LAN Party'):
 
     @staticmethod
     def parse_instructions(instructions):

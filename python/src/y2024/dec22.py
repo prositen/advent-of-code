@@ -29,7 +29,7 @@ class Secret(object):
         return self.secret
 
 
-class Dec22(Day, year=2024, day=22):
+class Dec22(Day, year=2024, day=22, title='Monkey Market'):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

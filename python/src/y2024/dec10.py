@@ -32,7 +32,7 @@ class HikingMap(Grid):
         return seen_count
 
 
-class Dec10(Day, year=2024, day=10):
+class Dec10(Day, year=2024, day=10, title='Hoof It'):
 
     @staticmethod
     def parse_instructions(instructions):
