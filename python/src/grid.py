@@ -53,3 +53,13 @@ class Grid(object):
 
     def count(self):
         return sum(self.grid.values())
+
+
+    @classmethod
+    def from_lists(cls, lists, data_type=bool):
+        grid = {}
+        for y, line in enumerate(lists):
+            for x, val in enumerate(line):
+                grid[(y, x)] = val
+        return cls(dimensions=2, stay_in_bounds=True, state=grid,
+                   data_type=data_type)
