@@ -13,7 +13,7 @@ class TestDec02(unittest.TestCase):
         self.assertEqual(1227775554, Dec02(instructions=self.data).part_1())
 
     def test_part_1_mini(self):
-        gs = GiftShopDatabase([('2', '18')])
+        gs = GiftShopDatabase([(2, 18)])
         self.assertEqual(11, gs.identify_repeated_twice())
 
     def test_part_2(self):
