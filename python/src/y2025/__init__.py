@@ -5,3 +5,4 @@ from python.src.y2025.dec03 import Dec03
 from python.src.y2025.dec04 import Dec04
 from python.src.y2025.dec05 import Dec05
 from python.src.y2025.dec06 import Dec06
+from python.src.y2025.dec07 import Dec07

@@ -25,7 +25,7 @@ class TestDec07(unittest.TestCase):
         self.assertEqual(21, Dec07(instructions=self.data).part_1())
 
     def test_part_2(self):
-        self.assertEqual(0, Dec07(instructions=self.data).part_2())
+        self.assertEqual(40, Dec07(instructions=self.data).part_2())
 
 
 if __name__ == '__main__':
