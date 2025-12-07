@@ -1,54 +1,62 @@
-from functools import cache
+from turtledemo.sorting_animate import instructions1
 
 from python.src.common import Day, timer, Timer
-from python.src.grid import Grid
 
 
-class ToiletGrid(Grid):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.delta = set(self.delta).difference({(0, 0)})
+class ToiletGrid:
+    def __init__(self, grid_map):
+        self.delta = {(-1, -1), (-1, 0), (-1, 1),
+                      (0, -1), (0, 1),
+                      (1, -1), (1, 0), (1, 1)}
+        self.rolls_of_paper = grid_map
+        self.neighbours = {
+            pos: set(
+                (pos[0] + delta[0], pos[1] + delta[1])
+                for delta in self.delta
+            )
+            for pos in self.rolls_of_paper
+        }
 
-    def accessible(self):
+    def accessible(self, pos):
+        return len(self.neighbours[pos].intersection(self.rolls_of_paper)) < 4
+
+    def count_accessible(self):
         return sum(
-            sum(self.grid[nb] for nb in self.neighbours(pos))<4
-            for pos in list(self.grid)
-            if self.at(pos)
+            self.accessible(pos)
+            for pos in self.rolls_of_paper
         )
 
-    @cache
-    def neighbours(self, pos):
-        return [nb for nb in super().neighbours(pos)]
-
-    def update_pos(self, pos):
-        return self.grid[pos] and sum(self.grid[nb] for nb in self.neighbours(pos))>=4
-
     def remove_all_we_can(self):
-        starting_rolls = self.count()
-        prev_count, current_count = 0, starting_rolls
-        while current_count != prev_count:
-            self.step()
-            prev_count = current_count
-            current_count = self.count()
+        starting_rolls = len(self.rolls_of_paper)
+        changes = True
+        while changes:
+            changes = False
+            for roll in list(self.rolls_of_paper):
+                if self.accessible(roll):
+                    self.rolls_of_paper.remove(roll)
+                    changes = True
 
-        return starting_rolls - current_count
+        return starting_rolls - len(self.rolls_of_paper)
+
 
 class Dec04(Day, year=2025, day=4, title='Printing Department'):
 
     @staticmethod
     def parse_instructions(instructions):
-        return [
-            [ch == '@' for ch in line]
-            for line in instructions
-        ]
+        return {
+            (y, x)
+            for y, line in enumerate(instructions)
+            for x, ch in enumerate(line)
+            if ch == '@'
+        }
 
     @timer(part=1)
     def part_1(self):
-        return ToiletGrid.from_lists(self.instructions).accessible()
+        return ToiletGrid(self.instructions).count_accessible()
 
     @timer(part=2)
     def part_2(self):
-        return ToiletGrid.from_lists(self.instructions).remove_all_we_can()
+        return ToiletGrid(self.instructions).remove_all_we_can()
 
 
 if __name__ == '__main__':
