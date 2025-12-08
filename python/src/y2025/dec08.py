@@ -3,7 +3,6 @@ from collections import deque
 from functools import reduce
 
 from python.src.common import Day, timer, Timer
-from python.src.common import straight_line_distance
 
 
 class Decoration:
@@ -16,7 +15,10 @@ class Decoration:
     def calculate_distance(self):
         for i, box_a in enumerate(self.junction_boxes):
             for box_b in self.junction_boxes[i + 1:]:
-                self.distances[(box_a, box_b)] = straight_line_distance(box_a, box_b)
+                d = ((box_a[0] - box_b[0]) ** 2
+                     + (box_a[1] - box_b[1]) ** 2
+                     + (box_a[2] - box_b[2]) ** 2)
+                self.distances[(box_a, box_b)] = d
 
     def add_to_circuits(self, boxes):
         for circuit in self.circuits:
@@ -27,9 +29,8 @@ class Decoration:
             self.circuits.append(boxes)
 
     def connect_closest(self):
-        reverse_distances = list(sorted(self.distances.items(), key=lambda d: d[1]))
-        for _ in range(self.connections):
-            (box_a, box_b), _ = reverse_distances.pop(0)
+        reverse_distances = sorted(self.distances.items(), key=lambda d: d[1])
+        for (box_a, box_b), _ in reverse_distances[:self.connections]:
             self.add_to_circuits({box_a, box_b})
 
         queue = deque(self.circuits)
