@@ -8,17 +8,19 @@ from python.src.common import Day, timer, Timer
 class Decoration:
     def __init__(self, junction_boxes, connections):
         self.junction_boxes = junction_boxes
-        self.distances = dict()
+        self.distances = list()
         self.circuits: list[set] = []
         self.connections = connections
 
-    def calculate_distance(self):
-        for i, box_a in enumerate(self.junction_boxes):
-            for box_b in self.junction_boxes[i + 1:]:
-                d = ((box_a[0] - box_b[0]) ** 2
-                     + (box_a[1] - box_b[1]) ** 2
-                     + (box_a[2] - box_b[2]) ** 2)
-                self.distances[(box_a, box_b)] = d
+    def sort_by_distance(self):
+        self.distances = sorted(
+            ((box_a, box_b)
+             for i, box_a in enumerate(self.junction_boxes)
+             for box_b in self.junction_boxes[i + 1:]),
+            key=lambda bb: ((bb[0][0] - bb[1][0]) ** 2
+                            + (bb[0][1] - bb[1][1]) ** 2
+                            + (bb[0][2] - bb[1][2]) ** 2)
+        )
 
     def add_to_circuits(self, boxes):
         for circuit in self.circuits:
@@ -29,8 +31,7 @@ class Decoration:
             self.circuits.append(boxes)
 
     def connect_closest(self):
-        reverse_distances = sorted(self.distances.items(), key=lambda d: d[1])
-        for (box_a, box_b), _ in reverse_distances[:self.connections]:
+        for box_a, box_b in self.distances[:self.connections]:
             self.add_to_circuits({box_a, box_b})
 
         queue = deque(self.circuits)
@@ -50,7 +51,7 @@ class Decoration:
             self.add_to_circuits({c})
 
     def largest_circuits(self):
-        self.calculate_distance()
+        self.sort_by_distance()
         self.connect_closest()
         sizes = sorted([len(c) for c in self.circuits], reverse=True)
         return reduce(operator.mul, sizes[:3])
