@@ -1,3 +1,4 @@
+import math
 import os
 import re
 import time
@@ -147,6 +148,10 @@ def get_int_at(line, pos=-1):
 
 def distance(point, other):
     return sum(abs(p - o) for p, o in zip(point, other))
+
+
+def straight_line_distance(point, other):
+    return math.sqrt(sum((p - o) ** 2 for p, o in zip(point, other)))
 
 
 def get_points_between(p1, p2):
