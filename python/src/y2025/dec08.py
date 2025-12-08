@@ -18,7 +18,7 @@ class Decoration:
     @staticmethod
     def add_to_circuits(box_a, box_b, circuits):
         new_circuit = {box_a, box_b}
-        for index, circuit in enumerate(circuits):
+        for circuit in list(circuits):
             if box_a in circuit:
                 new_circuit |= circuit
                 circuits.remove(circuit)
@@ -39,6 +39,14 @@ class Decoration:
         sizes = sorted([len(c) for c in circuits], reverse=True)
         return prod(sizes[:3])
 
+    def connect_until_done(self):
+        circuits = list()
+        for box_a, box_b in self.distances:
+            self.add_to_circuits(box_a, box_b, circuits)
+            if len(circuits) == 1 and len(circuits[0]) == len(self.junction_boxes):
+                return box_a[0] * box_b[0]
+        return -1
+
 
 class Dec08(Day, year=2025, day=8, title='Playground'):
 
@@ -48,8 +56,8 @@ class Dec08(Day, year=2025, day=8, title='Playground'):
 
     @staticmethod
     def parse_instructions(instructions):
-        return (tuple(map(int, line.split(',')))
-                for line in instructions)
+        return list(tuple(map(int, line.split(',')))
+                    for line in instructions)
 
     @timer(part=1)
     def part_1(self):
@@ -59,7 +67,8 @@ class Dec08(Day, year=2025, day=8, title='Playground'):
     @timer(part=2)
     def part_2(self):
         self.decoration = self.decoration or Decoration(self.instructions)
-        return 0
+        return self.decoration.connect_until_done()
+
 
 if __name__ == '__main__':
     with Timer('Total'):

@@ -33,7 +33,7 @@ class TestDec08(unittest.TestCase):
         self.assertEqual(40, d.largest_circuits(connections=10))
 
     def test_part_2(self):
-        self.assertEqual(0, Dec08(instructions=self.data).part_2())
+        self.assertEqual(25272, Dec08(instructions=self.data).part_2())
 
 
 if __name__ == '__main__':
