@@ -1,77 +1,65 @@
-import operator
+import itertools
+import math
 from collections import deque
-from functools import reduce
+from math import prod
 
 from python.src.common import Day, timer, Timer
 
 
 class Decoration:
-    def __init__(self, junction_boxes, connections):
+    def __init__(self, junction_boxes):
         self.junction_boxes = junction_boxes
-        self.distances = list()
-        self.circuits: list[set] = []
-        self.connections = connections
-
-    def sort_by_distance(self):
         self.distances = sorted(
-            ((box_a, box_b)
-             for i, box_a in enumerate(self.junction_boxes)
-             for box_b in self.junction_boxes[i + 1:]),
-            key=lambda bb: ((bb[0][0] - bb[1][0]) ** 2
-                            + (bb[0][1] - bb[1][1]) ** 2
-                            + (bb[0][2] - bb[1][2]) ** 2)
+            itertools.combinations(self.junction_boxes, 2),
+            key=lambda bb: math.dist(*bb)
         )
+        self.circuits: list[set] = []
 
-    def add_to_circuits(self, boxes):
-        for circuit in self.circuits:
-            if circuit.intersection(boxes):
-                circuit.update(boxes)
-                break
-        else:
-            self.circuits.append(boxes)
+    @staticmethod
+    def add_to_circuits(box_a, box_b, circuits):
+        new_circuit = {box_a, box_b}
+        for index, circuit in enumerate(circuits):
+            if box_a in circuit:
+                new_circuit |= circuit
+                circuits.remove(circuit)
+            elif box_b in circuit:
+                new_circuit |= circuit
+                circuits.remove(circuit)
+        circuits.append(new_circuit)
 
-    def connect_closest(self):
-        for box_a, box_b in self.distances[:self.connections]:
-            self.add_to_circuits({box_a, box_b})
+    def largest_circuits(self, connections):
+        circuits = list()
+        for box_a, box_b in self.distances[:connections]:
+            self.add_to_circuits(box_a, box_b, circuits)
 
-        queue = deque(self.circuits)
-        self.circuits = []
-        while queue:
-            circuit = queue.popleft()
-            for n, other_circuit in enumerate(queue):
-                if circuit.intersection(other_circuit):
-                    queue.remove(other_circuit)
-                    queue.appendleft(other_circuit | circuit)
+        remaining_boxes = set(self.junction_boxes).difference(*circuits)
 
-                    break
-            else:
-                self.circuits.append(circuit)
-        remaining_boxes = set(self.junction_boxes).difference(*self.circuits)
-        for c in remaining_boxes:
-            self.add_to_circuits({c})
+        circuits.extend([{c} for c in remaining_boxes])
 
-    def largest_circuits(self):
-        self.sort_by_distance()
-        self.connect_closest()
-        sizes = sorted([len(c) for c in self.circuits], reverse=True)
-        return reduce(operator.mul, sizes[:3])
+        sizes = sorted([len(c) for c in circuits], reverse=True)
+        return prod(sizes[:3])
 
 
 class Dec08(Day, year=2025, day=8, title='Playground'):
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.decoration = None
+
     @staticmethod
     def parse_instructions(instructions):
-        return list(tuple(map(int, line.split(',')))
-                    for line in instructions)
+        return (tuple(map(int, line.split(',')))
+                for line in instructions)
 
     @timer(part=1)
     def part_1(self):
-        return Decoration(self.instructions, connections=1000).largest_circuits()
+        self.decoration = self.decoration or Decoration(self.instructions)
+        return self.decoration.largest_circuits(connections=1000)
 
     @timer(part=2)
     def part_2(self):
+        self.decoration = self.decoration or Decoration(self.instructions)
         return 0
-
 
 if __name__ == '__main__':
     with Timer('Total'):

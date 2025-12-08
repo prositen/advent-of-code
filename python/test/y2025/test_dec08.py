@@ -28,9 +28,9 @@ class TestDec08(unittest.TestCase):
 
     def test_part_1(self):
         boxes = Dec08.parse_instructions(instructions=self.data)
-        d = Decoration(boxes, connections=10)
+        d = Decoration(boxes)
 
-        self.assertEqual(40, d.largest_circuits())
+        self.assertEqual(40, d.largest_circuits(connections=10))
 
     def test_part_2(self):
         self.assertEqual(0, Dec08(instructions=self.data).part_2())
