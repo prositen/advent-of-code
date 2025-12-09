@@ -28,23 +28,27 @@ class Rectangle:
         )
 
 
+def area(t1, t2):
+    return (1 + (abs(t1[0] - t2[0]))) * (1 + (abs(t1[1] - t2[1])))
+
+
 class TileFloor:
     def __init__(self, red_tiles: list[tuple]):
         self.red_tiles = red_tiles
 
     def largest_rectangle(self):
-        return max(
-            (1 + (abs(t1[0] - t2[0]))) * (1 + (abs(t1[1] - t2[1])))
-            for (t1, t2) in itertools.combinations(self.red_tiles, 2)
-        )
+        return max(area(t1, t2) for (t1, t2) in itertools.combinations(self.red_tiles, 2)
+                   )
 
     def largest_rectangle_with_red_or_green_tiles(self):
         borders = [
             Rectangle(t1, t2)
             for t1, t2 in itertools.pairwise(self.red_tiles + self.red_tiles[:1])
         ]
-        # Now shuffle!
+        # Now shuffle! If a rectangle doesn't intersect with one border, it's probably
+        # not going to intersect with the very next one.
         random.shuffle(borders)
+
         for rectangle in sorted(
                 (Rectangle(t1, t2)
                  for t1, t2 in itertools.combinations(self.red_tiles, 2)),
