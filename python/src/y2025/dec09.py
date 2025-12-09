@@ -1,5 +1,4 @@
 import itertools
-import random
 
 from python.src.common import Day, timer, Timer
 
@@ -21,10 +20,8 @@ class Rectangle:
 
     def intersects(self, other) -> bool:
         return not (
-                self.x_max <= other.x_min or
-                self.x_min >= other.x_max or
-                self.y_max <= other.y_min or
-                self.y_min >= other.y_max
+                self.x_max <= other.x_min or self.x_min >= other.x_max or
+                self.y_max <= other.y_min or self.y_min >= other.y_max
         )
 
 
@@ -37,17 +34,16 @@ class TileFloor:
         self.red_tiles = red_tiles
 
     def largest_rectangle(self):
-        return max(area(t1, t2) for (t1, t2) in itertools.combinations(self.red_tiles, 2)
-                   )
+        return max(area(t1, t2)
+                   for (t1, t2) in itertools.combinations(self.red_tiles, 2))
 
     def largest_rectangle_with_red_or_green_tiles(self):
         borders = [
             Rectangle(t1, t2)
             for t1, t2 in itertools.pairwise(self.red_tiles + self.red_tiles[:1])
         ]
-        # Now shuffle! If a rectangle doesn't intersect with one border, it's probably
-        # not going to intersect with the very next one.
-        random.shuffle(borders)
+        # Sort on largest borders to maybe improve risk of hitting it early
+        borders.sort(key=lambda rect: rect.area(), reverse=True)
 
         for rectangle in sorted(
                 (Rectangle(t1, t2)
