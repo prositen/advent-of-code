@@ -18,25 +18,26 @@ class Machine:
         seen_states = dict()
         while to_visit:
             state, pushes = to_visit.popleft()
-            if state == self.target_lights:
-                return pushes
-            if state in seen_states and pushes >= seen_states[state]:
-                continue
-            seen_states[state] = pushes
             for schematic in self.schematics:
                 next_state = list(state)
                 for button in schematic:
                     next_state[button] = not next_state[button]
-                to_visit.append((tuple(next_state), pushes + 1))
+                next_state = tuple(next_state)
+                if next_state == self.target_lights:
+                    return pushes + 1
+                elif next_state in seen_states:
+                    continue
+
+                seen_states[next_state] = pushes
+                to_visit.append((next_state, pushes + 1))
 
     def configure_joltages(self):
         z3_opt = Optimize()
         button_presses = [Int(f"button_{i}")
                           for i in range(len(self.schematics))
                           ]
-        # minimize total presses
         z3_opt.minimize(Sum(button_presses))
-        for count in button_presses:  # button press count must >= 0
+        for count in button_presses:
             z3_opt.add(count >= 0)
 
         # Which buttons affect which target joltage?
