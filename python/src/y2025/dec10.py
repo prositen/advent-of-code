@@ -1,4 +1,5 @@
 from collections import deque
+from z3 import Optimize, Int, Sum, sat
 
 from python.src.common import Day, timer, Timer
 
@@ -6,13 +7,13 @@ from python.src.common import Day, timer, Timer
 class Machine:
     def __init__(self, lights, schematics, joltage):
         self.target_lights = lights
-        self.current_lights = [False] * len(lights)
         self.schematics = schematics
-        self.joltage = joltage
+        self.target_joltages = tuple(joltage)
 
     def start_machine(self):
         to_visit = deque()
-        to_visit.append((tuple(self.current_lights), 0))
+        current_lights = tuple([False] * len(self.target_lights))
+        to_visit.append((current_lights, 0))
 
         seen_states = dict()
         while to_visit:
@@ -28,6 +29,31 @@ class Machine:
                     next_state[button] = not next_state[button]
                 to_visit.append((tuple(next_state), pushes + 1))
 
+    def configure_joltages(self):
+        z3_opt = Optimize()
+        button_presses = [Int(f"button_{i}")
+                          for i in range(len(self.schematics))
+                          ]
+        # minimize total presses
+        z3_opt.minimize(Sum(button_presses))
+        for count in button_presses:  # button press count must >= 0
+            z3_opt.add(count >= 0)
+
+        # Which buttons affect which target joltage?
+        for j_i, target_joltage in enumerate(self.target_joltages):
+            buttons = [
+                button
+                for button, button_affects in zip(button_presses, self.schematics)
+                if j_i in button_affects
+            ]
+            z3_opt.add(Sum(buttons) == target_joltage)
+
+        if z3_opt.check() == sat:
+            model = z3_opt.model()
+            return sum(model[c].as_long() for c in button_presses)
+        else:
+            raise ValueError("No solution found")
+
 
 class Factory:
     def __init__(self, machines):
@@ -35,6 +61,9 @@ class Factory:
 
     def start_all_machines(self):
         return sum(machine.start_machine() for machine in self.machines)
+
+    def configure_joltages(self):
+        return sum(machine.configure_joltages() for machine in self.machines)
 
 
 class Dec10(Day, year=2025, day=10, title='Factory'):
@@ -56,7 +85,7 @@ class Dec10(Day, year=2025, day=10, title='Factory'):
 
     @timer(part=2)
     def part_2(self):
-        return 0
+        return Factory(self.instructions).configure_joltages()
 
 
 if __name__ == '__main__':
